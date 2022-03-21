@@ -2,13 +2,13 @@
     {
       "modid": "${modId}",
       "name": "${modName}",
-      "description": "An example mod for Minecraft 1.7.10 with Forge focussed on a stable setup.",
+      "description": "A Minecraft authentification system contained in a Forge mod.",
       "version": "${modVersion}",
       "mcversion": "${minecraftVersion}",
-      "url": "https://github.com/SinTh0r4s/MyMod",
+      "url": "https://github.com/trollogyadherent/OfflineAuth",
       "updateUrl": "",
-      "authorList": ["SinTho0r4s"],
-      "credits": "",
+      "authorList": ["trollogyadherent"],
+      "credits": "TechnicianLP, SinTh0r4s",
       "logoFile": "",
       "screenshots": [],
       "dependencies": []

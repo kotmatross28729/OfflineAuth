@@ -29,3 +29,10 @@ If you are a player:
 * Uploading and using skins
 * Logging in via key file
 * Raid mitigation
+
+### Credits
+* [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.
+* [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
+
+### License
+LGPLv3+SNEED

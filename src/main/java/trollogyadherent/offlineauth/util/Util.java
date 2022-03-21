@@ -5,6 +5,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.Session;
 import org.apache.commons.codec.binary.Base64;
 import trollogyadherent.offlineauth.OfflineAuth;
@@ -67,9 +68,9 @@ public class Util {
         return true;
     }
 
-    public static OAServerData getOAServerDatabyIP(String ip) {
+    public static OAServerData getOAServerDatabyIP(String ip, String port) {
         for (OAServerData oasd : OfflineAuth.OAserverDataCache) {
-            if (oasd.getIp().equals(ip)) {
+            if (oasd.getIp().equals(ip) && oasd.getPort().equals(port)) {
                 return  oasd;
             }
         }
@@ -97,5 +98,24 @@ public class Util {
         String uuid = offlineUUID(username);
         Sessionutil.set(new Session(username, uuid, null, "legacy"));
         OfflineAuth.info("Offline Username set!");
+    }
+
+    /* The serverIP field actually contains both ip and port, this function gets only the ip */
+    public static String getIP(ServerData serverData) {
+        return serverData.serverIP.split(":")[0];
+    }
+
+    /* Basically same as above but for a string of type ip:port */
+    public static String getIP(String ipport) {
+        return ipport.split(":")[0];
+    }
+
+    public static String getPort(ServerData serverData) {
+        String[] spl = serverData.serverIP.split(":");
+        if (spl.length > 1) {
+            return spl[1];
+        } else {
+            return "";
+        }
     }
 }

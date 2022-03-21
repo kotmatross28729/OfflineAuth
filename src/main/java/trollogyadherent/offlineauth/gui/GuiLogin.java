@@ -143,11 +143,11 @@ public class GuiLogin extends GuiScreen {
         this.token.setText("");
         this.token.setMaxStringLength(512);
 
-        OAServerData oasd = Util.getOAServerDatabyIP(OfflineAuth.selectedServerData.serverIP);
+        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
         if (oasd != null) {
             this.username.setText(oasd.getUsername());
             this.pw.setText(oasd.getPassword());
-            this.port.setText(oasd.getPort());
+            this.port.setText(oasd.getRestPort());
         }
 
         //this.save = new GuiCheckBox(2, this.width / 2 - 155, this.basey + 85, "Save Password to Config (WARNING: SECURITY RISK!)", false);
@@ -261,14 +261,14 @@ public class GuiLogin extends GuiScreen {
     private void actionsave() {
         //this.message = (char) 167 + "4Sneed!";
         //boolean validServer, String ip, String port, String username, String password, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed
-        OAServerData oaServerDataTemp = new OAServerData(false, OfflineAuth.selectedServerData.serverIP, port.getText(), username.getText(), pw.getPW(), false, false, false);
+        OAServerData oaServerDataTemp = new OAServerData(false, Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), false, false, false);
         boolean found = false;
         for (OAServerData oasd : OfflineAuth.OAserverDataCache) {
-            if (oasd.getIp().equals(oaServerDataTemp.getIp())) {
+            if (oasd.getIp().equals(oaServerDataTemp.getIp()) && oasd.getPort().equals(oaServerDataTemp.getPort())) {
                 found = true;
                 oasd.setUsername(oaServerDataTemp.getUsername());
                 oasd.setPassword(oaServerDataTemp.getPassword());
-                oasd.setPort(oaServerDataTemp.getPort());
+                oasd.setRestPort(oaServerDataTemp.getRestPort());
             }
         }
         if (!found) {
@@ -298,7 +298,7 @@ public class GuiLogin extends GuiScreen {
                    validColor = Color.RED.getRGB();
                 } */
                 try {
-                    StatusResponseObject stat = Request.register(OfflineAuth.selectedServerData.serverIP, port.getText(), username.getText(), pw.getPW(), token.getText());
+                    StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), token.getText());
                     if (stat.getStatusCode() == 200) {
                         message = (char) 167 + "a" + stat.getStatus();
                     } else {
@@ -318,7 +318,7 @@ public class GuiLogin extends GuiScreen {
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    StatusResponseObject stat = Request.delete(OfflineAuth.selectedServerData.serverIP, port.getText(), username.getText(), pw.getPW());
+                    StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW());
                     if (stat.getStatusCode() == 200) {
                         message = (char) 167 + "a" + stat.getStatus();
                     } else {
@@ -339,7 +339,7 @@ public class GuiLogin extends GuiScreen {
             public void run() {
                 ResponseObject stat = null;
                 try {
-                    stat = Request.vibeCheck(OfflineAuth.selectedServerData.serverIP, port.getText(), username.getText(), pw.getPW());
+                    stat = Request.vibeCheck(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW());
                 } catch (URISyntaxException e) {
                     message = (char) 167 + "4Error while checking registration";
                     OfflineAuth.error(e.getMessage());
@@ -347,7 +347,7 @@ public class GuiLogin extends GuiScreen {
                 }
                 if (stat != null && stat.getStatusCode() == 200) {
                     if (stat.isValidUser()) {
-                        message = (char) 167 + "aRegisted and password valid!";
+                        message = (char) 167 + "aRegistered and password valid!";
                     } else {
                         message = (char) 167 + "4User not registered or password invalid!";
                     }

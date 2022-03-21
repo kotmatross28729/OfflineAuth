@@ -25,7 +25,7 @@ public class SimplePacket implements IMessageHandler<SimplePacket.SimpleMessage,
         if (ctx.side.isClient() && message.exchangecode == 0)
         {
             System.out.println("onMessage triggered, code 0 (from server)");
-            OAServerData oasd = Util.getOAServerDatabyIP(OfflineAuth.selectedServerData.serverIP);
+            OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
             if (oasd != null) {
                 message.password = oasd.getPassword();
             } else {

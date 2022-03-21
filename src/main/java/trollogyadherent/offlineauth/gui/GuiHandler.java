@@ -65,7 +65,7 @@ public class GuiHandler {
                     ex.printStackTrace();
                 }
 
-                OAServerData oasd = Util.getOAServerDatabyIP(OfflineAuth.selectedServerData.serverIP);
+                OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
                 if (oasd != null) {
                     try {
                         Util.offlineMode(oasd.getUsername());
@@ -86,7 +86,7 @@ public class GuiHandler {
                                 validColor = Color.RED.getRGB();
                                 return;
                             }
-                            stat = Request.vibeCheck(OfflineAuth.selectedServerData.serverIP, oasd.getPort(), oasd.getUsername(), oasd.getPassword());
+                            stat = Request.vibeCheck(Util.getIP(OfflineAuth.selectedServerData), oasd.getRestPort(), oasd.getUsername(), oasd.getPassword());
                         } catch (URISyntaxException e) {
                             validText = "\u2718";
                             validColor = Color.RED.getRGB();

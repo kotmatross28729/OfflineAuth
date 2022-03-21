@@ -1,24 +1,16 @@
 package trollogyadherent.offlineauth;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iq80.leveldb.DB;
 import trollogyadherent.offlineauth.rest.OAServerData;
-///import trollogyadherent.offlineauth.server.ServerHandler;
-///import trollogyadherent.offlineauth.server.ServerPinger;
-///import trollogyadherent.offlineauth.server.rest.RestTest;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -5,6 +5,7 @@ public class OAServerData {
     boolean validServer;
     String ip;
     String port;
+    String restPort;
     String username;
     String password;
 
@@ -12,10 +13,11 @@ public class OAServerData {
     boolean registrationTokenOpen;
     boolean skinUploadAllowed;
 
-    public OAServerData(boolean validServer, String ip, String port, String username, String password, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed) {
+    public OAServerData(boolean validServer, String ip, String port, String restPort, String username, String password, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed) {
         this.validServer = validServer;
         this.ip = ip;
         this.port = port;
+        this.restPort = restPort;
         this.username = username;
         this.password = password;
         this.registrationOpen = registrationOpen;
@@ -37,6 +39,10 @@ public class OAServerData {
 
     public String getPort() {
         return port;
+    }
+
+    public String getRestPort() {
+        return restPort;
     }
 
     public String getUsername() {
@@ -69,6 +75,10 @@ public class OAServerData {
 
     public void setPort(String port) {
         this.port = port;
+    }
+
+    public void setRestPort(String restPort) {
+        this.restPort = restPort;
     }
 
     public void setUsername(String username) {

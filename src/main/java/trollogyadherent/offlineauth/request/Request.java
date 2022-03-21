@@ -39,6 +39,7 @@ public class Request {
             return (ResponseObject) JsonUtil.jsonToObject(responseString, ResponseObject.class);
         } catch (Exception e) {
             OfflineAuth.error(e.getMessage());
+            //e.printStackTrace();
             return new ResponseObject(false, false, false, false, "", "", 500);
         }
     }
@@ -62,8 +63,6 @@ public class Request {
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
 
-            //System.out.println(EntityUtils.toString(response.getEntity()));
-            //OfflineAuth.info("Created user " + username);
             String responseString = EntityUtils.toString(response.getEntity());
             System.out.println("Response: " + responseString);
             return (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
