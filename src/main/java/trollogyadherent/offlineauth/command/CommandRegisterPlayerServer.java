@@ -53,7 +53,7 @@ public class CommandRegisterPlayerServer implements ICommand {
             return;
         }
         try {
-            Database.registerPlayer(argString[0], argString[1], "", true);
+            Database.registerPlayer(argString[0], argString[1], "", true, false);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {

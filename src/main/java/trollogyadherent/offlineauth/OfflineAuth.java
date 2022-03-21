@@ -22,6 +22,7 @@ import java.util.ArrayList;
 /* TODO: Privileged API requests (listing users, viewing/adding/revoking tokens) */
 /* TODO: uploading and using skins */
 /* TODO: spam prevention, lock registration if mass registration detected*/
+/* TODO: account deletion confirmation gui */
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]")
 public class OfflineAuth {

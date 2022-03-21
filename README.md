@@ -21,11 +21,10 @@ If you are a player:
 * Change the port if needed, and register an account. Afterwards you should be able to join the server.
 
 ### Features
-* Registration and deletion of accounts
+* Registration and deletion of accounts, changing account password
 * Config options to disallow registration
 
 ### Coming Features
-* Changing password
 * Commands to change certain config options
 * Registration using one-time tokens
 * Uploading and using skins
@@ -35,6 +34,12 @@ If you are a player:
 ### Credits
 * [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.
 * [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
+
+### Rest API
+* GET `vibecheck (username, password)` -> Returns account validity, registration allowed, token registration allowed, skin upload allowed, motd, motd2
+* POST `register (username, password, token(optional))` -> Registers account
+* POST `delete (username, password)` -> Deletes account
+* POST `change (username, password, new)` -> Changes password to the value of `new`
 
 ### License
 LGPLv3+SNEED

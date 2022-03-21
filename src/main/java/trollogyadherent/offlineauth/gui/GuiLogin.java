@@ -62,7 +62,7 @@ public class GuiLogin extends GuiScreen {
                 actionDelete();
                 break;
             case 3:
-                System.out.println(b.id);
+                actionChange();
                 break;
             case 4:
                 System.out.println(b.id);
@@ -326,6 +326,28 @@ public class GuiLogin extends GuiScreen {
                     }
                 } catch (IOException e) {
                     message = (char) 167 + "4Error while deleting account (IOException)";
+                    e.printStackTrace();
+                }
+            }
+        });
+        registerThread.start();
+    }
+
+    private void actionChange() {
+        message = (char) 167 + "7Changing account password...";
+        Thread registerThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    StatusResponseObject stat = Request.change(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), newPW.getPW());
+                    if (stat.getStatusCode() == 200) {
+                        message = (char) 167 + "a" + stat.getStatus();
+                        pw.setText(newPW.getPW());
+                        newPW.setText("");
+                    } else {
+                        message = (char) 167 + "4" + stat.getStatus();
+                    }
+                } catch (IOException e) {
+                    message = (char) 167 + "4Error while changing account password (IOException)";
                     e.printStackTrace();
                 }
             }

@@ -47,7 +47,9 @@ public class Database {
         return OfflineAuth.levelDBStore == null;
     }
 
-    public static StatusResponseObject registerPlayer(String username, String password, String token, boolean isCommand) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    /* Registers a player. isCommand serves as an override for most checks (except things like null/invalid values) */
+    /* overrideUser re-registers the user (used during password change) */
+    public static StatusResponseObject registerPlayer(String username, String password, String token, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String uuid = Util.offlineUUID(username);
 
         if (!Util.validUsername(username)) {
@@ -58,7 +60,7 @@ public class Database {
             return new StatusResponseObject("Invalid password!", 500);
         }
 
-        if (isUserRegistered(uuid)) {
+        if (isUserRegistered(uuid) && !overrideUser) {
             return new StatusResponseObject("Username already registered!", 500);
         }
 
@@ -106,6 +108,34 @@ public class Database {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
             return new StatusResponseObject("Error while deleting user", 500);
+            //e.printStackTrace();
+        }
+    }
+
+    public static StatusResponseObject changePlayerPassword(String username, String password, String newPassword) {
+        if (username == null || password == null || newPassword == null) {
+            return new StatusResponseObject("Failed, username or password, or new password null", 500);
+        }
+
+        try {
+            if (playerValid(username, password)) {
+                //StatusResponseObject delData = deleteUserData(Util.offlineUUID(username));
+                //if (delData.getStatusCode() == 200) {
+                    StatusResponseObject registerData = registerPlayer(username, newPassword, "", true, true);
+                    if (registerData.getStatusCode() == 200) {
+                        return new StatusResponseObject("Successfully updated password", 200);
+                    } else {
+                        return new StatusResponseObject("Failed to change password: " + registerData.getStatus(), 500);
+                    }
+                //} else {
+                //    return delData;
+                //}
+            } else {
+                return new StatusResponseObject("Username or password invalid", 500);
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Error while changing password", 500);
             //e.printStackTrace();
         }
     }

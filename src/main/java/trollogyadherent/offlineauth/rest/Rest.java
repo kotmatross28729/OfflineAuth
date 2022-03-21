@@ -24,6 +24,7 @@ public class Rest {
         staticFiles.expireTime(600L);
         post("/register", (request, response) -> register(request, response));
         post("/delete", (request, response) -> delete(request, response));
+        post("/change", (request, response) -> change(request, response));
         get("/vibecheck", (request, response) -> vibecheck(request, response));
 
         /* TODO */
@@ -35,9 +36,9 @@ public class Rest {
         try {
             StatusResponseObject regResult = new StatusResponseObject("Failed to register user!", 500);
             if (Config.allowRegistration) {
-                regResult = Database.registerPlayer(request.queryParams("username"), request.queryParams("password"), "", false);
+                regResult = Database.registerPlayer(request.queryParams("username"), request.queryParams("password"), "", false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && Database.tokenIsValid(request.queryParams("token"))) {
-                regResult = Database.registerPlayer(request.queryParams("username"), request.queryParams("password"), request.queryParams("token"), false);
+                regResult = Database.registerPlayer(request.queryParams("username"), request.queryParams("password"), request.queryParams("token"), false, false);
             }
             return JsonUtil.objectToJson(regResult);
         } catch (Exception e) {
@@ -47,7 +48,7 @@ public class Rest {
         }
     }
 
-    public static String delete(Request request, Response response) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static String delete(Request request, Response response) {
         OfflineAuth.info("Someone tries to delete an account, username: " + request.queryParams("username"));
         try {
             StatusResponseObject delResult = Database.deletePlayer(request.queryParams("username"), request.queryParams("password"));
@@ -55,6 +56,18 @@ public class Rest {
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("Error while deleting user", 500);
+            return JsonUtil.objectToJson(statusResponseObject);
+        }
+    }
+
+    public static String change(Request request, Response response) {
+        OfflineAuth.info("Someone tries to change a password, username: " + request.queryParams("username"));
+        try {
+            StatusResponseObject changeResult = Database.changePlayerPassword(request.queryParams("username"), request.queryParams("password"), request.queryParams("new"));
+            return JsonUtil.objectToJson(changeResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing password", 500);
             return JsonUtil.objectToJson(statusResponseObject);
         }
     }

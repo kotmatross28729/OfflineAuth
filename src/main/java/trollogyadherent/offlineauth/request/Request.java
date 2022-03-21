@@ -50,7 +50,6 @@ public class Request {
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
-        // add request parameter, form parameters
         List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("username", username));
         urlParameters.add(new BasicNameValuePair("password", password));
@@ -74,16 +73,41 @@ public class Request {
         }
     }
 
+    /* POST request to delete an account */
     public static StatusResponseObject delete(String ip, String port, String username, String password) throws IOException {
         String baseUrl = "http://" + ip + ":" + port + "/";
         String requestPath = "delete";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
-        // add request parameter, form parameters
         List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("username", username));
         urlParameters.add(new BasicNameValuePair("password", password));
+
+        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(urlParameters);
+        post.setEntity(urlEncodedFormEntity);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+            String responseString = EntityUtils.toString(response.getEntity());
+            return (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
+        } catch (Exception e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
+        }
+    }
+
+    /* POST request to change an account password */
+    public static StatusResponseObject change(String ip, String port, String username, String password, String newPassword) throws IOException {
+        String baseUrl = "http://" + ip + ":" + port + "/";
+        String requestPath = "change";
+
+        HttpPost post = new HttpPost(baseUrl + requestPath);
+
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        urlParameters.add(new BasicNameValuePair("username", username));
+        urlParameters.add(new BasicNameValuePair("password", password));
+        urlParameters.add(new BasicNameValuePair("new", newPassword));
 
         UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(urlParameters);
         post.setEntity(urlEncodedFormEntity);
