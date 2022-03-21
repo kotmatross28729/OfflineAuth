@@ -73,6 +73,7 @@ checkPropertyExists("modGroup")
 checkPropertyExists("autoUpdateBuildScript")
 checkPropertyExists("minecraftVersion")
 checkPropertyExists("forgeVersion")
+checkPropertyExists("modversion")
 checkPropertyExists("replaceGradleTokenInFile")
 checkPropertyExists("gradleTokenModId")
 checkPropertyExists("gradleTokenModName")
@@ -153,7 +154,7 @@ configurations.all {
 'git config core.fileMode false'.execute()
 // Pulls version from git tag
 try {
-    version = "0.0.2";//minecraftVersion + "-" + gitVersion()
+    version = modversion;//minecraftVersion + "-" + gitVersion()
 }
 catch (Exception e) {
     throw new IllegalStateException("This mod must be version controlled by Git AND the repository must provide at least one tag!");
@@ -371,7 +372,7 @@ processResources
 
                 // replace version and mcversion
                 expand "minecraftVersion": project.minecraft.version,
-                        "modVersion": 0.01,//versionDetails().lastTag,
+                        "modVersion": modversion,//versionDetails().lastTag,
                         "modId": modId,
                         "modName": modName
             }
