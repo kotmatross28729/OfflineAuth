@@ -48,5 +48,12 @@ import requests
 requests.post(http://localhost:4567/register?username=sneed&password=feed&token=seed)
 ```
 
+### Building
+`gradlew build` should do the trick.
+
+### Contact
+* [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken
+* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `minecraft-modding-general:matrix.org`
+
 ### License
 LGPLv3+SNEED
