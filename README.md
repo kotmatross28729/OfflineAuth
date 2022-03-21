@@ -41,5 +41,12 @@ If you are a player:
 * POST `delete (username, password)` -> Deletes account
 * POST `change (username, password, new)` -> Changes password to the value of `new`
 
+Python example of user creation:
+```py
+import requests
+
+requests.post(http://localhost:4567/register?username=sneed&password=feed&token=seed)
+```
+
 ### License
 LGPLv3+SNEED
