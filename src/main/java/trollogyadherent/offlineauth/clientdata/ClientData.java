@@ -14,7 +14,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* Info and credentials for servers */
 public class ClientData {
+
+    /* Writes any string to file */
     public static boolean writeFile (File file, String text) {
         try {
             if (!file.exists()) {
@@ -35,34 +38,38 @@ public class ClientData {
         }
     }
 
+    /* Reads any file to string */
     public static String readFile (File file) throws IOException {
         return new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
     }
 
+    /* Used to read the data json file to a string */
     public static String readDatafile () throws IOException {
-        return readFile(OfflineAuth.datafile);
+        return readFile(OfflineAuth.varInstanceClient.datafile);
     }
 
+    /* Used to write the json file to disk */
     public static boolean saveData() {
         System.out.println("Saving data...");
-        OAServerData[] oaServerDataArray = OfflineAuth.OAserverDataCache.toArray(new OAServerData[0]);
-        return writeFile(OfflineAuth.datafile, JsonUtil.objectToJsonList(oaServerDataArray));
+        OAServerData[] oaServerDataArray = OfflineAuth.varInstanceClient.OAserverDataCache.toArray(new OAServerData[0]);
+        return writeFile(OfflineAuth.varInstanceClient.datafile, JsonUtil.objectToJsonList(oaServerDataArray));
     }
 
+    /* Reads data file and saves in memory */
     public static boolean loadData() {
         OfflineAuth.info("Loading data...");
-        if (!OfflineAuth.datafile.exists()) {
+        if (!OfflineAuth.varInstanceClient.datafile.exists()) {
             OfflineAuth.info("Data file does not exist");
-            OfflineAuth.OAserverDataCache = new ArrayList<>();
+            OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>();
             if (!saveData()) {
                 return false;
             }
         } else {
             try {
                 // Basically parses the content of offlineauth.json to an ArrayList of OAServerData objects
-                OfflineAuth.OAserverDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
-                System.out.println(OfflineAuth.OAserverDataCache);
-                System.out.println(OfflineAuth.OAserverDataCache.size());
+                OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
+                System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
+                System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
             } catch (IOException e) {
                 OfflineAuth.error(e.getMessage());
                 return false;

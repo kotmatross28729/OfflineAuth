@@ -26,7 +26,6 @@ public class GuiLogin extends GuiScreen {
     private GuiButton login;
     private GuiButton cancel;
     private GuiButton offline;
-    //private GuiCheckBox save;
     private GuiButton config;
 
     private GuiTextField token;
@@ -143,7 +142,7 @@ public class GuiLogin extends GuiScreen {
         this.token.setText("");
         this.token.setMaxStringLength(512);
 
-        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
+        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
         if (oasd != null) {
             this.username.setText(oasd.getUsername());
             this.pw.setText(oasd.getPassword());
@@ -261,9 +260,9 @@ public class GuiLogin extends GuiScreen {
     private void actionsave() {
         //this.message = (char) 167 + "4Sneed!";
         //boolean validServer, String ip, String port, String username, String password, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed
-        OAServerData oaServerDataTemp = new OAServerData(false, Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), false, false, false);
+        OAServerData oaServerDataTemp = new OAServerData(false, Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), username.getText(), pw.getPW(), false, false, false);
         boolean found = false;
-        for (OAServerData oasd : OfflineAuth.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
             if (oasd.getIp().equals(oaServerDataTemp.getIp()) && oasd.getPort().equals(oaServerDataTemp.getPort())) {
                 found = true;
                 oasd.setUsername(oaServerDataTemp.getUsername());
@@ -272,11 +271,11 @@ public class GuiLogin extends GuiScreen {
             }
         }
         if (!found) {
-            OfflineAuth.OAserverDataCache.add(oaServerDataTemp);
+            OfflineAuth.varInstanceClient.OAserverDataCache.add(oaServerDataTemp);
         }
         ClientData.saveData();
-        System.out.println(OfflineAuth.OAserverDataCache);
-        System.out.println(OfflineAuth.OAserverDataCache.size());
+        System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
+        System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
         if (Config.savebuttonExit) {
             this.mc.displayGuiScreen(prev);
         }
@@ -298,7 +297,7 @@ public class GuiLogin extends GuiScreen {
                    validColor = Color.RED.getRGB();
                 } */
                 try {
-                    StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), token.getText());
+                    StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), username.getText(), pw.getPW(), token.getText());
                     if (stat.getStatusCode() == 200) {
                         message = (char) 167 + "a" + stat.getStatus();
                     } else {
@@ -318,7 +317,7 @@ public class GuiLogin extends GuiScreen {
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW());
+                    StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), username.getText(), pw.getPW());
                     if (stat.getStatusCode() == 200) {
                         message = (char) 167 + "a" + stat.getStatus();
                     } else {
@@ -338,7 +337,7 @@ public class GuiLogin extends GuiScreen {
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    StatusResponseObject stat = Request.change(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW(), newPW.getPW());
+                    StatusResponseObject stat = Request.change(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), username.getText(), pw.getPW(), newPW.getPW());
                     if (stat.getStatusCode() == 200) {
                         message = (char) 167 + "a" + stat.getStatus();
                         pw.setText(newPW.getPW());
@@ -361,7 +360,7 @@ public class GuiLogin extends GuiScreen {
             public void run() {
                 ResponseObject stat = null;
                 try {
-                    stat = Request.vibeCheck(Util.getIP(OfflineAuth.selectedServerData), port.getText(), username.getText(), pw.getPW());
+                    stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), username.getText(), pw.getPW());
                 } catch (URISyntaxException e) {
                     message = (char) 167 + "4Error while checking registration";
                     OfflineAuth.error(e.getMessage());

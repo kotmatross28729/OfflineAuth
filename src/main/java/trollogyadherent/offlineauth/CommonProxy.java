@@ -2,15 +2,14 @@ package trollogyadherent.offlineauth;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 import trollogyadherent.offlineauth.command.*;
 import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.event.PlayerJoinedHandler;
+import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.Rest;
 import trollogyadherent.offlineauth.util.Util;
+import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
 
 public class CommonProxy {
@@ -18,6 +17,10 @@ public class CommonProxy {
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) {
+        if (Util.isServer()) {
+            OfflineAuth.varInstanceServer = new VarInstanceServer();
+        }
+
         /* Config */
         OfflineAuth.confFile = event.getSuggestedConfigurationFile();
         if (Util.isServer()) {
@@ -47,7 +50,7 @@ public class CommonProxy {
 
         /* Listener listening for player joins */
         if (Util.isServer()) {
-            PlayerJoinedHandler playerJoinedHandler = new PlayerJoinedHandler();
+            ServerEventListener playerJoinedHandler = new ServerEventListener();
             MinecraftForge.EVENT_BUS.register(playerJoinedHandler);
             FMLCommonHandler.instance().bus().register(playerJoinedHandler);
         }
@@ -77,7 +80,9 @@ public class CommonProxy {
             event.registerServerCommand(new CommandDeletePlayer());
             event.registerServerCommand(new CommandConnectDBServer());
             event.registerServerCommand(new CommandTestPacket());
+            event.registerServerCommand(new CommandTestSkinChange());
         }
+
     }
 
     public void serverStarted(FMLServerStartedEvent event) {

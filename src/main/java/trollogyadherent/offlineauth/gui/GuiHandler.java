@@ -13,18 +13,15 @@ import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
-import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 
 public class GuiHandler {
 
@@ -55,8 +52,8 @@ public class GuiHandler {
             //System.out.println(multiplayerGui);
             if (multiplayerGui.field_146803_h.field_148197_o != selectedServerIndex) {
                 selectedServerIndex = multiplayerGui.field_146803_h.field_148197_o;
-                OfflineAuth.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(selectedServerIndex)).field_148301_e;
-                System.out.println("Changed server to " + OfflineAuth.selectedServerData.serverName);
+                OfflineAuth.varInstanceClient.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(selectedServerIndex)).field_148301_e;
+                System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
                 Object hmm = null;
                 try {
                     hmm = btnlst.get(e.gui);
@@ -65,7 +62,7 @@ public class GuiHandler {
                     ex.printStackTrace();
                 }
 
-                OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
+                OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
                 if (oasd != null) {
                     try {
                         Util.offlineMode(oasd.getUsername());
@@ -86,7 +83,7 @@ public class GuiHandler {
                                 validColor = Color.RED.getRGB();
                                 return;
                             }
-                            stat = Request.vibeCheck(Util.getIP(OfflineAuth.selectedServerData), oasd.getRestPort(), oasd.getUsername(), oasd.getPassword());
+                            stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getUsername(), oasd.getPassword());
                         } catch (URISyntaxException e) {
                             validText = "\u2718";
                             validColor = Color.RED.getRGB();

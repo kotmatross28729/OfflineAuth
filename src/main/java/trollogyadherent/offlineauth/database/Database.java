@@ -1,14 +1,13 @@
 package trollogyadherent.offlineauth.database;
 
 
-import net.minecraft.server.MinecraftServer;
-import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBException;
 import org.iq80.leveldb.Options;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
+import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,16 +24,16 @@ public class Database {
     public static void initialize() {
         Options options = new Options();
         try {
-            OfflineAuth.levelDBStore = factory.open(new File( OfflineAuth.DB_NAME), options);
+            OfflineAuth.varInstanceServer.levelDBStore = factory.open(new File( OfflineAuth.varInstanceServer.DB_NAME), options);
         } catch (IOException e) {
             OfflineAuth.error(e.getMessage());
         }
     }
 
     public static boolean close() {
-        if (OfflineAuth.levelDBStore != null) {
+        if (OfflineAuth.varInstanceServer.levelDBStore != null) {
             try {
-                OfflineAuth.levelDBStore.close();
+                OfflineAuth.varInstanceServer.levelDBStore.close();
                 return true;
             } catch (Error | IOException e) {
                 OfflineAuth.error(e.getMessage());
@@ -44,7 +43,7 @@ public class Database {
     }
 
     public static boolean isClosed() {
-        return OfflineAuth.levelDBStore == null;
+        return OfflineAuth.varInstanceServer.levelDBStore == null;
     }
 
     /* Registers a player. isCommand serves as an override for most checks (except things like null/invalid values) */
@@ -58,6 +57,10 @@ public class Database {
 
         if  (password == null || password.length() < 1) {
             return new StatusResponseObject("Invalid password!", 500);
+        }
+
+        if (password.contains(",")) {
+            return new StatusResponseObject("Password cannot contain commas!", 500);
         }
 
         if (isUserRegistered(uuid) && !overrideUser) {
@@ -83,7 +86,7 @@ public class Database {
         String data = username + "," + passwordHash + "," + salt + "," + skin;
 
         try {
-            OfflineAuth.levelDBStore.put(bytes("UUID:" + uuid), bytes("data:" + data));
+            OfflineAuth.varInstanceServer.levelDBStore.put(bytes("UUID:" + uuid), bytes("data:" + data));
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
@@ -117,6 +120,10 @@ public class Database {
             return new StatusResponseObject("Failed, username or password, or new password null", 500);
         }
 
+        if (newPassword.contains(",")) {
+            return new StatusResponseObject("Password cannot contain commas!", 500);
+        }
+
         try {
             if (playerValid(username, password)) {
                 //StatusResponseObject delData = deleteUserData(Util.offlineUUID(username));
@@ -145,7 +152,7 @@ public class Database {
             return new StatusResponseObject("User not registered!", 500);
         }
         try {
-            OfflineAuth.levelDBStore.delete(bytes("UUID:" + uuid));
+            OfflineAuth.varInstanceServer.levelDBStore.delete(bytes("UUID:" + uuid));
             return new StatusResponseObject("Successfully deleted user!", 200);
         } catch (Error e) {
             OfflineAuth.error(e.getMessage());
@@ -156,7 +163,7 @@ public class Database {
     public static PlayerData getPlayerData(String uuid){
         try {
             if(isUserRegistered(uuid)){  // Gets data from db and removes "data:" prefix from it
-                String data = new String(OfflineAuth.levelDBStore.get(bytes("UUID:" + uuid))).substring(5);
+                String data = new String(OfflineAuth.varInstanceServer.levelDBStore.get(bytes("UUID:" + uuid))).substring(5);
                 return new PlayerData(data);
             }
         } catch (Error e) {
@@ -183,7 +190,7 @@ public class Database {
 
     public static boolean isUserRegistered(String uuid) {
         try {
-            return OfflineAuth.levelDBStore.get(bytes("UUID:" + uuid)) != null;
+            return OfflineAuth.varInstanceServer.levelDBStore.get(bytes("UUID:" + uuid)) != null;
         } catch (DBException e) {
             OfflineAuth.error(e.getMessage());
         }

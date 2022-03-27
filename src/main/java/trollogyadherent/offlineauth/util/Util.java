@@ -8,13 +8,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.Session;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.Secure;
 import trollogyadherent.offlineauth.rest.OAServerData;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -28,6 +36,12 @@ public class Util {
     }
 
     public static String offlineUUID(String username) {
+        /*String allowed = "abcdefghijklmnopqrstuvwxyz-0123456789";
+        for (int i = 0; i < username.length(); i ++) {
+            if (!allowed.contains(String.valueOf(username.charAt(i)))) {
+
+            }
+        }*/
         return String.valueOf(UUID.nameUUIDFromBytes(("OfflinePlayer:" + username.toLowerCase()).getBytes(Charsets.UTF_8)));
     }
 
@@ -69,7 +83,7 @@ public class Util {
     }
 
     public static OAServerData getOAServerDatabyIP(String ip, String port) {
-        for (OAServerData oasd : OfflineAuth.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
             if (oasd.getIp().equals(ip) && oasd.getPort().equals(port)) {
                 return  oasd;
             }
@@ -117,5 +131,79 @@ public class Util {
         } else {
             return "";
         }
+    }
+
+    /* Loads image from File to String, encoded inh base64 */
+    public static String fileToBs64(File file) throws IOException {
+        byte[] bytes = FileUtils.readFileToByteArray(file);
+        return java.util.Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static void bs64SaveToFile(String bs64, File file) throws IOException {
+        byte[] bytes = java.util.Base64.getDecoder().decode(bs64);
+        FileUtils.writeByteArrayToFile(file, bytes);
+    }
+
+    public static byte[] fileToBytes(File file) throws IOException {
+        return FileUtils.readFileToByteArray(file);
+    }
+
+    public static void bytesSaveToFile(byte[] bytes, File file) throws IOException {
+        FileUtils.writeByteArrayToFile(file, bytes);
+    }
+
+    public static boolean fileExists(File file) {
+        return file.exists();
+    }
+
+    public static String fileToByteString(File file) throws IOException {
+        byte[] bytes = FileUtils.readFileToByteArray(file);
+        String res = "";
+        for (byte b : bytes) {
+            res += String.valueOf(b);
+        }
+        return res;
+    }
+
+    public static void byteStringToFile(String byteString) {
+
+    }
+
+    public static byte[] concatByteArrays(byte[] a, byte[] b) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        outputStream.write( a );
+        outputStream.write( b );
+
+        return outputStream.toByteArray( );
+    }
+
+    public static byte[] fillByteArrayLeading(byte[] a, int totalLen) throws IOException {
+        if (a.length >= totalLen) {
+            return a;
+        }
+        byte[] b = new byte[totalLen - a.length];
+        return concatByteArrays(b, a);
+    }
+
+    public static String fileHash(File file) throws NoSuchAlgorithmException {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        try (InputStream is = Files.newInputStream(Paths.get(file.getPath()));
+             DigestInputStream dis = new DigestInputStream(is, md))
+        {
+            /* Read decorated stream (dis) to EOF as normal... */
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] digest = md.digest();
+
+        String res = "";
+        for (byte b : digest) {
+            res += String.valueOf(b);
+        }
+
+        return res;
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.util.Util;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;

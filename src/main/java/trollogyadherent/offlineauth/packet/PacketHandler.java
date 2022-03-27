@@ -10,7 +10,10 @@ public class PacketHandler {
     public static void initPackets()
     {
         net = NetworkRegistry.INSTANCE.newSimpleChannel("OfflineAuth".toUpperCase());
-        registerMessage(SimplePacket.class, SimplePacket.SimpleMessage.class);
+        registerMessage(PlayerJoinPacket.class, PlayerJoinPacket.SimpleMessage.class);
+        registerMessage(DownloadSkinPacket.class, DownloadSkinPacket.SimpleMessage.class);
+        registerMessage(QuerySkinNameFromServerPacket.class, QuerySkinNameFromServerPacket.SimpleMessage.class);
+        registerMessage(ResetCachesPacket.class, ResetCachesPacket.SimpleMessage.class);
     }
 
     private static int nextPacketId = 0;

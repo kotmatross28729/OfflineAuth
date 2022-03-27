@@ -3,7 +3,6 @@ package trollogyadherent.offlineauth.command;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
-import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;

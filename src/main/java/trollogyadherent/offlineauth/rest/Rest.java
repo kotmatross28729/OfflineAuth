@@ -6,8 +6,6 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.util.JsonUtil;
-//import trollogyadherent.offlineauth.rest.index.IndexController;
-//import trollogyadherent.offlineauth.rest.user.UserDao;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -19,8 +17,10 @@ public class Rest {
     //public static UserDao userDao;
 
     public static void restStart() {
+
+        staticFiles.externalLocation("static");
         port(Config.port);
-        staticFiles.location("/public");
+        //staticFiles.location("/public");
         staticFiles.expireTime(600L);
         post("/register", (request, response) -> register(request, response));
         post("/delete", (request, response) -> delete(request, response));

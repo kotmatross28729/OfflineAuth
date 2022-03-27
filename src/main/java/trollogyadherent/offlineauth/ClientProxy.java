@@ -7,15 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
-import trollogyadherent.offlineauth.event.PlayerJoinedHandler;
+import trollogyadherent.offlineauth.event.ClientEventListener;
 import trollogyadherent.offlineauth.gui.GuiHandler;
+import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 
 ///import trollogyadherent.offlineauth.data.GsonTester;
 ///import trollogyadherent.offlineauth.server.ServerHandler;
 ///import trollogyadherent.offlineauth.server.ServerPinger;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class ClientProxy extends CommonProxy {
 
@@ -23,13 +23,15 @@ public class ClientProxy extends CommonProxy {
     // etc., and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) 	{
         super.preInit(event);
+        OfflineAuth.varInstanceClient = new VarInstanceClient();
 
         /* Config, sync is in common proxy */
         MinecraftForge.EVENT_BUS.register(new GuiHandler());
         //Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile());
 
         /* Data file containing server infos */
-        OfflineAuth.datafile = new File(Minecraft.getMinecraft().mcDataDir.getPath(), "offlineauth.json");
+        OfflineAuth.varInstanceClient.datafile = new File(Minecraft.getMinecraft().mcDataDir.getPath(), "offlineauth.json");
+
 
         ///OfflineAuth.serverPinger = new ServerPinger();
         ///FMLCommonHandler.instance().bus().register(new ServerHandler());
@@ -43,6 +45,10 @@ public class ClientProxy extends CommonProxy {
         /*ClientListener clientListener = new ClientListener();
         MinecraftForge.EVENT_BUS.register(clientListener);
         FMLCommonHandler.instance().bus().register(clientListener);*/
+
+        ClientEventListener clientPlayerJoined = new ClientEventListener();
+        MinecraftForge.EVENT_BUS.register(clientPlayerJoined);
+        FMLCommonHandler.instance().bus().register(clientPlayerJoined);
     }
 
     @SubscribeEvent

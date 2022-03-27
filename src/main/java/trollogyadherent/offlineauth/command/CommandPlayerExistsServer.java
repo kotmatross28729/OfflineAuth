@@ -6,8 +6,6 @@ import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.util.Util;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 

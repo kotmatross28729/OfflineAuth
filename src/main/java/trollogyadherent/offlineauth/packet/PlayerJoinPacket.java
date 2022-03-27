@@ -12,47 +12,55 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.util.Util;
 
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-public class SimplePacket implements IMessageHandler<SimplePacket.SimpleMessage, IMessage>
+public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.SimpleMessage, IMessage>
 {
+    /* Server to Client: give me your password */
+    /* Client to Server; *sends password*. If the hash does not match, player kicked */
+    /* If the palyer is not kicked, the server tells what skin to load, place to implement default server skins TODO */
     @Override
     public IMessage onMessage(SimpleMessage message, MessageContext ctx)
     {
-        // just to make sure that the side is correct
         if (ctx.side.isClient() && message.exchangecode == 0)
         {
-            System.out.println("onMessage triggered, code 0 (from server)");
-            OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.selectedServerData), Util.getPort(OfflineAuth.selectedServerData));
+            System.out.println("PlayerJoinPacket onMessage triggered, code 0 (from server)");
+            OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
             if (oasd != null) {
                 message.password = oasd.getPassword();
             } else {
                 message.password = "";
             }
             message.exchangecode = 1;
+
             return message;
         }
 
-        if (ctx.side.isServer() && message.exchangecode == 1)
-        {
-            System.out.println("onMessage triggered, code 1 (from client)");
-            System.out.println("Got password: " + message.password);
-            EntityPlayerMP entityPlayerMP = ctx.getServerHandler().playerEntity;
-            try {
-                if (Database.playerValid(entityPlayerMP.getDisplayName(), message.password)) {
-                    OfflineAuth.info("User " + entityPlayerMP.getDisplayName() + " successfully logged in");
-                } else {
+        EntityPlayerMP entityPlayerMP = ctx.getServerHandler().playerEntity;
+        try {
+            if (ctx.side.isServer() && message.exchangecode == 1)
+            {
+                System.out.println("PlayerJoinPacket onMessage triggered, code 1 (from client)");
+                try {
+                    if (Database.playerValid(entityPlayerMP.getDisplayName(), message.password)) {
+                        OfflineAuth.info("User " + entityPlayerMP.getDisplayName() + " successfully logged in");
+                    } else {
+                        entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
+                    }
+                } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                     entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
+                    OfflineAuth.error(e.getMessage());
+                    e.printStackTrace();
                 }
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+                return null;
+            } else {
                 entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
-                OfflineAuth.error(e.getMessage());
-                e.printStackTrace();
             }
-            return null;
+        } catch (Exception e) {
+            entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
         }
+
 
         return null;
     }

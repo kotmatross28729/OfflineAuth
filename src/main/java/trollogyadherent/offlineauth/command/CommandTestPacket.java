@@ -5,10 +5,8 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.SimplePacket;
-import trollogyadherent.offlineauth.util.Util;
+import trollogyadherent.offlineauth.packet.PlayerJoinPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,7 @@ public class CommandTestPacket implements ICommand {
     public void processCommand(ICommandSender sender, String[] argString) {
         System.out.println("Issued test packet command");
         for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-            IMessage msg = new SimplePacket.SimpleMessage(0, "");
+            IMessage msg = new PlayerJoinPacket.SimpleMessage(0, "");
             PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
         }
 

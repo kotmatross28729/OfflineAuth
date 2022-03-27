@@ -3,18 +3,21 @@ package trollogyadherent.offlineauth;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.renderer.texture.TextureManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iq80.leveldb.DB;
 import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
+import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
 import java.io.File;
 import java.util.ArrayList;
 
+/* TODO: fix skins, the server should keep a copy of the skincache too, just strip it of shit that might not be present on the server */
 /* TODO: logging in with a key instead of password, keypicker and generator */
 /* TODO: proper command perms */
 /* TODO: server/client commands to change config options, command to reload file */
@@ -23,31 +26,24 @@ import java.util.ArrayList;
 /* TODO: uploading and using skins */
 /* TODO: spam prevention, lock registration if mass registration detected*/
 /* TODO: account deletion confirmation gui */
+/* TODO: look into JWT auth https://github.com/rjozefowicz/sparkjava-jwt*/
+/* TODO: configurable custom default skin (serverside) */
+/* TODO: setting a global skin (client) */
+/* TODO: make view password button */
+/* TODO: selectable uuid */
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]")
 public class OfflineAuth {
 
     private static Logger LOG = LogManager.getLogger(Tags.MODID);
-
-    //public static ServerHandler serverHandler = new ServerHandler();
-
-    ///public static ServerPinger serverPinger;
-
-    public static boolean OfflineModeEnabled = true;
-    public static final String DB_NAME = "OfflineAuthDatabase";
-    public static DB levelDBStore;
     static File confFile;
-
-    public static File datafile;
-    public static ArrayList<OAServerData> OAserverDataCache;
-
-    @SideOnly(Side.CLIENT)
-    public static ServerData selectedServerData;
-
-    public static SimpleNetworkWrapper simpleNetworkWrapper;
 
     @SidedProxy(clientSide= Tags.GROUPNAME + ".ClientProxy", serverSide=Tags.GROUPNAME + ".CommonProxy")
     public static CommonProxy proxy;
+
+    public static VarInstanceClient varInstanceClient;
+    public static VarInstanceServer varInstanceServer;
+
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
