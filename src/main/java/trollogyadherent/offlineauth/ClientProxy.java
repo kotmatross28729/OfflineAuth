@@ -3,7 +3,6 @@ package trollogyadherent.offlineauth;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
@@ -30,7 +29,7 @@ public class ClientProxy extends CommonProxy {
         //Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile());
 
         /* Data file containing server infos */
-        OfflineAuth.varInstanceClient.datafile = new File(Minecraft.getMinecraft().mcDataDir.getPath(), "offlineauth.json");
+        OfflineAuth.varInstanceClient.datafile = new File(OfflineAuth.varInstanceClient.serverDataJSONpath);
 
 
         ///OfflineAuth.serverPinger = new ServerPinger();

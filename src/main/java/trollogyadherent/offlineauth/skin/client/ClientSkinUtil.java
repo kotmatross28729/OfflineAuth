@@ -70,7 +70,7 @@ public class ClientSkinUtil {
     }
 
     public static boolean skinCachedOnClient(String name) {
-        return Util.fileExists(new File("offlineauth/skincache/skins", name + ".png"));
+        return Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
     }
 
     public static File getSkinFile(String name) {
@@ -78,14 +78,14 @@ public class ClientSkinUtil {
             OfflineAuth.warn("Skin " + name + " not found!");
             return null;
         }
-        return new File("offlineauth/skincache/skins", name + ".png");
+        return new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png");
     }
 
     public static void stringToClientSkin(String base64skin, String name) throws IOException {
-        Util.bs64SaveToFile(base64skin, new File("offlineauth/skincache/skins", name + ".png"));
+        Util.bs64SaveToFile(base64skin, new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
     }
 
     public static void bytesToClientSkin(byte[] bytes, String name) throws IOException {
-        Util.bytesSaveToFile(bytes, new File("offlineauth/skincache/skins", name + ".png"));
+        Util.bytesSaveToFile(bytes, new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
     }
 }

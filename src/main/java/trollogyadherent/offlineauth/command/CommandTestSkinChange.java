@@ -49,22 +49,13 @@ public class CommandTestSkinChange implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
+        if (!(sender instanceof EntityPlayerMP)) {
+            sender.addChatMessage(new ChatComponentText("You can only use this command ingame"));
+            return;
+        }
+
         System.out.println("Issued test skin change command");
         if (argString.length == 1) {
-            /*if (SkinUtilServer.skinCachedOnServer(argString[0])) {
-                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    IMessage msg = new ChangeSkinPacket.SimpleMessage(0, argString[0], new byte[0], 0);
-                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
-                }
-            } else {
-                sender.addChatMessage(new ChatComponentText("Skin not found"));
-            }*/
-
-            if (!(sender instanceof EntityPlayerMP)) {
-                sender.addChatMessage(new ChatComponentText("You can only use this command ingame"));
-                return;
-            }
-
             if (ServerSkinUtil.skinCachedOnServer(argString[0])) {
                 EntityPlayerMP senderPlayer = (EntityPlayerMP) sender;
                 String uuid = Util.offlineUUID(senderPlayer.getDisplayName());

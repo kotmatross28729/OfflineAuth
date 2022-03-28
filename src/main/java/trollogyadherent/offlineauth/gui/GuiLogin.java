@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 public class GuiLogin extends GuiScreen {
 
-    private GuiTextField username;
+    public GuiTextField username;
     private GuiPasswordField pw;
     private GuiButton login;
     private GuiButton cancel;
@@ -37,6 +37,7 @@ public class GuiLogin extends GuiScreen {
     private GuiButton save;
 
     private GuiScreen prev;
+    public GuiScreen prev_ = prev;
 
     private int basey;
 
@@ -176,6 +177,12 @@ public class GuiLogin extends GuiScreen {
     @Override
     protected void keyTyped(char c, int k) {
         super.keyTyped(c, k);
+
+        if (k == Keyboard.KEY_ESCAPE) {
+            actionCancel();
+            return;
+        }
+
         this.username.textboxKeyTyped(c, k);
         this.pw.textboxKeyTyped(c, k);
         this.token.textboxKeyTyped(c, k);
@@ -312,8 +319,13 @@ public class GuiLogin extends GuiScreen {
         registerThread.start();
     }
 
-    private void actionDelete() {
+    public void actionDelete() {
+        Minecraft.getMinecraft().displayGuiScreen(new AccountDeletionGUI((GuiLogin) Minecraft.getMinecraft().currentScreen));
+    }
+
+    public void proceedWithAccountDeletion() {
         message = (char) 167 + "7Deleting account...";
+
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {

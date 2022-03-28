@@ -41,6 +41,8 @@ public class OfflineAuth {
     @SidedProxy(clientSide= Tags.GROUPNAME + ".ClientProxy", serverSide=Tags.GROUPNAME + ".CommonProxy")
     public static CommonProxy proxy;
 
+    public static String rootPath = "offlineauth";
+
     public static VarInstanceClient varInstanceClient;
     public static VarInstanceServer varInstanceServer;
 

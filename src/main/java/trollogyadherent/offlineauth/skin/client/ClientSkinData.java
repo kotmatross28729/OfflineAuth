@@ -27,7 +27,7 @@ public class ClientSkinData {
         if (skinName == null) {
             return;
         }
-        File imagefile = new File("offlineauth/skincache/skins", skinName + ".png");
+        File imagefile = new File(OfflineAuth.varInstanceClient.clientSkinCachePath, skinName + ".png");
         if (!imagefile.exists()) {
             this.skinName = null;
             OfflineAuth.error("Error skin image does not exist: " + skinName);
