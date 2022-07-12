@@ -1,3 +1,7 @@
+# Project status: it's not dead
+## I resumed development not so long ago (refer to readme change date, 12/07). It turns out there is no easy well to get SSL (read: sending of credentials not in plaintext) and I am halfway through implementing encryption half by hand (of course using built in cryptographical functions). Currently, checking credentials, deleting account and registration are end to end encrypted. This makes the "easy API part" obsolete, you will still have administrative commands that can be used via rcon.
+## I will push code when I am done with encryption and keypair authentification. Next steps will be finishing tokens and adding upload of skins.
+
 # OfflineAuth 1.7.10 (Forge)
 Early alpha Minecraft authentification system contained in a Forge mod.
 
@@ -7,7 +11,7 @@ Early alpha Minecraft authentification system contained in a Forge mod.
 Microsoft forcing people to migrate from Mojang to Microsoft and, frankly, this company is just plain evil. So yeah. (Also, the author does not believe in "intellectual property")
 
 ### Tell me more
-This mod runs a small rest API server (spark) alongside the main Minecraft process. This allows easy integration with your very own solutions, and talking between the client and the server while the player has not joined the server.
+This mod runs a small rest server (spark) alongside the main Minecraft process. This keeps everything contained to the server which could even run on a local network, independent of any external auth servers, such as `vanilla` or `ely.by`.
 
 ### Getting started
 If you are a server oeprator:
@@ -26,7 +30,7 @@ If you are a player:
 
 ### Coming Features
 * Commands to change certain config options
-* Registration using one-time tokens
+* Registration using one-time tokens (halfway done)
 * Uploading and using skins
 * Logging in via key file
 * Raid mitigation
@@ -34,19 +38,6 @@ If you are a player:
 ### Credits
 * [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.
 * [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
-
-### Rest API
-* GET `vibecheck (username, password)` -> Returns account validity, registration allowed, token registration allowed, skin upload allowed, motd, motd2
-* POST `register (username, password, token(optional))` -> Registers account
-* POST `delete (username, password)` -> Deletes account
-* POST `change (username, password, new)` -> Changes password to the value of `new`
-
-Python example of user creation:
-```py
-import requests
-
-requests.post(http://localhost:4567/register?username=sneed&password=feed&token=seed)
-```
 
 ### Building
 `gradlew build` should do the trick.
