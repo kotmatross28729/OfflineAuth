@@ -1,5 +1,5 @@
 # Project status: it's not dead
-## I resumed development not so long ago (refer to readme change date, 12/07). It turns out there is no easy well to get SSL (read: sending of credentials not in plaintext) and I am halfway through implementing encryption half by hand (of course using built in cryptographical functions). Currently, checking credentials, deleting account and registration are end to end encrypted. This makes the "easy API part" obsolete, you will still have administrative commands that can be used via rcon.
+## I resumed development not so long ago (refer to readme change date, 12/07). It turns out there is no easy way to get SSL (read: sending of credentials not in plaintext) and I am halfway through implementing encryption half by hand (of course using built in cryptographical functions). Currently, checking credentials, deleting account and registration are end to end encrypted. This makes the "easy API part" obsolete, you will still have administrative commands that can be used via rcon.
 ## I will push code when I am done with encryption and keypair authentification. Next steps will be finishing tokens and adding upload of skins.
 
 # OfflineAuth 1.7.10 (Forge)
