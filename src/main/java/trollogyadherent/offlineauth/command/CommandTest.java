@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -138,7 +139,7 @@ public class CommandTest implements ICommand {
             throw new RuntimeException(e);
         }*/
 
-        try {
+
             /*
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
@@ -202,17 +203,13 @@ public class CommandTest implements ICommand {
             //String encryptedMsg = KeyUtil.encrypt("sneed", KeyUtil.loadPrivateKey(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "private.key"), KeyUtil.KeyType.PRIVATE);
 
             if (argString.length == 0) {
-                //PublicKey tempPubKey = OfflineAuth.varInstanceServer.keyRegistry.getKeyPair("lalala", "lalala").getPublic();
-                //String tempPubKeyStr = Base64.getEncoder().encodeToString(tempPubKey.getEncoded());
-                //System.out.println(tempPubKeyStr);
-                return;
-            }
-            String encryptedMsg = RsaKeyUtil.encryptWithPrivateKey(argString[0], ServerUtil.loadServerPrivateKey());
-            System.out.println(encryptedMsg);
-            System.out.println(RsaKeyUtil.decryptWithPublicKey(encryptedMsg, ServerUtil.loadServerPublicKey()));
 
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException | NoSuchPaddingException |
-                 IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchProviderException e) {
+            }
+
+
+        try {
+            ServerSkinUtil.transferDefaultSkins();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 

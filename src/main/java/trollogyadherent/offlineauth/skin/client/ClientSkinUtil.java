@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -87,5 +88,13 @@ public class ClientSkinUtil {
 
     public static void bytesToClientSkin(byte[] bytes, String name) throws IOException {
         Util.bytesSaveToFile(bytes, new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
+    }
+
+    public static void clearSkinCache() {
+        try {
+            FileUtils.cleanDirectory(new File(OfflineAuth.varInstanceClient.clientSkinCachePath));
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to clear client skin cache");
+        }
     }
 }

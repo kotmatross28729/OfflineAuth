@@ -36,6 +36,7 @@ If you are a player:
 ### Credits
 * [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.
 * [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
+* Greg and all the people on his IRC who sometimes get my dumb ass unstuck :D
 
 ### Building
 `gradlew build` should do the trick.

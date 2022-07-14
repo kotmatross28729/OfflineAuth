@@ -21,6 +21,7 @@ import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
 import trollogyadherent.offlineauth.rest.RestUtil;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.*;
 
 import javax.crypto.BadPaddingException;
@@ -44,6 +45,10 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
         /* This happens on the client after it got a request to send credentials */
         if (ctx.side.isClient() && message.exchangecode == 0)
         {
+            /* Deleting skin cache */
+            ClientSkinUtil.clearSkinCache();
+
+
             OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
             if (oasd == null) {
                 OfflineAuth.error("OASD null!");
@@ -198,13 +203,11 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                         }
 
                         /* TEMP: skin resolution */
-                        String skin_name = "sans";
-                        if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
-                            //System.out.println("Player name test, setting skinname sneed, adding SkinData to reg");
+                        String skin_name = "default" + Util.getRandomNumber(0, 7);
+
+                        /*if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
                             skin_name = "sneed";
-                            //OfflineAuth.varInstanceServer.playerRegistry.add(message.uuid, "sneed");
-                            //System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
-                        }
+                        }*/
 
                         /* Adding player to registry */
                         System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");

@@ -14,20 +14,16 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-/* TODO: registration check works with any username present on the server! */
-/* TODO: registering with id and displayname */
 /* TODO: admin command that changes player uuid */
 /* TODO: players should be assigned uuids made up randomly by the server and kept in the db like skins */
-/* TODO: logging in with a key instead of password, keypicker and generator */
-/* TODO: server/client commands to change config options, command to reload file */
 /* TODO: uploading and using skins */
 /* TODO: password reset tokens */
 /* TODO: spam prevention, lock registration if mass registration detected*/
-/* TODO: look into JWT auth https://github.com/rjozefowicz/sparkjava-jwt*/
 /* TODO: configurable custom default skin (serverside) */
 /* TODO: setting a global skin (client) */
-/* TODO: make view password button */
 /* TODO: selectable uuid */
+
+// Disregard That, I ...
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]")
 public class OfflineAuth {

@@ -8,14 +8,17 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.Rest;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.List;
 
 
 public class CommonProxy {
@@ -52,6 +55,20 @@ public class CommonProxy {
         /* Initialize database */
         if (Util.isServer()) {
             Database.initialize();
+        }
+
+        /* If there are no default skins in the default skin directory, unpacks its own skins */
+        if (Util.isServer()) {
+            File defaultSkinDir = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath);
+            String[] fileList = defaultSkinDir.list();
+            if (fileList == null) {
+                OfflineAuth.error("Could not get default server skin directory!");
+                return;
+            }
+            if (fileList.length == 0) {
+                OfflineAuth.info("No skins present in the default skin directory, populating it with default ones");
+                ServerSkinUtil.transferDefaultSkins();
+            }
         }
 
         /* Packets */
