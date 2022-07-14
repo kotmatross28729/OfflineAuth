@@ -1,5 +1,5 @@
 # OfflineAuth 1.7.10 (Forge)
-Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Pkease report any bugs, especially security holes.
+Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
 
 ![image](https://user-images.githubusercontent.com/19153947/178861328-dab8c8a1-bfae-4945-aaf0-675e7dcdb9d1.png)
 
