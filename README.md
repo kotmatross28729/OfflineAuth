@@ -1,7 +1,7 @@
 # OfflineAuth 1.7.10 (Forge)
 Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Pkease report any bugs, especially security holes.
 
-![image](https://user-images.githubusercontent.com/19153947/159351094-b181a42b-220e-4fa0-943c-c34063652919.png)
+![image](https://user-images.githubusercontent.com/19153947/178861328-dab8c8a1-bfae-4945-aaf0-675e7dcdb9d1.png)
 
 ### Motivation
 Microsoft forcing people to migrate from Mojang to Microsoft and, frankly, this company is just plain evil. So yeah. (Also, the author does not believe in "intellectual property")
