@@ -4,6 +4,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
@@ -141,6 +142,8 @@ public class CommandConfig implements ICommand {
 
             if (succeeded) {
                 Config.config.save();
+                Config.synchronizeConfigurationClient(Config.config.getConfigFile(), true);
+                Config.synchronizeConfigurationServer(Config.config.getConfigFile(), true);
                 sender.addChatMessage(new ChatComponentText("Updated config"));
             }
         } else {

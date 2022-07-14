@@ -33,7 +33,7 @@ import java.security.cert.CertificateException;
 public class OfflineAuth {
 
     private static Logger LOG = LogManager.getLogger(Tags.MODID);
-    static File confFile;
+    public static File confFile;
 
     @SidedProxy(clientSide= Tags.GROUPNAME + ".ClientProxy", serverSide=Tags.GROUPNAME + ".CommonProxy")
     public static CommonProxy proxy;

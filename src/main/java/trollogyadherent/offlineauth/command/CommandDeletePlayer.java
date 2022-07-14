@@ -18,7 +18,7 @@ public class CommandDeletePlayer implements ICommand {
     public CommandDeletePlayer()
     {
         aliases = new ArrayList();
-        aliases.add("delplayer");
+        aliases.add("deluser");
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CommandDeletePlayer implements ICommand {
     @Override
     public String getCommandName()
     {
-        return "deleteplayer";
+        return "deleteuser";
     }
 
     @Override

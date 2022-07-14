@@ -56,10 +56,9 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent evt) {
-        System.out.println("bruuuuuh");
         if (evt.modID.equals("offlineauth")) {
             if (OfflineAuth.confFile != null) {
-                Config.synchronizeConfigurationClient(OfflineAuth.confFile);
+                Config.synchronizeConfigurationClient(OfflineAuth.confFile, false);
             }
         }
     }

@@ -62,8 +62,8 @@ public class Config {
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
 
     /* Sync for when config has changed, client */
-    public static void synchronizeConfigurationClient(File configFile) {
-        if (!loaded) {
+    public static void synchronizeConfigurationClient(File configFile, boolean force) {
+        if (!loaded || force) {
             config.load();
             loaded = true;
 
@@ -78,8 +78,8 @@ public class Config {
     }
 
     /* Sync for when config has changed, server */
-    public static void synchronizeConfigurationServer(File configFile) {
-        if (!loaded) {
+    public static void synchronizeConfigurationServer(File configFile, boolean force) {
+        if (!loaded || force) {
             config.load();
             loaded = true;
 

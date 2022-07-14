@@ -194,6 +194,9 @@ public class Database {
     }
 
     public static StatusResponseObject changePlayerDisplayName(String identifier, String password, String newDisplayName, boolean isCommand) {
+        if (!isCommand && !Config.allowDisplayNameChange) {
+            return new StatusResponseObject("Displayname change disallowed", 500);
+        }
         if (identifier == null || (password == null && !isCommand) || newDisplayName == null) {
             return new StatusResponseObject("Failed, identifier or password, or new password null", 500);
         }

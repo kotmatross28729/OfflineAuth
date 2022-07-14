@@ -101,11 +101,11 @@ public class GuiLogin extends GuiScreen {
         this.drawDefaultBackground();
 
         this.drawString(this.fontRendererObj, "Identifier:", this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Display Name: (WIP)", this.width / 2 - 155, this.basey + 45, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, "Display Name:", this.width / 2 - 155, this.basey + 45, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, "Port:", this.width / 2 - 55, this.basey + 45, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, "Password:", this.width / 2 - 55, this.basey, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, "New Password:", this.width / 2 + 55, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Use Key: (WIP)", this.width / 2 - 155,  this.basey + 90, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, "Use Key:", this.width / 2 - 155,  this.basey + 90, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, "Registration Token:", this.width / 2 + 5, this.basey + 45, Color.WHITE.getRGB());
         if (!(this.message == null || this.message.isEmpty())) {
             this.drawCenteredString(this.fontRendererObj, this.message, this.width / 2, this.basey - 15, 0xFFFFFF);
