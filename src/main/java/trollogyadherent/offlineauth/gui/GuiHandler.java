@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.ServerListEntryNormal;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
@@ -27,6 +28,7 @@ import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 public class GuiHandler {
 
@@ -43,6 +45,7 @@ public class GuiHandler {
 
     // Access transformers don't work on stuff already touched by forge, so reflection is needed
     Field btnlst;
+    Object reflectedBtnLst = null;
 
     public GuiHandler() {
         btnlst = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
@@ -63,13 +66,13 @@ public class GuiHandler {
                 }
                 OfflineAuth.varInstanceClient.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(OfflineAuth.varInstanceClient.selectedServerIndex)).field_148301_e;
                 System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
-                Object hmm = null;
-                try {
-                    hmm = btnlst.get(e.gui);
-                    ((java.util.List) hmm).add(new GuiButton(17325, 260/*5*/, 5, 80, 20, "Manage Auth"));
+
+                /*try {
+                    //reflectedBtnLst = btnlst.get(e.gui);
+
                 } catch (IllegalAccessException ex) {
                     ex.printStackTrace();
-                }
+                }*/
 
                 OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
                 if (oasd != null) {
@@ -162,7 +165,7 @@ public class GuiHandler {
     }
 
     @SubscribeEvent
-    public void open(InitGuiEvent.Post e) {
+    public void open(InitGuiEvent.Post e) throws IllegalAccessException {
         if (e.gui instanceof GuiMultiplayer) {
             //e.buttonList.add(new GuiButton(17325, 270/*5*/, 5, 100, 20, "Server Re-Login"));
 
@@ -174,19 +177,24 @@ public class GuiHandler {
             validText = "?";
             validColor = Color.GRAY.getRGB();
 
-            //validText = "\u2714";
-            //validColor = Color.GREEN.getRGB();
-            //validText = "\u2718";
-            //validColor = Color.RED.getRGB();
-
+            reflectedBtnLst = btnlst.get(e.gui);
         }
     }
 
     @SubscribeEvent
     public void draw(DrawScreenEvent.Post e) {
         if (e.gui instanceof GuiMultiplayer && OfflineAuth.varInstanceClient.selectedServerIndex != -1) {
-            e.gui.drawString(e.gui.mc.fontRenderer, "Registered:", 350, 10, Color.WHITE.getRGB());
-            e.gui.drawString(e.gui.mc.fontRenderer, (bold ? EnumChatFormatting.BOLD : "") + validText, 410, 10, validColor);
+            e.gui.drawString(e.gui.mc.fontRenderer, "Registered:", e.gui.width - 75, 10, Color.WHITE.getRGB());
+            e.gui.drawString(e.gui.mc.fontRenderer, (bold ? EnumChatFormatting.BOLD : "") + validText, e.gui.width - 15, 10, validColor);
+
+            if (reflectedBtnLst != null) {
+                for (Object gb : ((java.util.List) reflectedBtnLst)) {
+                    if (((GuiButton) gb).id == 17325) {
+                        return;
+                    }
+                }
+                ((java.util.List) reflectedBtnLst).add(new GuiButton(17325, e.gui.width - 160/*5*/, 5, 80, 20, "Manage Auth"));
+            }
         }
     }
 
