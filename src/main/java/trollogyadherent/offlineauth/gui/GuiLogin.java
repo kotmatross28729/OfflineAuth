@@ -162,6 +162,8 @@ public class GuiLogin extends GuiScreen {
     public void initGui() {
         super.initGui();
 
+        Keyboard.enableRepeatEvents(true);
+
         this.basey = this.height / 2 - 200 / 2;//this.height / 2 - 110 / 2;
 
         this.identifier = new GuiTextField(this.fontRendererObj, this.width / 2 - 155, this.basey + 15, 90, 20);
