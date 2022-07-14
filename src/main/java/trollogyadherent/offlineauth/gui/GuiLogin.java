@@ -493,6 +493,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     private void actionManageKey() {
+        actionSave(true, false);
         Minecraft.getMinecraft().displayGuiScreen(new KeyManagementGUI(Minecraft.getMinecraft().currentScreen));
     }
 
