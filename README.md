@@ -1,10 +1,11 @@
 # OfflineAuth 1.7.10 (Forge)
 Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
+It is advised to delete the `offlineauth` folder each time you update for now.
 
-![image](https://user-images.githubusercontent.com/19153947/178861328-dab8c8a1-bfae-4945-aaf0-675e7dcdb9d1.png)
+![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
 ### Motivation
-Microsoft forcing people to migrate from Mojang to Microsoft and, frankly, this company is just plain evil. So yeah. (Also, the author does not believe in "intellectual property")
+Microsoft forcing people to migrate from Mojang to Microsoft and they are cringe overall.
 
 ### Tell me more
 This mod runs a small rest server (spark) alongside the main Minecraft process. This keeps everything contained to the server which could even run on a local network, independent of any external auth servers, such as `vanilla` or `ely.by`.
@@ -26,9 +27,9 @@ If you are a player:
 * Config options to disallow registration
 * End-to-end encryption of credentials
 * Possibility of logging in with a keypair, rather than with a password
+* Changing configs via commands
 
 ### Coming Features
-* Commands to change certain config options
 * Uploading and using skins
 * Raid mitigation
 
