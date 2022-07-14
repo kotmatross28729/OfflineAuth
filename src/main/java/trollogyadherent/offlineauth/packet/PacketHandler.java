@@ -14,6 +14,8 @@ public class PacketHandler {
         registerMessage(DownloadSkinPacket.class, DownloadSkinPacket.SimpleMessage.class);
         registerMessage(QuerySkinNameFromServerPacket.class, QuerySkinNameFromServerPacket.SimpleMessage.class);
         registerMessage(ResetCachesPacket.class, ResetCachesPacket.SimpleMessage.class);
+        registerMessage(CopyToClipboardPacket.class, CopyToClipboardPacket.SimpleMessage.class);
+        registerMessage(QueryPlayerDataFromServerPacket.class, QueryPlayerDataFromServerPacket.SimpleMessage.class);
     }
 
     private static int nextPacketId = 0;

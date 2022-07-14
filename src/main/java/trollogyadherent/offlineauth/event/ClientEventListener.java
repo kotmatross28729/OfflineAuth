@@ -17,17 +17,18 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
+import trollogyadherent.offlineauth.packet.QueryPlayerDataFromServerPacket;
 import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
-import trollogyadherent.offlineauth.skin.client.ClientPlayerData;
-import trollogyadherent.offlineauth.skin.client.ClientSkinData;
+import trollogyadherent.offlineauth.registry.data.ClientPlayerData;
 import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.Util;
 
+import java.io.IOException;
+
 public class ClientEventListener {
-    /* Clears OfflineAuth.skinCache List. Otherwise the SkinData would exist, but when changing worlds, the texture is unloaded */
-    /* This triggers on singleplayer */
+    /* Clears OfflineAuth.playerRegistry List. Otherwise the SkinData would exist, but when changing worlds, the texture is unloaded */
     @SubscribeEvent
-    public void onPlayerJoin(EntityJoinWorldEvent e) {
+    public void onPlayerJoin(EntityJoinWorldEvent e) throws IOException {
         //System.out.println("something joined: " + e.entity.getClass().getName());
 
         /* If singleplayer, we don't do that */
@@ -43,17 +44,22 @@ public class ClientEventListener {
             return;
         }
 
-        System.out.println("Dected player join event, player displayname: " + ((EntityPlayerMP) e.entity).getDisplayName());
-        OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData((EntityClientPlayerMP) e.entity));
+        System.out.println("Detected player join event, player displayname: " + ((EntityPlayerMP) e.entity).getDisplayName());
 
+        OfflineAuth.varInstanceClient.entityPlayerRegistry.add((EntityPlayer) e.entity);
+
+        /* Asking server for data about this guy, adding to out playerreg there */
+        IMessage msg = new QueryPlayerDataFromServerPacket.SimpleMessage(Minecraft.getMinecraft().thePlayer.getDisplayName());
+        PacketHandler.net.sendToServer(msg);
+        /*OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData(oasd.getIdentifier(), oasd.getDisplayName(), ));
         OfflineAuth.info("Clearing memory skin cache 1");
-        OfflineAuth.varInstanceClient.skinRegistry.clear();
         OfflineAuth.varInstanceClient.playerRegistry.clear();
+        OfflineAuth.varInstanceClient.playerRegistry.clear();*/
     }
 
     /* Triggers when another player joins a server */
     @SubscribeEvent
-    public void onOtherPlayerJoin(EntityJoinWorldEvent e) {
+    public void onOtherPlayerJoin(EntityJoinWorldEvent e) throws IOException {
         /* If singleplayer, we don't do that */
         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isSinglePlayer()) {
             return;
@@ -67,12 +73,16 @@ public class ClientEventListener {
             return;
         }
 
-        System.out.println("Detected player join event, player displayname: " + ((AbstractClientPlayer) e.entity).getDisplayName());
-        OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData((AbstractClientPlayer) e.entity));
+        OfflineAuth.varInstanceClient.entityPlayerRegistry.add((EntityPlayer) e.entity);
+        /* Asking server for data about this guy, adding to out playerreg there */
+        IMessage msg = new QueryPlayerDataFromServerPacket.SimpleMessage(((AbstractClientPlayer) e.entity).getDisplayName());
+        PacketHandler.net.sendToServer(msg);
 
+        /*System.out.println("Detected player join event, player displayname: " + ((AbstractClientPlayer) e.entity).getDisplayName());
+        OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData((AbstractClientPlayer) e.entity));
         OfflineAuth.info("Clearing memory skin cache 2");
-        OfflineAuth.varInstanceClient.skinRegistry.clear();
         OfflineAuth.varInstanceClient.playerRegistry.clear();
+         */
     }
 
     /* Well, this does not trigger when other palyers join lol */
@@ -88,14 +98,15 @@ public class ClientEventListener {
         }
 
         System.out.println("Detected player leave event, player displayname: " + e.player.getDisplayName());
-        OfflineAuth.varInstanceClient.playerRegistry.deleteByUUID(Util.offlineUUID(e.player.getDisplayName()));
+        OfflineAuth.varInstanceClient.playerRegistry.deleteByDisplayName(e.player.getDisplayName());
 
-        OfflineAuth.info("Clearing memory skin cache 3");
-        OfflineAuth.varInstanceClient.skinRegistry.clear();
-        OfflineAuth.varInstanceClient.playerRegistry.clear();
+        //OfflineAuth.info("Clearing memory skin cache 3");
+        //OfflineAuth.varInstanceClient.playerRegistry.clear();
 
         OfflineAuth.info("Left server, clearing skin query status 1");
-        OfflineAuth.varInstanceClient.queriedForSkinName = false;
+        OfflineAuth.varInstanceClient.queriedForPlayerData = false;
+
+        OfflineAuth.varInstanceClient.entityPlayerRegistry.removeByDisplayName(e.player.getDisplayName());
     }
 
     /* Clears OfflineAuth.skinCache List. Otherwise the SkinData would exist, but when changing worlds, the texture is unloaded */
@@ -103,11 +114,9 @@ public class ClientEventListener {
     @SubscribeEvent
     public void onPlayerJoinFMLEvent(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         OfflineAuth.info("Clearing memory skin cache 4");
-        OfflineAuth.varInstanceClient.skinRegistry.clear();
         OfflineAuth.varInstanceClient.playerRegistry.clear();
-        OfflineAuth.varInstanceClient.queriedForSkinName = false;
+        OfflineAuth.varInstanceClient.queriedForPlayerData = false;
         System.out.println("Joined MP world");
-        //OfflineAuth.varInstanceClient.onDedicatedServer = true;
     }
 
     @SubscribeEvent
@@ -122,10 +131,9 @@ public class ClientEventListener {
         }
 
         OfflineAuth.info("Left server, clearing skin query status 2");
-        OfflineAuth.varInstanceClient.queriedForSkinName = false;
+        OfflineAuth.varInstanceClient.queriedForPlayerData = false;
 
         OfflineAuth.info("Clearing memory skin cache 5");
-        OfflineAuth.varInstanceClient.skinRegistry.clear();
         OfflineAuth.varInstanceClient.playerRegistry.clear();
         System.out.println("Exited MP world");
         //OfflineAuth.varInstanceClient.onDedicatedServer = false;
@@ -159,10 +167,10 @@ public class ClientEventListener {
             return;
         }
 
-        if (OfflineAuth.varInstanceClient.skinRegistry.getSkinDataByUUID(Util.offlineUUID(player.getDisplayName())) == null && !OfflineAuth.varInstanceClient.queriedForSkinName) {
+        if (OfflineAuth.varInstanceClient.playerRegistry.getIdentifierFromDisplayName(player.getDisplayName()) == null && !OfflineAuth.varInstanceClient.queriedForPlayerData) {
             System.out.println("Querying for skin of the local player (" + player.getDisplayName() + "), Invoked from ontick");
-            OfflineAuth.varInstanceClient.queriedForSkinName = true;
-            IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(0, Util.offlineUUID(Minecraft.getMinecraft().thePlayer.getDisplayName()), "");
+            OfflineAuth.varInstanceClient.queriedForPlayerData = true;
+            IMessage msg = new QueryPlayerDataFromServerPacket.SimpleMessage(Minecraft.getMinecraft().thePlayer.getDisplayName());
             PacketHandler.net.sendToServer(msg);
         }
     }
@@ -195,20 +203,17 @@ public class ClientEventListener {
         }
 
         EntityPlayer entityPlayerMP = e.entityPlayer;
-        String uuid = Util.offlineUUID(entityPlayerMP.getDisplayName());
-        ClientSkinData sd = OfflineAuth.varInstanceClient.skinRegistry.getSkinDataByUUID(uuid);
-        if (sd == null && !OfflineAuth.varInstanceClient.queriedForSkinName) {
+        ClientPlayerData cpd = OfflineAuth.varInstanceClient.playerRegistry.getPlayerDataByDisplayName(entityPlayerMP.getDisplayName());
+        if (cpd == null && !OfflineAuth.varInstanceClient.queriedForPlayerData) {
             System.out.println("Querying for skin of the player " + entityPlayerMP.getDisplayName() + ", Invoked from render");
-            System.out.println(entityPlayerMP.getDisplayName() + "'s uuid is: " + uuid);
-            System.out.println(OfflineAuth.varInstanceClient.skinRegistry);
-            OfflineAuth.varInstanceClient.queriedForSkinName = true;
-            IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(0, uuid, "");
+            System.out.println(OfflineAuth.varInstanceClient.playerRegistry);
+            OfflineAuth.varInstanceClient.queriedForPlayerData = true;
+            IMessage msg = new QueryPlayerDataFromServerPacket.SimpleMessage(entityPlayerMP.getDisplayName());
             PacketHandler.net.sendToServer(msg);
-        } else if (sd != null && sd.skinName != null && sd.entityPlayer != null) {
-            OfflineAuth.varInstanceClient.skinLocationfield.set(sd.entityPlayer, sd.resourceLocation);
-        } else if (sd != null && sd.skinName != null && sd.entityPlayer == null) {
-            OfflineAuth.varInstanceClient.skinRegistry.deleteByUUID(uuid);
-            OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData((AbstractClientPlayer) entityPlayerMP));
+        } else if (cpd != null && cpd.skinName != null && cpd.entityPlayer != null) {
+            OfflineAuth.varInstanceClient.skinLocationfield.set(cpd.entityPlayer, cpd.resourceLocation);
+        } else if (cpd != null && cpd.skinName != null) {
+            OfflineAuth.varInstanceClient.playerRegistry.deleteByIdentifier(cpd.identifier);
         }
     }
 }

@@ -6,20 +6,29 @@ public class OAServerData {
     String ip;
     String port;
     String restPort;
-    String username;
+    String identifier;
+    String displayName;
     String password;
+    boolean useKey;
+    String privateKeyPath;
+    String publicKeyPath;
 
     boolean registrationOpen;
     boolean registrationTokenOpen;
     boolean skinUploadAllowed;
 
-    public OAServerData(boolean validServer, String ip, String port, String restPort, String username, String password, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed) {
+    public OAServerData(boolean validServer, String ip, String port, String restPort, String identifier, String displayName, String password, boolean useKey, String privateKeyPath, String publicServerKeyPath, boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed) {
         this.validServer = validServer;
         this.ip = ip;
         this.port = port;
         this.restPort = restPort;
-        this.username = username;
+        this.identifier = identifier;
+        this.displayName = displayName;
         this.password = password;
+        this.useKey = useKey;
+        this.privateKeyPath = privateKeyPath;
+        this.publicKeyPath = publicServerKeyPath;
+
         this.registrationOpen = registrationOpen;
         this.registrationTokenOpen = registrationTokenOpen;
         this.skinUploadAllowed = skinUploadAllowed;
@@ -45,12 +54,24 @@ public class OAServerData {
         return restPort;
     }
 
-    public String getUsername() {
-        return username;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isUsingKey() {
+        return useKey;
+    }
+
+    public String getPrivateKeyPath() {
+        return this.privateKeyPath;
+    }
+
+    public String getPublicKeyPath() {
+        return publicKeyPath;
     }
 
     public boolean isRegistrationOpen() {
@@ -81,8 +102,8 @@ public class OAServerData {
         this.restPort = restPort;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public void setPassword(String password) {
@@ -97,7 +118,27 @@ public class OAServerData {
         this.registrationTokenOpen = registrationTokenOpen;
     }
 
+    public void setUseKey(boolean useKey) {
+        this.useKey = useKey;
+    }
+
+    public void setPrivateKeyPath(String privateKeyPath) {
+        this.privateKeyPath = privateKeyPath;
+    }
+
+    public void setPublicKeyPath(String publicKeyPath) {
+        this.publicKeyPath = publicKeyPath;
+    }
+
     public void setSkinUploadAllowed(boolean skinUploadAllowed) {
         this.skinUploadAllowed = skinUploadAllowed;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

@@ -1,9 +1,5 @@
-# Project status: it's not dead
-## I resumed development not so long ago (refer to readme change date, 12/07). It turns out there is no easy way to get SSL (read: sending of credentials not in plaintext) and I am halfway through implementing encryption half by hand (of course using built in cryptographical functions). Currently, checking credentials, deleting account and registration are end to end encrypted. This makes the "easy API part" obsolete, you will still have administrative commands that can be used via rcon.
-## I will push code when I am done with encryption and keypair authentification. Next steps will be finishing tokens and adding upload of skins.
-
 # OfflineAuth 1.7.10 (Forge)
-Early alpha Minecraft authentification system contained in a Forge mod.
+Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Pkease report any bugs, especially security holes.
 
 ![image](https://user-images.githubusercontent.com/19153947/159351094-b181a42b-220e-4fa0-943c-c34063652919.png)
 
@@ -25,14 +21,15 @@ If you are a player:
 * Change the port if needed, and register an account. Afterwards you should be able to join the server.
 
 ### Features
-* Registration and deletion of accounts, changing account password
+* Registration and deletion of accounts, changing account password and displayname
+* Allowing registration only to those who have one time tokens
 * Config options to disallow registration
+* End-to-end encryption of credentials
+* Possibility of logging in with a keypair, rather than with a password
 
 ### Coming Features
 * Commands to change certain config options
-* Registration using one-time tokens (halfway done)
 * Uploading and using skins
-* Logging in via key file
 * Raid mitigation
 
 ### Credits
@@ -44,7 +41,7 @@ If you are a player:
 
 ### Contact
 * [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken
-* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `minecraft-modding-general:matrix.org`
+* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `#minecraft-modding-general:matrix.org`
 
 ### License
 LGPLv3+SNEED

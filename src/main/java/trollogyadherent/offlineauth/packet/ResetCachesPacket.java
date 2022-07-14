@@ -18,7 +18,6 @@ public class ResetCachesPacket implements IMessageHandler<ResetCachesPacket.Simp
         {
             System.out.println("ResetCachesPacket onMessage triggered (from server)");
 
-            OfflineAuth.varInstanceClient.skinRegistry.clear();
             OfflineAuth.varInstanceClient.playerRegistry.clear();
         }
 

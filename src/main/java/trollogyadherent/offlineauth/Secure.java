@@ -117,7 +117,7 @@ class Secure {
         /* Create offline uuid */
         UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(Charsets.UTF_8));
         Sessionutil.set(new Session(username, uuid.toString(), null, "legacy"));
-        OfflineAuth.info("Offline Username set!");
+        OfflineAuth.info("Offline Username set to " + username);
         Secure.username = username;
     }
 

@@ -3,29 +3,26 @@ package trollogyadherent.offlineauth;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.renderer.texture.TextureManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.iq80.leveldb.DB;
-import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
-/* TODO: fix skins, the server should keep a copy of the skincache too, just strip it of shit that might not be present on the server */
+/* TODO: registration check works with any username present on the server! */
+/* TODO: registering with id and displayname */
+/* TODO: admin command that changes player uuid */
+/* TODO: players should be assigned uuids made up randomly by the server and kept in the db like skins */
 /* TODO: logging in with a key instead of password, keypicker and generator */
-/* TODO: proper command perms */
 /* TODO: server/client commands to change config options, command to reload file */
-/* TODO: Token management */
-/* TODO: Privileged API requests (listing users, viewing/adding/revoking tokens) */
 /* TODO: uploading and using skins */
+/* TODO: password reset tokens */
 /* TODO: spam prevention, lock registration if mass registration detected*/
-/* TODO: account deletion confirmation gui */
 /* TODO: look into JWT auth https://github.com/rjozefowicz/sparkjava-jwt*/
 /* TODO: configurable custom default skin (serverside) */
 /* TODO: setting a global skin (client) */
@@ -50,7 +47,7 @@ public class OfflineAuth {
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         proxy.preInit(event);
     }
 

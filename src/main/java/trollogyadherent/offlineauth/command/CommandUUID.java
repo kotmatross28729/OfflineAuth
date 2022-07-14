@@ -3,6 +3,7 @@ package trollogyadherent.offlineauth.command;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;
@@ -42,11 +43,11 @@ public class CommandUUID implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
-        System.out.println("Issued uuid command");
         if (argString.length != 1) {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
         } else {
-            System.out.println(Util.offlineUUID(argString[0]));
+            sender.addChatMessage(new ChatComponentText(Util.offlineUUID(argString[0])));
+            OfflineAuth.info(sender.getCommandSenderName() + " issued uuid command for name " + argString[0]);
         }
     }
 

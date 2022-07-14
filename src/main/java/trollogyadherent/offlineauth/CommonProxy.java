@@ -8,15 +8,21 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.Rest;
+import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
+
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 
 public class CommonProxy {
 
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         if (Util.isServer()) {
             OfflineAuth.varInstanceServer = new VarInstanceServer();
         }
@@ -32,6 +38,11 @@ public class CommonProxy {
         OfflineAuth.warn("I am " + Tags.MODNAME + " at version " + Tags.VERSION + " and group name " + Tags.GROUPNAME);
 
         FMLCommonHandler.instance().bus().register(this);
+
+        /* Generate server cryptographic keypair if none are present */
+        if (Util.isServer()) {
+            ServerUtil.generateServerKeys();
+        }
 
         /* Start Spark server */
         if (Util.isServer()) {
@@ -79,8 +90,15 @@ public class CommonProxy {
             event.registerServerCommand(new CommandPlayerExistsServer());
             event.registerServerCommand(new CommandDeletePlayer());
             event.registerServerCommand(new CommandConnectDBServer());
-            event.registerServerCommand(new CommandTestPacket());
-            event.registerServerCommand(new CommandTestSkinChange());
+            event.registerServerCommand(new CommandTest());
+            event.registerServerCommand(new CommandSkinChange());
+            event.registerServerCommand(new CommandSetRestPassword());
+            event.registerServerCommand(new CommandListUsers());
+            event.registerServerCommand(new CommandDeleteRestPassword());
+            event.registerServerCommand(new CommandGenToken());
+            event.registerServerCommand(new CommandGetMyUUID());
+            event.registerServerCommand(new CommandChangePlayerUUID());
+            event.registerServerCommand(new CommandConfig());
         }
 
     }

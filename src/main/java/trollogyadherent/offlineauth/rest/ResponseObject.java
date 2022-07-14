@@ -4,19 +4,21 @@ public class ResponseObject {
     private boolean registrationOpen;
     private boolean registrationTokenOpen;
     private boolean skinUploadAllowed;
-    private boolean validUser;
+    private String displayName;
     private String motd;
     private String other;
     private int statusCode;
+    private boolean displayNameChangeAllowed;
 
-    public ResponseObject(boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed, boolean validUser, String motd, String other, int statusCode) {
+    public ResponseObject(boolean registrationOpen, boolean registrationTokenOpen, boolean skinUploadAllowed, String displayName, String motd, String other, boolean displayNameChangeAllowed, int statusCode) {
         this.registrationOpen = registrationOpen;
         this.registrationTokenOpen = registrationTokenOpen;
         this.skinUploadAllowed = skinUploadAllowed;
-        this.validUser = validUser;
+        this.displayName = displayName;
         this.motd = motd;
         this.other = other;
         this.statusCode = statusCode;
+        this.displayNameChangeAllowed = displayNameChangeAllowed;
     }
 
     public boolean isRegistrationOpen() {
@@ -31,8 +33,8 @@ public class ResponseObject {
         return skinUploadAllowed;
     }
 
-    public boolean isValidUser() {
-        return validUser;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getMotd() {
@@ -45,5 +47,9 @@ public class ResponseObject {
 
     public int getStatusCode() {
         return statusCode;
+    }
+
+    public boolean isDisplayNameChangeAllowed() {
+        return displayNameChangeAllowed;
     }
 }

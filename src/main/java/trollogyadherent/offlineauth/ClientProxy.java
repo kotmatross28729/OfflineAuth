@@ -15,12 +15,16 @@ import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 ///import trollogyadherent.offlineauth.server.ServerPinger;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 public class ClientProxy extends CommonProxy {
 
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc., and register them with the GameRegistry."
-    public void preInit(FMLPreInitializationEvent event) 	{
+    public void preInit(FMLPreInitializationEvent event) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         super.preInit(event);
         OfflineAuth.varInstanceClient = new VarInstanceClient();
 

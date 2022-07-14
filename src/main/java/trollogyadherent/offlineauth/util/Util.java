@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Session;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -29,8 +30,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
 
 public class Util {
+    private final static Pattern UUID_REGEX_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
+
+
     public static boolean isServer() {
         return FMLCommonHandler.instance().getSide() == Side.SERVER;
     }
@@ -53,6 +59,9 @@ public class Util {
     }
 
     public static String getPasswordHash(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        if (salt.length() == 0) {
+            return null;
+        }
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = factory.generateSecret(spec).getEncoded();
@@ -64,7 +73,7 @@ public class Util {
     }
 
     public static boolean validUsername(String username) {
-        if (username.length() < 3 || username.length() > 16) {
+        if (username == null || username.length() < 3 || username.length() > 16) {
             return false;
         }
         String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
@@ -108,10 +117,14 @@ public class Util {
     }
 
     public static void offlineMode(String username) throws IllegalArgumentException, IllegalAccessException {
+        if (username == null) {
+            OfflineAuth.error("Cannot set offline Username! Username null!");
+            return;
+        }
         /* Create offline uuid */
         String uuid = offlineUUID(username);
         Sessionutil.set(new Session(username, uuid, null, "legacy"));
-        OfflineAuth.info("Offline Username set!");
+        OfflineAuth.info("Offline Username set to " + username);
     }
 
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
@@ -205,5 +218,39 @@ public class Util {
         }
 
         return res;
+    }
+
+    public static boolean isOp(EntityPlayerMP entityPlayerMP) {
+        // func_152596_g: canSendCommands
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152596_g(entityPlayerMP.getGameProfile());
+    }
+
+    public static String randomAlphanum() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public static String genUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static UUID genRealUUID() {
+        return UUID.randomUUID();
+    }
+
+    /* Source: https://www.code4copy.com/java/validate-uuid-string-java/ */
+    public static boolean uuidValid(String uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        return UUID_REGEX_PATTERN.matcher(uuid).matches();
+    }
+
+    public static OAServerData getCurrentOAServerData() {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+            if (getIP(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getIp()) && getPort(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getPort())) {
+                return oasd;
+            }
+        }
+        return null;
     }
 }

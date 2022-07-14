@@ -8,7 +8,7 @@ public class JsonUtil {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         Gson gson = builder.create();
-        return gson.toJson(o);
+        return gson.toJson(o).replace("\n", "");
     }
 
     public static Object jsonToObject(String json, Class class_) {

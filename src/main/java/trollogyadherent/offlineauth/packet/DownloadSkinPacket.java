@@ -76,8 +76,9 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                     if (localSkinHash == null) {
                         return null;
                     }
-                    /* That means we have cached the , and it's the same file */
+                    /* That means we have cached the skin, and it's the same file */
                     if (localSkinHash.equals(message.skinHash)) {
+                        OfflineAuth.info("Skin " + message.skinName + " cached");
                         return null;
                     } else {
                         /* The server will know we want to download the skin */
@@ -111,7 +112,6 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                 System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
                 try {
                     ClientSkinUtil.bytesToClientSkin(message.skinBytes, message.skinName);
-                    OfflineAuth.varInstanceClient.skinRegistry.clear();
                     OfflineAuth.varInstanceClient.playerRegistry.clear();
                     OfflineAuth.varInstanceClient.queriedForSkinFile = false;
                 } catch (IOException e) {

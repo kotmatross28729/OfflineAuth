@@ -2,9 +2,14 @@ package trollogyadherent.offlineauth.command;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
+import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
+import trollogyadherent.offlineauth.rest.StatusResponseObject;
+import trollogyadherent.offlineauth.util.Util;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -35,7 +40,7 @@ public class CommandRegisterPlayerServer implements ICommand {
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "/registerplayer <username> <password>";
+        return "/registerplayer <identifier> <password>";
     }
 
     @Override
@@ -47,15 +52,19 @@ public class CommandRegisterPlayerServer implements ICommand {
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
         System.out.println("Issued registerplayer command");
+        if (sender instanceof EntityPlayerMP && !Util.isOp((EntityPlayerMP) sender)) {
+            sender.addChatMessage(new ChatComponentText((char) 167 + "cYou do not have permission to use this command"));
+            return;
+        }
         if (argString.length != 2) {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
             return;
         }
         try {
-            Database.registerPlayer(argString[0], argString[1], "", true, false);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", true, false);
+            sender.addChatMessage(new ChatComponentText(responseObject.getStatus()));
+            OfflineAuth.info(sender.getCommandSenderName() + " issued registerplayer command with status " + responseObject.getStatus());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
             e.printStackTrace();
         }
     }

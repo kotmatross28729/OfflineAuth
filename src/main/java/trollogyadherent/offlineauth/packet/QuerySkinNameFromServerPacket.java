@@ -6,7 +6,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.skin.server.ServerSkinData;
+import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.io.IOException;
@@ -23,43 +23,33 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
             System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 0 (from client)");
             System.out.println("Requesting player: " + ctx.getServerHandler().playerEntity.getDisplayName() + " (" + Util.offlineUUID(ctx.getServerHandler().playerEntity.getDisplayName()) + ")");
             System.out.println("Requested uuid: " + message.uuid);
-            System.out.println("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.skinRegistry);
-            ServerSkinData sd = OfflineAuth.varInstanceServer.skinRegistry.getSkinDataByUUID(message.uuid);
+            System.out.println("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.playerRegistry);
+            ServerPlayerData sd = OfflineAuth.varInstanceServer.playerRegistry.getPlayerDataByDisplayName(message.uuid);
             if (sd == null && message.uuid.equals(Util.offlineUUID(ctx.getServerHandler().playerEntity.getDisplayName()))) {
                 System.out.println("sd is null, message uuid is equal to the player who sent packet (" + ctx.getServerHandler().playerEntity.getDisplayName() + ")");
 
-                //message.skinname = "0";
 
                 // below is temp and test only
                 if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
                     System.out.println("Player name test, setting skinname sneed, adding SkinData to reg");
                     message.skinname = "sneed";
-                    OfflineAuth.varInstanceServer.skinRegistry.add(message.uuid, "sneed");
-                    System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.skinRegistry);
+                    //OfflineAuth.varInstanceServer.playerRegistry.add(message.uuid, "sneed");
+                    System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
                 } else {
                     System.out.println("Player name other, setting skinname popbob, adding SkinData to reg");
                     message.skinname = "sans";
-                    OfflineAuth.varInstanceServer.skinRegistry.add(message.uuid, "sans");
-                    System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.skinRegistry);
+                    //OfflineAuth.varInstanceServer.playerRegistry.add(message.uuid, "sans");
+                    System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
                 }
             } else if (sd != null){
                 System.out.println("sd found for uuid " + sd.uuid + ". it says to set skin to " + sd.skinName);
                 message.skinname = sd.skinName;
-                System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.skinRegistry);
+                System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
             } else {
                 System.out.println("sd is null and the uuid is not equal to the player who sent the packet. (uuid: " + message.uuid + ")");
-                /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    IMessage msg = new ResetCachesPacket.SimpleMessage();
-                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
-                }*/
-
-                //IMessage msg = new ResetCachesPacket.SimpleMessage();
-                //PacketHandler.net.sendTo(msg, ctx.getServerHandler().playerEntity);
 
 
                 message.skinname = "1";
-                //return message;
-                //return null;
             }
 
             message.exchangecode = 1;
@@ -73,21 +63,21 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
             System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 1 (from server)");
             System.out.println("Got skin name: " + message.skinname);
 
-            try {
+            //try {
                 if (message.skinname.equals("0")) {
-                    OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, null);
+                    //OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, null);
                 } else if (message.skinname.equals("1")) {
 
                 } else {
-                    OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, message.skinname);
+                    //OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, message.skinname);
                     IMessage msg = new DownloadSkinPacket.SimpleMessage(message.skinname);
                     PacketHandler.net.sendToServer(msg);
                 }
-            } catch (IOException e) {
-                OfflineAuth.error("Failed to add skin to client skin registry. name: " + message.skinname);
-                e.printStackTrace();
-            }
-            OfflineAuth.varInstanceClient.queriedForSkinName = false;
+            //} catch (IOException e) {
+            //    OfflineAuth.error("Failed to add skin to client skin registry. name: " + message.skinname);
+            //    e.printStackTrace();
+            //}
+            OfflineAuth.varInstanceClient.queriedForPlayerData = false;
             return null;
         }
 

@@ -30,9 +30,13 @@ buildscript {
             name = "jitpack"
             url = "https://jitpack.io"
         }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.5'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.6'
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
 
@@ -40,12 +44,13 @@ plugins {
     id 'idea'
     id 'scala'
     id("org.ajoberstar.grgit") version("3.1.1")
-    id("com.github.johnrengelman.shadow") version("4.0.4")
+    //id("com.github.johnrengelman.shadow") version("4.0.4")
     id("com.palantir.git-version") version("0.12.3")
     id("maven-publish")
 }
 
 apply plugin: 'forge'
+apply plugin: "com.github.johnrengelman.shadow"
 
 def projectJavaVersion = JavaLanguageVersion.of(8)
 
