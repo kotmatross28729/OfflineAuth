@@ -30,6 +30,7 @@ public class GuiLogin extends GuiScreen {
 
     public GuiTextField identifier;
     private GuiPasswordField pw;
+    private TogglePWButton togglePWButton;
     private GuiButton login;
     private GuiButton cancel;
     private GuiButton offline;
@@ -93,6 +94,8 @@ public class GuiLogin extends GuiScreen {
             case 9:
                 actionManageKey();
                 break;
+            case 10:
+                actionTogglePWvisibility();
         }
     }
 
@@ -190,12 +193,14 @@ public class GuiLogin extends GuiScreen {
         this.changePW = new GuiButton(3, this.width / 2 - 155, this.basey + 165, 100, 20, "Change Password");
         this.changeDisplayName = new GuiButton(31, this.width / 2 - 50, this.basey + 165, 100, 20, "Change Displayn.");
         this.uploadSkin = new GuiButton(4, this.width / 2 + 55, this.basey + 165, 100, 20, "Upload Skin");
+        this.togglePWButton = new TogglePWButton(10, this.pw.xPosition + this.pw.width - 18, this.pw.yPosition + 2, 16, 16);
         this.buttonList.add(this.login);
         this.buttonList.add(this.offline);
         this.buttonList.add(this.changePW);
         this.buttonList.add(this.changeDisplayName);
         this.buttonList.add(this.uploadSkin);
         this.buttonList.add(this.deleteAccount);
+        this.buttonList.add(this.togglePWButton);
 
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, "Save");
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, "Cancel");
@@ -548,5 +553,12 @@ public class GuiLogin extends GuiScreen {
             }
         });
         registerThread.start();
+    }
+
+    public void actionTogglePWvisibility() {
+        System.out.println("testerino");
+        this.togglePWButton.setVisible(!this.togglePWButton.isVisible());
+        this.pw.setPwVisible(!this.pw.isPwVisible());
+        this.pw.setFocused(false);
     }
 }
