@@ -10,10 +10,7 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.request.objects.*;
-import trollogyadherent.offlineauth.util.AesKeyUtil;
-import trollogyadherent.offlineauth.util.JsonUtil;
-import trollogyadherent.offlineauth.util.RsaKeyUtil;
-import trollogyadherent.offlineauth.util.ServerUtil;
+import trollogyadherent.offlineauth.util.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -119,9 +116,9 @@ public class Rest {
             } else if (request.queryParams("restpassword") != null && !Database.restPasswordValid(request.queryParams("restpassword"))){
                 regResult = new StatusResponseObject("Rest password invalid or not set!", 500);
             } else */if (Config.allowRegistration) {
-                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(),"", rbo.getPubKey(),false, false);
+                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(),"", rbo.getPubKey(), new byte[1],false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && Database.tokenIsValid(rbo.getToken())) {
-                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), false, false);
+                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), new byte[1], false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && !Database.tokenIsValid(rbo.getToken())) {
                 regResult = new StatusResponseObject("Invalid token!", 500);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration) {
@@ -369,10 +366,11 @@ public class Rest {
 
         AesKeyUtil.AesKeyPlusIv tempAesKeyPlusIv = OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.ip(), request.host());
         /* Concatenating iv and aes key byte arrays, just a fancy way to do it */
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputStream.write(tempAesKeyPlusIv.key.getEncoded());
-        outputStream.write(tempAesKeyPlusIv.iv.getIV());
-        byte[] aesKeyPlusIvBytes = outputStream.toByteArray();
+
+        //ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        //outputStream.write(tempAesKeyPlusIv.key.getEncoded());
+        //outputStream.write(tempAesKeyPlusIv.iv.getIV());
+        byte[] aesKeyPlusIvBytes = Util.concatByteArrays(tempAesKeyPlusIv.key.getEncoded(), tempAesKeyPlusIv.iv.getIV()); //outputStream.toByteArray();
 
         PrivateKey serverPrivKey = ServerUtil.loadServerPrivateKey();
         String aesKeyPlusIvStr = Base64.getEncoder().encodeToString(aesKeyPlusIvBytes);

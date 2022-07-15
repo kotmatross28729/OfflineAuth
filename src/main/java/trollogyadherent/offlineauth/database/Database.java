@@ -6,12 +6,12 @@ import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
@@ -54,7 +55,7 @@ public class Database {
 
     /* Registers a player. isCommand serves as an override for most checks (except things like null/invalid values) */
     /* overrideUser re-registers the user (used during password change) */
-    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
         if (!Util.validUsername(displayname)) {
             return new StatusResponseObject("Invalid Display Name!", 500);
@@ -119,27 +120,14 @@ public class Database {
             uuid = Util.genUUID();
         }
 
-        String data = identifier + "," + displayname + "," + uuid + "," + passwordHash + "," + salt + "," + skin + "," + publicKey;
 
-        try {
-            OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), bytes("data:" + data));
+        if (putPlayerDataInDB(identifier, displayname, passwordHash, salt, uuid, publicKey, skinBytes)) {
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
             return new StatusResponseObject("Successfully registered user!", 200);
-        } catch (Error e) {
-            OfflineAuth.error("Registration error: " + e.getMessage());
-            return new StatusResponseObject("Error while registering user!", 500);
-        }
-    }
-
-    public static StatusResponseObject registerPlayerByDBPlayerData(DBPlayerData dbpd) {
-        String data = dbpd.identifier + "," + dbpd.displayname + "," + dbpd.uuid + "," + dbpd.passwordHash + "," + dbpd.salt + "," + dbpd.skinBase64 + dbpd.publicKey;
-        try {
-            OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + dbpd.identifier), bytes("data:" + data));
-            return new StatusResponseObject("Successfully registered user!", 200);
-        } catch (Error e) {
-            OfflineAuth.error("Register error: " + e.getMessage());
+        } else {
+            OfflineAuth.error("Registration error");
             return new StatusResponseObject("Error while registering user!", 500);
         }
     }
@@ -177,7 +165,7 @@ public class Database {
                 if (pd == null) {
                     return new StatusResponseObject("User not found", 500);
                 }
-                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", "", true, true);
+                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, true, true);
                 if (registerData.getStatusCode() == 200) {
                     return new StatusResponseObject("Successfully updated password", 200);
                 } else {
@@ -218,7 +206,7 @@ public class Database {
         try {
             if (isCommand || playerValidIgnoreDisplayName(identifier, password)) {
 
-                String data = identifier + "," + newDisplayName + "," + pd.uuid + "," + pd.passwordHash + "," + pd.salt + "," + pd.skinBase64 + "," + pd.publicKey;
+                String data = identifier + "," + newDisplayName + "," + pd.uuid + "," + pd.passwordHash + "," + pd.salt + "," + pd.skinBytes + "," + pd.publicKey;
 
                 try {
                     OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), bytes("data:" + data));
@@ -256,13 +244,10 @@ public class Database {
                     return new StatusResponseObject("Error! Player Data not found!", 500);
                 }
 
-                pd.uuid = uuid;
-
-                StatusResponseObject registerData = registerPlayerByDBPlayerData(pd);
-                if (registerData.getStatusCode() == 200) {
+                if (putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, uuid, pd.publicKey, pd.skinBytes)) {
                     return new StatusResponseObject("Successfully updated UUID", 200);
                 } else {
-                    return new StatusResponseObject("Failed to change UUID: " + registerData.getStatus(), 500);
+                    return new StatusResponseObject("Failed to change UUID", 500);
                 }
             } else {
                 return new StatusResponseObject("Identifier or password invalid", 500);
@@ -323,11 +308,42 @@ public class Database {
         }
     }
 
+    public static boolean putPlayerDataInDB(String identifier, String displayname, String passwordHash, String passwordSalt, String uuid, String publicKey, byte[] skinBytes) {
+        String sep = ",";
+        String dataStr = identifier + sep + displayname + sep + passwordHash + sep + passwordSalt + sep + uuid + sep + publicKey + sep;
+        byte[] dataBytes = dataStr.getBytes(StandardCharsets.UTF_8);
+        byte[] dataBytesLenAsByteArray = Util.intToByteArray(dataBytes.length);
+        byte[] finalData;
+        try {
+            byte[] lenPlusData = Util.concatByteArrays(dataBytesLenAsByteArray, dataBytes);
+            finalData = Util.concatByteArrays(lenPlusData, skinBytes);
+        } catch (IOException e) {
+            OfflineAuth.error("Error writing paler data");
+            return false;
+        }
+
+        OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), finalData);
+        return true;
+    }
+
     public static DBPlayerData getPlayerDataByIdentifier(String identifier){
         try {
             if(isUserRegisteredByIdentifier(identifier)){  // Gets data from db and removes "data:" prefix from it
-                String data = new String(OfflineAuth.varInstanceServer.levelDBStore.get(bytes("ID:" + identifier))).substring(5);
-                return new DBPlayerData(data);
+                // entry structure: 4 bytes telling how much data there is, the general data (entry1,entry2,entry3) in base64, and the skin image in bytes
+                byte[] allBytes = OfflineAuth.varInstanceServer.levelDBStore.get(bytes("ID:" + identifier));
+                int dataLen = Util.fourFirstBytesToInt(allBytes);
+                byte[] data = new byte[dataLen];
+                for (int i = 0; i < dataLen; i ++) {
+                    data[i] = allBytes[i + 4];
+                }
+                byte[] skinBytes = new byte[allBytes.length - (dataLen + 4)];
+                for (int i = dataLen + 4; i < allBytes.length; i ++) {
+                    skinBytes[i - (dataLen + 4)] = allBytes[i];
+                }
+
+                String dataStr = new String(data);
+                String[] dataSplit = dataStr.split(",", -1); /* https://stackoverflow.com/a/14602089 */
+                return new DBPlayerData(dataSplit[0], dataSplit[1], dataSplit[2], dataSplit[3], dataSplit[4], dataSplit[5], skinBytes);
             }
         } catch (Error e) {
             OfflineAuth.error("Error getting data: " + e.getMessage());

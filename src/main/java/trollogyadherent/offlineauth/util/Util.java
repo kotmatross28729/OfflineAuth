@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.DigestInputStream;
@@ -190,12 +191,27 @@ public class Util {
         return outputStream.toByteArray( );
     }
 
+    public static byte[] intToByteArray(int i) {
+        return ByteBuffer.allocate(4).putInt(i).array();
+    }
+
     public static byte[] fillByteArrayLeading(byte[] a, int totalLen) throws IOException {
         if (a.length >= totalLen) {
             return a;
         }
         byte[] b = new byte[totalLen - a.length];
         return concatByteArrays(b, a);
+    }
+
+    public static int fourFirstBytesToInt(byte[] array) {
+        if (array.length < 4) {
+            return -1;
+        }
+        byte[] temp = new byte[4];
+        for (int i = 0; i < 4; i ++) {
+            temp[i] = array[i];
+        }
+        return ByteBuffer.wrap(temp).getInt();
     }
 
     public static String fileHash(File file) throws NoSuchAlgorithmException {

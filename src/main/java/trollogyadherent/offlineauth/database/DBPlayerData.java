@@ -6,31 +6,17 @@ public class DBPlayerData {
     String uuid;
     String passwordHash;
     String salt;
-    String skinBase64;
+    byte[] skinBytes;
     String publicKey;
 
-    public DBPlayerData(String identifier, String displayname, String passwordHash, String salt, String skinBase64, String publicKey) {
+    public DBPlayerData(String identifier, String displayname, String passwordHash, String salt, String uuid, String publicKey, byte[] skinBytes) {
         this.identifier = identifier;
         this.displayname = displayname;
         this.passwordHash = passwordHash;
         this.salt = salt;
-        this.skinBase64 = skinBase64;
+        this.uuid = uuid;
         this.publicKey = publicKey;
-    }
-
-    public DBPlayerData(String data) {
-        String[] splitData = data.split(",");
-        identifier = splitData[0];
-        displayname = splitData[1];
-        uuid = splitData[2];
-        passwordHash = splitData[3];
-        salt = splitData[4];
-        skinBase64 = splitData[5];
-        if (splitData.length == 7) {
-            publicKey = splitData[6];
-        } else {
-            publicKey = "";
-        }
+        this.skinBytes = skinBytes;
     }
 
     public String getIdentifier() {
@@ -45,8 +31,8 @@ public class DBPlayerData {
         return salt;
     }
 
-    public String getSkinBase64() {
-        return skinBase64;
+    public byte[] getSkinBytes() {
+        return skinBytes;
     }
 
     public String getDisplayname() { return displayname; }

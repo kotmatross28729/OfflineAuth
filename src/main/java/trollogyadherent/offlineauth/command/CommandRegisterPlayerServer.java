@@ -61,7 +61,7 @@ public class CommandRegisterPlayerServer implements ICommand {
             return;
         }
         try {
-            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", true, false);
+            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", new byte[1],true, false);
             sender.addChatMessage(new ChatComponentText(responseObject.getStatus()));
             OfflineAuth.info(sender.getCommandSenderName() + " issued registerplayer command with status " + responseObject.getStatus());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
