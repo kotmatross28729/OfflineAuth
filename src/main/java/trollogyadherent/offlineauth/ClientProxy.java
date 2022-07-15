@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
 import trollogyadherent.offlineauth.event.ClientEventListener;
 import trollogyadherent.offlineauth.gui.GuiHandler;
+import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 
 ///import trollogyadherent.offlineauth.data.GsonTester;
@@ -21,6 +22,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 public class ClientProxy extends CommonProxy {
+
+    private SkinGuiRenderTicker skinGuiRenderTicker;
 
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc., and register them with the GameRegistry."
@@ -70,6 +73,10 @@ public class ClientProxy extends CommonProxy {
 
     // postInit "Handle interaction with other mods, complete your setup based on this."
     public void postInit(FMLPostInitializationEvent event) {
+        skinGuiRenderTicker = new SkinGuiRenderTicker();
+        FMLCommonHandler.instance().bus().register(skinGuiRenderTicker);
+        MinecraftForge.EVENT_BUS.register(skinGuiRenderTicker);
+
         super.postInit(event);
     }
 
@@ -93,4 +100,5 @@ public class ClientProxy extends CommonProxy {
     public void serverStopped(FMLServerStoppedEvent event) {
         super.serverStopped(event);
     }
+
 }

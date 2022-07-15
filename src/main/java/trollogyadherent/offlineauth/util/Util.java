@@ -270,6 +270,8 @@ public class Util {
         return null;
     }
 
+    /* https://www.baeldung.com/java-generating-random-numbers-in-range */
+    /* Upper bound is exclusive */
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }

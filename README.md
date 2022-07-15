@@ -36,14 +36,15 @@ If you are a player:
 ### Credits
 * [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.
 * [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
-* Greg and all the people on his IRC who sometimes get my dumb ass unstuck :D
+* [Greg](https://github.com/GregoriusT) and all the people on his IRC who sometimes get my dumb ass unstuck :D
+* The player 3D render code was taken from [bspkrsCore](https://github.com/bspkrs-mods/bspkrsCore), by [bspkrs](https://github.com/bspkrs-mods).
 
 ### Building
 `gradlew build` should do the trick.
 
 ### Contact
-* [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken
-* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `#minecraft-modding-general:matrix.org`
+* [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken.
+* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `#minecraft-modding-general:matrix.org`.
 
 ### License
 LGPLv3+SNEED

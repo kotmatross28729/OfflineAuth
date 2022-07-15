@@ -1,0 +1,204 @@
+package trollogyadherent.offlineauth.gui.skin;
+
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.resources.*;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.Util;
+import org.lwjgl.Sys;
+import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+public class SkinManagmentGUI extends GuiScreen {
+    private GuiScreen previous;
+
+    private List availableSkins;
+
+    private GuiButton done;
+    private GuiButton cancel;
+
+    private AvailableSkinsListGUI availableSkinsListGUI;
+
+    public SkinManagmentGUI(GuiScreen previous) {
+        this.previous = previous;
+    }
+
+    public void initGui()
+    {
+        this.buttonList.add(new GuiOptionButton(2, this.width / 2 - 154, this.height - 48, I18n.format("Open skin folder")));
+        this.buttonList.add(new GuiOptionButton(1, this.width / 2 + 4, this.height - 48, I18n.format("Done")));
+        this.availableSkins = new ArrayList();
+        //this.field_146969_h = new ArrayList();
+        //ResourcePackRepository resourcepackrepository = this.mc.getResourcePackRepository();
+        //resourcepackrepository.updateRepositoryEntriesAll();
+
+
+
+        /*ArrayList arraylist = Lists.newArrayList(resourcepackrepository.getRepositoryEntriesAll());
+        arraylist.removeAll(resourcepackrepository.getRepositoryEntries());
+        Iterator iterator = arraylist.iterator();
+        ResourcePackRepository.Entry entry;
+
+        while (iterator.hasNext())
+        {
+            entry = (ResourcePackRepository.Entry)iterator.next();
+            this.field_146966_g.add(new ResourcePackListEntryFound(this, entry));
+        }
+
+        iterator = Lists.reverse(resourcepackrepository.getRepositoryEntries()).iterator();
+
+        while (iterator.hasNext())
+        {
+            entry = (ResourcePackRepository.Entry)iterator.next();
+            this.field_146969_h.add(new ResourcePackListEntryFound(this, entry));
+        }*/
+
+        String[] skinNames = ClientSkinUtil.getAvailableSkinNames();
+        if (skinNames != null) {
+            for (String s : skinNames) {
+                System.out.println("Adding skin " + s);
+                SkinListEntry entry = new SkinListEntry(this, s);
+                this.availableSkins.add(entry);
+            }
+        }
+
+        //this.field_146969_h.add(new ResourcePackListEntryDefault(this));
+        this.availableSkinsListGUI = new AvailableSkinsListGUI(this.mc, 200, this.height, 36, this.availableSkins);
+        this.availableSkinsListGUI.setSlotXBoundsFromLeft(this.width / 2 - 4 - 200);
+        this.availableSkinsListGUI.registerScrollButtons(7, 8);
+        //this.field_146967_r = new GuiResourcePackSelected(this.mc, 200, this.height, this.field_146969_h);
+        //this.field_146967_r.setSlotXBoundsFromLeft(this.width / 2 + 4);
+        //this.field_146967_r.registerScrollButtons(7, 8);
+    }
+
+    public boolean hasSkinEntry(SkinListEntry skinListEntry)
+    {
+        return this.availableSkins.contains(skinListEntry);
+    }
+
+    public List probablyToRemove(SkinListEntry skinListEntry)
+    {
+        return this.hasSkinEntry(skinListEntry) ? this.availableSkins : null;
+    }
+
+    public List getAvailableSkins()
+    {
+        return this.availableSkins;
+    }
+
+    protected void actionPerformed(GuiButton button)
+    {
+        if (button.enabled)
+        {
+            /* Open skin folder in OS file explorer button */
+            if (button.id == 2)
+            {
+                File file1 = new File(OfflineAuth.varInstanceClient.clientSkinsPath);
+                String s = file1.getAbsolutePath();
+
+                if (Util.getOSType() == Util.EnumOS.OSX)
+                {
+                    try
+                    {
+                        Runtime.getRuntime().exec(new String[] {"/usr/bin/open", s});
+                        return;
+                    }
+                    catch (IOException ioexception1)
+                    {
+                        OfflineAuth.error("Couldn't open file, " + ioexception1);
+                    }
+                }
+                else if (Util.getOSType() == Util.EnumOS.WINDOWS)
+                {
+                    String s1 = String.format("cmd.exe /C start \"Open file\" \"%s\"", s);
+
+                    try
+                    {
+                        Runtime.getRuntime().exec(s1);
+                        return;
+                    }
+                    catch (IOException ioexception)
+                    {
+                        OfflineAuth.error("Couldn't open file, " + ioexception);
+                    }
+                }
+
+                boolean flag = false;
+
+                try
+                {
+                    Class oclass = Class.forName("java.awt.Desktop");
+                    Object object = oclass.getMethod("getDesktop", new Class[0]).invoke(null);
+                    oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, file1.toURI());
+                }
+                catch (Throwable throwable)
+                {
+                    OfflineAuth.error("Couldn't open link, " + throwable);
+                    flag = true;
+                }
+
+                if (flag)
+                {
+                    OfflineAuth.info("Opening via system class!");
+                    Sys.openURL("file://" + s);
+                }
+            }
+            /* Done button */
+            else if (button.id == 1)
+            {
+
+                this.mc.displayGuiScreen(this.previous);
+            }
+        }
+    }
+
+    /**
+     * Called when the mouse is clicked.
+     */
+    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_)
+    {
+        super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
+        this.availableSkinsListGUI.func_148179_a(p_73864_1_, p_73864_2_, p_73864_3_);
+        //this.field_146967_r.func_148179_a(p_73864_1_, p_73864_2_, p_73864_3_);
+    }
+
+    /**
+     * Called when the mouse is moved or a mouse button is released.  Signature: (mouseX, mouseY, which) which==-1 is
+     * mouseMove, which==0 or which==1 is mouseUp
+     */
+    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
+    {
+        super.mouseMovedOrUp(p_146286_1_, p_146286_2_, p_146286_3_);
+    }
+
+    /**
+     * Draws the screen and all the components in it.
+     */
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawBackground(0);
+        this.availableSkinsListGUI.drawScreen(mouseX, mouseY, partialTicks);
+        //this.field_146967_r.drawScreen(mouseX, mouseY, partialTicks);
+        this.drawCenteredString(this.fontRendererObj, I18n.format("Select Skin"), this.width / 2, 16, 16777215);
+        //this.drawCenteredString(this.fontRendererObj, I18n.format("resourcePack.folderInfo", new Object[0]), this.width / 2 - 77, this.height - 26, 8421504);
+
+        //for (Object skinListEntry : this.availableSkins) {
+        //    ((SkinListEntry) skinListEntry).drawEntry();
+        //}
+
+        //EntityPlayerMP entityPlayerMP = new EntityPlayerMP(null, null, new GameProfile(trollogyadherent.offlineauth.util.Util.genRealUUID(), "testerino"), null);
+        //GuiInventory.func_147046_a(0, 0, 0, 0, 0, entityPlayerMP);
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+}

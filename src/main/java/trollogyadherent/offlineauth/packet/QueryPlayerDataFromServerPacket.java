@@ -9,6 +9,7 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ public class QueryPlayerDataFromServerPacket implements IMessageHandler<QueryPla
             if (spd == null && message.displayname.equals(ctx.getServerHandler().playerEntity.getDisplayName())) {
                 System.out.println("spd is null, message displayname is equal to the player displayname who sent packet (" + ctx.getServerHandler().playerEntity.getDisplayName() + ")");
 
-                if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
+                /*if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
                     System.out.println("Player name test, setting skinname sneed, adding SkinData to reg");
                     message.skinname = "sneed";
                     //OfflineAuth.varInstanceServer.playerRegistry.add(message.uuid, "sneed");
@@ -39,18 +40,30 @@ public class QueryPlayerDataFromServerPacket implements IMessageHandler<QueryPla
                     message.skinname = "sans";
                     //OfflineAuth.varInstanceServer.playerRegistry.add(message.uuid, "sans");
                     //System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
-                }
+                }*/
 
                 DBPlayerData dbpd = Database.getPlayerDataByDisplayName(message.displayname);
                 if (dbpd == null) {
                     OfflineAuth.error("No player associated with this displayname in the DB!");
                     return null;
                 }
+
+                String skinName = ServerSkinUtil.getRandomDefaultSkinName();
+                if (dbpd.getSkinBytes().length > 1) {
+                    ServerSkinUtil.saveBytesToSkinCache(dbpd.getSkinBytes(), dbpd.getDisplayname());
+                    skinName = dbpd.getDisplayname();
+                }
+                message.skinname = skinName;
+
                 message.uuid = dbpd.getUuid();
                 message.identifier = dbpd.getIdentifier();
             } else if (spd != null){
                 System.out.println("spd found for displayname " + spd.displayname + ". it says to set skin to " + spd.skinName);
-                message.skinname = spd.skinName;
+                if (spd.skinName != null) {
+                    message.skinname = spd.skinName;
+                } else {
+                    message.skinname = ServerSkinUtil.getRandomDefaultSkinName();
+                }
                 message.identifier = spd.identifier;
                 message.displayname = spd.displayname;
                 message.uuid = spd.uuid;

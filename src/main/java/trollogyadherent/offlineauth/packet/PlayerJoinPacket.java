@@ -22,6 +22,7 @@ import trollogyadherent.offlineauth.rest.ResponseObject;
 import trollogyadherent.offlineauth.rest.RestUtil;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.*;
 
 import javax.crypto.BadPaddingException;
@@ -202,17 +203,21 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             }
                         }
 
-                        /* TEMP: skin resolution */
-                        String skin_name = "default" + Util.getRandomNumber(0, 7);
+                        /* skin resolution */
+                        String skinName = ServerSkinUtil.getRandomDefaultSkinName();
+                        if (dbpd.getSkinBytes().length > 1) {
+                            ServerSkinUtil.saveBytesToSkinCache(dbpd.getSkinBytes(), dbpd.getDisplayname());
+                            skinName = dbpd.getDisplayname();
+                        }
 
                         /*if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
-                            skin_name = "sneed";
+                            skinName = "sneed";
                         }*/
 
                         /* Adding player to registry */
                         System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
                         System.out.println(OfflineAuth.varInstanceServer.playerRegistry);
-                        OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skin_name));
+                        OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName));
 
                     } else {
                         entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);

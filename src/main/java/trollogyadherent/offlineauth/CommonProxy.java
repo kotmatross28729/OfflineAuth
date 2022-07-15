@@ -71,6 +71,11 @@ public class CommonProxy {
             }
         }
 
+        /* Clearing skin cache */
+        if (Util.isServer()) {
+            ServerSkinUtil.clearSkinCache();
+        }
+
         /* Packets */
         //OfflineAuth.simpleNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("offlineuath");
         //OfflineAuth.simpleNetworkWrapper.registerMessage(PacketS2C.PacketS2CHandler.class, PacketS2C.class, 0, Side.CLIENT);

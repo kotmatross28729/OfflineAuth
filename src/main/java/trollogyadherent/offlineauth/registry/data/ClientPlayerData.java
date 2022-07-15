@@ -33,8 +33,8 @@ public class ClientPlayerData {
         if (skinName == null || identifier == null || displayname == null || uuid == null) {
             return;
         }
-        File imagefile = new File(OfflineAuth.varInstanceClient.clientSkinCachePath, skinName + ".png");
-        if (!imagefile.exists()) {
+        File imageFile = new File(OfflineAuth.varInstanceClient.clientSkinCachePath, skinName + ".png");
+        if (!imageFile.exists()) {
             this.skinName = null;
             OfflineAuth.error("Error skin image does not exist: " + skinName);
             return;
@@ -52,7 +52,7 @@ public class ClientPlayerData {
         }
 
 
-        this.bufferedImage = ImageIO.read(imagefile);
+        this.bufferedImage = ImageIO.read(imageFile);
         if (this.bufferedImage.getHeight() == 64) {
             this.bufferedImage = new LegacyConversion().convert(this.bufferedImage);
         }

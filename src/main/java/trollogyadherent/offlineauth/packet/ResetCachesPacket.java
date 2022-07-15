@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 
 public class ResetCachesPacket implements IMessageHandler<ResetCachesPacket.SimpleMessage, IMessage>  {
@@ -19,6 +20,7 @@ public class ResetCachesPacket implements IMessageHandler<ResetCachesPacket.Simp
             System.out.println("ResetCachesPacket onMessage triggered (from server)");
 
             OfflineAuth.varInstanceClient.playerRegistry.clear();
+            ClientSkinUtil.clearSkinCache();
         }
 
         return null;

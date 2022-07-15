@@ -9,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.ClientData;
+import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
@@ -80,7 +81,7 @@ public class GuiLogin extends GuiScreen {
                 actionChangeDisplayName();
                 break;
             case 4:
-                System.out.println(b.id);
+                actionUploadSkin();
                 break;
             case 5:
                 actionSave(false, true);
@@ -100,7 +101,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
 
         this.drawString(this.fontRendererObj, "Identifier:", this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
@@ -121,7 +122,7 @@ public class GuiLogin extends GuiScreen {
         this.newPW.drawTextBox();
         this.port.drawTextBox();
 
-        super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -143,6 +144,7 @@ public class GuiLogin extends GuiScreen {
             this.pw.setFocused(false);
             this.newPW.setEnabled(false);
             this.newPW.setFocused(false);
+            this.togglePWButton.enabled = false;
 
             this.manageKey.enabled = true;
             //this.privateKeyPath.setEnabled(true);
@@ -151,6 +153,7 @@ public class GuiLogin extends GuiScreen {
             this.displayname.setEnabled(true);
             this.pw.setEnabled(true);
             this.newPW.setEnabled(true);
+            this.togglePWButton.enabled = true;
 
             this.manageKey.enabled = false;
             //this.privateKeyPath.setEnabled(false);
@@ -563,5 +566,10 @@ public class GuiLogin extends GuiScreen {
         this.togglePWButton.setVisible(!this.togglePWButton.isVisible());
         this.pw.setPwVisible(!this.pw.isPwVisible());
         this.pw.setFocused(false);
+    }
+
+    public void actionUploadSkin() {
+        actionSave(true, false);
+        Minecraft.getMinecraft().displayGuiScreen(new SkinManagmentGUI(Minecraft.getMinecraft().currentScreen));
     }
 }

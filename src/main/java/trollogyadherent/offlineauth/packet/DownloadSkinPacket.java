@@ -9,7 +9,6 @@ import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
-import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.io.IOException;
@@ -70,7 +69,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
                 try {
                     String localSkinHash = "0";
-                    if (ClientSkinUtil.skinCachedOnClient(message.skinName)) {
+                    if (ClientSkinUtil.skinPresentOnClient(message.skinName)) {
                         localSkinHash = Util.fileHash(ClientSkinUtil.getSkinFile(message.skinName));
                     }
                     if (localSkinHash == null) {

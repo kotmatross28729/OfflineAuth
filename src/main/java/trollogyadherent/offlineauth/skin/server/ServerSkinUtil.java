@@ -1,5 +1,7 @@
 package trollogyadherent.offlineauth.skin.server;
 
+import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -36,5 +38,47 @@ public class ServerSkinUtil {
             File output = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath + File.separator + imageName);
             ImageIO.write(img, "png", output);
         }
+    }
+
+    public static void saveBytesToSkinCache(byte[] skinBytes, String displayname) {
+        try {
+            Util.bytesSaveToFile(skinBytes, new File(OfflineAuth.varInstanceServer.serverSkinCachePath + File.separator + displayname + ".png"));
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to save skin to cache for player " + displayname);
+        }
+    }
+
+    public static void clearSkinCache() {
+        try {
+            FileUtils.cleanDirectory(new File(OfflineAuth.varInstanceServer.serverSkinCachePath));
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to clear client skin cache");
+        }
+    }
+
+    public static String getRandomDefaultSkinName() {
+        File defaultSkinDir = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath);
+        String[] fileList = defaultSkinDir.list();
+        if (fileList == null) {
+            OfflineAuth.error("Could not get default server skin directory!");
+            return null;
+        }
+        int pngCount = 0;
+        for (String s : fileList) {
+            if (Files.getFileExtension(s).equals("png")) {
+                pngCount ++;
+            }
+        }
+        int rand = Util.getRandomNumber(0, pngCount);
+        int i = 0;
+        for (String s : fileList) {
+            if (Files.getFileExtension(s).equals("png")) {
+                i ++;
+            }
+            if (i == rand) {
+                return Files.getNameWithoutExtension(s);
+            }
+        }
+        return null;
     }
 }
