@@ -306,4 +306,43 @@ public class Request {
             return null;
         }
     }
+
+    public static StatusResponseObject uploadSkin(String ip, String port, String identifier, String password, byte[] skinBytes, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+            return new StatusResponseObject("Could not find server public key in cache", 500);
+        }
+        String baseUrl = "http://" + ip + ":" + port + "/";
+        String requestPath = "uploadskin";
+
+        HttpPost post = new HttpPost(baseUrl + requestPath);
+
+        String clientKeyToken = "";
+        if (clientPubKey != null && clientPrivKey != null) {
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADSKIN);
+            if (tempToken == null) {
+                OfflineAuth.error("clientToken is null!");
+                return new StatusResponseObject("clientToken is null!", 500);
+            }
+            clientKeyToken = tempToken;
+        }
+
+        AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
+        if (aesKeyPlusIv == null) {
+            OfflineAuth.error("aesKeyPlusIv is null!");
+            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+        }
+
+        post.setEntity(RequestUtil.getUploadSkinRequestBody(aesKeyPlusIv, identifier, password, skinBytes, clientKeyToken));
+
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+            String responseString = EntityUtils.toString(response.getEntity());
+            StatusResponseObject s = (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
+            return s;
+        } catch (Exception e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
+        }
+    }
 }

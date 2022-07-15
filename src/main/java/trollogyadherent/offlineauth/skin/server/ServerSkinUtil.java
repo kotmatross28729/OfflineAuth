@@ -56,6 +56,13 @@ public class ServerSkinUtil {
         }
     }
 
+    public static void removeSkinFromCache(String name) {
+        File skin = new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png");
+        if (skin.exists()) {
+            skin.delete();
+        }
+    }
+
     public static String getRandomDefaultSkinName() {
         File defaultSkinDir = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath);
         String[] fileList = defaultSkinDir.list();

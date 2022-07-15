@@ -69,7 +69,8 @@ public class ServerKeyTokenRegistry {
         CHANGEPW,
         CHANGEDISPLAYNAME,
         DELETEACCOUNT,
-        TOKEN
+        TOKEN,
+        UPLOADSKIN
     }
 
     public class TokenAndType {

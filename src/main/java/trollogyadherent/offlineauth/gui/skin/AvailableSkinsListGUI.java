@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumChatFormatting;
+import trollogyadherent.offlineauth.OfflineAuth;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         this.skinEntries = skinEntries;
         this.field_148163_i = false;
         this.setHasListHeader(true, (int)((float)mc.fontRenderer.FONT_HEIGHT * 1.5F));
+        if (skinEntries.size() > 0) {
+            OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(((SkinListEntry)skinEntries.get(0)).skinName);
+        }
     }
 
     protected void drawListHeader(int par1, int par2, Tessellator tessellator) {
@@ -90,6 +94,7 @@ public class AvailableSkinsListGUI extends GuiListExtended {
                     //System.out.println("hmm: " + this.getListEntry_(l).skinName);
                     this.selectedIndex = l;
                     this.func_148143_b(false);
+                    OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(this.getListEntry_(l).skinName);
                     return true;
                 }
             }

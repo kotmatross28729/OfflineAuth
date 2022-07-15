@@ -23,7 +23,7 @@ import java.security.cert.CertificateException;
 
 public class ClientProxy extends CommonProxy {
 
-    private SkinGuiRenderTicker skinGuiRenderTicker;
+    //private SkinGuiRenderTicker skinGuiRenderTicker;
 
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc., and register them with the GameRegistry."
@@ -73,9 +73,12 @@ public class ClientProxy extends CommonProxy {
 
     // postInit "Handle interaction with other mods, complete your setup based on this."
     public void postInit(FMLPostInitializationEvent event) {
-        skinGuiRenderTicker = new SkinGuiRenderTicker();
-        FMLCommonHandler.instance().bus().register(skinGuiRenderTicker);
-        MinecraftForge.EVENT_BUS.register(skinGuiRenderTicker);
+        //skinGuiRenderTicker = new SkinGuiRenderTicker();
+        //FMLCommonHandler.instance().bus().register(skinGuiRenderTicker);
+        //MinecraftForge.EVENT_BUS.register(skinGuiRenderTicker);
+        OfflineAuth.varInstanceClient.skinGuiRenderTicker = new SkinGuiRenderTicker();
+        FMLCommonHandler.instance().bus().register(OfflineAuth.varInstanceClient.skinGuiRenderTicker);
+        MinecraftForge.EVENT_BUS.register(OfflineAuth.varInstanceClient.skinGuiRenderTicker);
 
         super.postInit(event);
     }

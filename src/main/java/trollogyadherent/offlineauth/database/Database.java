@@ -258,6 +258,52 @@ public class Database {
         }
     }
 
+    public static StatusResponseObject changePlayerSkin(String identifier, String password, byte[] skinBytes, boolean force) {
+        if (force && identifier == null || (password == null && !force) || skinBytes == null || skinBytes.length == 1) {
+            return new StatusResponseObject("Failed, identifier or password, or skin null", 500);
+        }
+
+        try {
+            if (force || playerValidIgnoreDisplayName(identifier, password)) {
+                DBPlayerData pd = getPlayerDataByIdentifier(identifier);
+                if (pd == null) {
+                    return new StatusResponseObject("User not found", 500);
+                }
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, skinBytes);
+                return new StatusResponseObject("Successfully uploaded skin", 200);
+            } else {
+                return new StatusResponseObject("Identifier or password invalid", 500);
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Error while uploading skin", 500);
+            //e.printStackTrace();
+        }
+    }
+
+    public static StatusResponseObject deletePlayerSkin(String identifier, String password, boolean force) {
+        if (identifier == null || (password == null && !force)) {
+            return new StatusResponseObject("Failed, identifier or password null", 500);
+        }
+
+        try {
+            if (force || playerValidIgnoreDisplayName(identifier, password)) {
+                DBPlayerData pd = getPlayerDataByIdentifier(identifier);
+                if (pd == null) {
+                    return new StatusResponseObject("User not found", 500);
+                }
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, new byte[1]);
+                return new StatusResponseObject("Successfully deleted skin", 200);
+            } else {
+                return new StatusResponseObject("Identifier or password invalid", 500);
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Error while deleting skin", 500);
+            //e.printStackTrace();
+        }
+    }
+
     public static StatusResponseObject deleteUserData(String identifier) {
         if (!isUserRegisteredByIdentifier(identifier)) {
             return new StatusResponseObject("User not registered!", 500);

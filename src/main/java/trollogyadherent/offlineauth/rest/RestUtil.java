@@ -23,4 +23,16 @@ public class RestUtil {
         }
         return JsonUtil.jsonToObject(rbo_json, class_);
     }
+
+    public static UploadSkinRequestBodyObject getUploadSkinRequestBodyObject(byte[] bytes, AesKeyUtil.AesKeyPlusIv aesKeyPlusIv) {
+        //String rbo_json_encrypted = new String(Base64.getDecoder().decode(bytes), StandardCharsets.UTF_8);
+        String rbo_json;
+        try {
+            rbo_json = new String(AesKeyUtil.decryptFromBytes(bytes, aesKeyPlusIv.key, aesKeyPlusIv.iv));
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
+                 InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            return null;
+        }
+        return (UploadSkinRequestBodyObject) JsonUtil.jsonToObject(rbo_json, UploadSkinRequestBodyObject.class);
+    }
 }

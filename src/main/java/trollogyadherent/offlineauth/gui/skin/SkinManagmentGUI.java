@@ -9,11 +9,23 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Util;
 import org.lwjgl.Sys;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.request.Request;
+import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.rest.ResponseObject;
+import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+import trollogyadherent.offlineauth.util.ClientUtil;
+import trollogyadherent.offlineauth.util.RsaKeyUtil;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,7 +48,7 @@ public class SkinManagmentGUI extends GuiScreen {
     public void initGui()
     {
         this.buttonList.add(new GuiOptionButton(2, this.width / 2 - 154, this.height - 48, I18n.format("Open skin folder")));
-        this.buttonList.add(new GuiOptionButton(1, this.width / 2 + 4, this.height - 48, I18n.format("Done")));
+        this.buttonList.add(new GuiOptionButton(1, this.width / 2 + 4, this.height - 48, I18n.format("Upload")));
         this.availableSkins = new ArrayList();
         //this.field_146969_h = new ArrayList();
         //ResourcePackRepository resourcepackrepository = this.mc.getResourcePackRepository();
@@ -156,8 +168,50 @@ public class SkinManagmentGUI extends GuiScreen {
             /* Done button */
             else if (button.id == 1)
             {
-
-                this.mc.displayGuiScreen(this.previous);
+                String skinName = null;
+                if (getAvailableSkins().size() > 0 && this.availableSkinsListGUI.selectedIndex >= 0) {
+                    skinName = ((SkinListEntry)this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName;
+                }
+                if (skinName == null) {
+                    return;
+                }
+                byte[] skinBytes = null;
+                try {
+                    skinBytes = trollogyadherent.offlineauth.util.Util.fileToBytes(ClientSkinUtil.getSkinFile(skinName));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if (skinBytes == null) {
+                    return;
+                }
+                OAServerData oasd = trollogyadherent.offlineauth.util.Util.getCurrentOAServerData();
+                if (oasd == null) {
+                    //validText = "\u2718";
+                    //validColor = Color.RED.getRGB();
+                    return;
+                }
+                PublicKey clientPubKey = null;
+                PrivateKey clientPriv = null;
+                if (oasd.isUsingKey()) {
+                    try {
+                        clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                        clientPriv = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
+                    } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes, clientPubKey, clientPriv);
+                    if (stat != null) {
+                        return;
+                    }
+                    System.out.println(stat.getStatus());
+                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
+                         InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
+                         BadPaddingException | InvalidKeyException e) {
+                    throw new RuntimeException(e);
+                }
+                //this.mc.displayGuiScreen(this.previous);
             }
         }
     }
@@ -188,16 +242,7 @@ public class SkinManagmentGUI extends GuiScreen {
     {
         this.drawBackground(0);
         this.availableSkinsListGUI.drawScreen(mouseX, mouseY, partialTicks);
-        //this.field_146967_r.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, I18n.format("Select Skin"), this.width / 2, 16, 16777215);
-        //this.drawCenteredString(this.fontRendererObj, I18n.format("resourcePack.folderInfo", new Object[0]), this.width / 2 - 77, this.height - 26, 8421504);
-
-        //for (Object skinListEntry : this.availableSkins) {
-        //    ((SkinListEntry) skinListEntry).drawEntry();
-        //}
-
-        //EntityPlayerMP entityPlayerMP = new EntityPlayerMP(null, null, new GameProfile(trollogyadherent.offlineauth.util.Util.genRealUUID(), "testerino"), null);
-        //GuiInventory.func_147046_a(0, 0, 0, 0, 0, entityPlayerMP);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

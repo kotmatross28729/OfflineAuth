@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.registry.ClientEntityPlayerRegistry;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.registry.ClientPlayerRegistry;
@@ -33,6 +34,9 @@ public class VarInstanceClient {
     public String keyPairPath = new File(OfflineAuth.rootPath, "ClientKeys").getPath();
     public String keyCachePath = new File(OfflineAuth.rootPath, "ClientKeyCache").getPath();
     public int selectedServerIndex = -1;
+
+    /* Initialized in post init, client proxy, because it needs mods to load their items first (3d player model holding items) */
+    public SkinGuiRenderTicker skinGuiRenderTicker;
 
     public VarInstanceClient() {
         skinLocationfield.setAccessible(true);

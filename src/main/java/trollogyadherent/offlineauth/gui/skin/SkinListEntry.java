@@ -27,7 +27,6 @@ public class SkinListEntry {
     ClientSkinUtil.OfflineTextureObject offlineTextureObject;
     //private static final ResourceLocation temp = new ResourceLocation("textures/gui/resource_packs.png");
     private /*static*/ ResourceLocation temp  = new ResourceLocation("textures/gui/resource_packs.png");
-
     public SkinListEntry(SkinManagmentGUI skinManagmentGUI, String skinName) {
         this.previous = skinManagmentGUI;
         this.skinName = skinName;
@@ -57,7 +56,7 @@ public class SkinListEntry {
             bufferedImage = bufferedImageNew;
         }
         this.offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
-        temp = new ResourceLocation("offlineauth", "skins/" + skinName);
+        temp = new ResourceLocation("offlineauth", "slinlistentryskins/" + skinName);
         ClientSkinUtil.loadTexture(bufferedImage, temp, this.offlineTextureObject);
     }
 

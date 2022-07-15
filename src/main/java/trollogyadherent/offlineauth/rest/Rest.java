@@ -43,6 +43,7 @@ public class Rest {
         get("/pubkey", (request, response) -> handlePubKey(request, response));
         get("/temppubkey", (request, response) -> handleTempPubKey(request, response));
         post("/tokenchallenge", (request, response) -> handleTokenChallenge(request, response));
+        post("/uploadskin", (request, response) -> handleSkinUpload(request, response));
     }
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeySpecException, BadPaddingException, NoSuchProviderException, InvalidKeyException {
@@ -237,7 +238,8 @@ public class Rest {
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing displayname", 500);
-            return JsonUtil.objectToJson(statusResponseObject);
+            String res = JsonUtil.objectToJson(statusResponseObject);
+            return res;
         }
     }
 
@@ -447,5 +449,45 @@ public class Rest {
         in.close();
         os.close();
         return null;
+    }
+
+    public static String handleSkinUpload(Request request, Response response) throws NoSuchAlgorithmException {
+        OfflineAuth.info("Someone tries to upload a skin, ip: " + request.ip() + ", host: " + request.host());
+        OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
+
+        UploadSkinRequestBodyObject rbo =  RestUtil.getUploadSkinRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.ip(), request.host()));
+        if (rbo == null) {
+            OfflineAuth.varInstanceServer.keyRegistry.remove(request.ip(), request.host());
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            return JsonUtil.objectToJson(responseObject);
+        }
+        String identifier = rbo.getIdentifier();
+        byte[] skinBytes = rbo.getSkinBytes();
+        String password = rbo.getPassword();
+        String token = rbo.getClientKeyToken();
+        ServerKeyTokenRegistry.TokenType type = rbo.getType();
+
+        boolean validToken = false;
+        if (token.length() > 0) {
+            validToken = OfflineAuth.varInstanceServer.keyTokenRegistry.grantIdentifierAccess(identifier, token, type);
+        }
+
+        try {
+            StatusResponseObject changeResult;
+            if (validToken) {
+                System.out.println(skinBytes);
+                changeResult = Database.changePlayerSkin(identifier, "", skinBytes, true);
+            } else {
+                changeResult = Database.changePlayerSkin(identifier, password, skinBytes, false);
+            }
+
+            String res = JsonUtil.objectToJson(changeResult);
+            System.out.println(res);
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing displayname", 500);
+            return JsonUtil.objectToJson(statusResponseObject);
+        }
     }
 }
