@@ -18,7 +18,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -55,10 +54,6 @@ public class ClientEventListener {
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
         PacketHandler.net.sendToServer(msg);
         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-        /*OfflineAuth.varInstanceClient.playerRegistry.add(new ClientPlayerData(oasd.getIdentifier(), oasd.getDisplayName(), ));
-        OfflineAuth.info("Clearing memory skin cache 1");
-        OfflineAuth.varInstanceClient.playerRegistry.clear();
-        OfflineAuth.varInstanceClient.playerRegistry.clear();*/
     }
 
     /* Triggers when another player joins a server */
@@ -238,20 +233,5 @@ public class ClientEventListener {
         }
 
         OfflineAuth.varInstanceClient.skinLocationfield.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
-
-        /*ClientPlayerData cpd = OfflineAuth.varInstanceClient.playerRegistry.getPlayerDataByDisplayName(entityPlayerMP.getDisplayName());
-        if (cpd == null && !OfflineAuth.varInstanceClient.queriedForPlayerData) {
-            System.out.println("Querying for skin of the player " + entityPlayerMP.getDisplayName() + ", Invoked from render");
-            System.out.println(OfflineAuth.varInstanceClient.playerRegistry);
-            OfflineAuth.varInstanceClient.queriedForPlayerData = true;
-            IMessage msg = new QueryPlayerDataFromServerPacket.SimpleMessage(entityPlayerMP.getDisplayName());
-            PacketHandler.net.sendToServer(msg);
-        } else if (cpd != null && cpd.skinName != null && cpd.entityPlayer != null) {
-            //ClientSkinUtil.loadSkinFromCache(cpd.skinName);
-            //Minecraft.getMinecraft().getResourceManager().getAllResources(cpd.resourceLocation);
-            OfflineAuth.varInstanceClient.skinLocationfield.set(cpd.entityPlayer, cpd.resourceLocation);
-        } else if (cpd != null && cpd.skinName != null) {
-            OfflineAuth.varInstanceClient.playerRegistry.deleteByIdentifier(cpd.identifier);
-        }*/
     }
 }

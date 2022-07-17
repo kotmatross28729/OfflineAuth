@@ -121,6 +121,7 @@ public class CommonProxy {
             event.registerServerCommand(new CommandChangePlayerUUID());
             event.registerServerCommand(new CommandConfig());
             event.registerServerCommand(new CommandDeleteSkin());
+            event.registerServerCommand(new CommandGetServerFingerprint());
         }
 
     }
