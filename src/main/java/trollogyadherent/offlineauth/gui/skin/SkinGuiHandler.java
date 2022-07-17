@@ -4,6 +4,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
@@ -14,6 +15,7 @@ import trollogyadherent.offlineauth.gui.ServerKeyAddGUI;
 import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
+import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -52,13 +54,13 @@ public class SkinGuiHandler {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void open2(InitGuiEvent.Post e) throws IllegalAccessException {
         if (e.gui instanceof GuiMainMenu) {
-            //e.buttonList.add(new GuiButton(17325, 270/*5*/, 5, 100, 20, "Server Re-Login"));
+            //e.buttonList.add(new GuiButton(17325, 270, 5, 100, 20, "Server Re-Login"));
             Minecraft.getMinecraft().thePlayer = null;
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void draw(DrawScreenEvent.Post e) {
@@ -66,11 +68,17 @@ public class SkinGuiHandler {
 
             if (reflectedBtnLst != null) {
                 for (Object gb : ((List) reflectedBtnLst)) {
-                    if (((GuiButton) gb).id == 17325) {
+                    if (((GuiButton) gb).id == 69) {
                         return;
                     }
                 }
-                ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 160/*5*/, 5, 80, 20, "Upload Skin"));
+                if (Minecraft.getMinecraft().getNetHandler() != null) {
+                    if (ClientUtil.isSinglePlayer()) {
+                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, "Set Skin"));
+                    } else {
+                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, "Upload Skin"));
+                    }
+                }
             }
         }
     }

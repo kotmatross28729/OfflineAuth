@@ -3,7 +3,9 @@ package trollogyadherent.offlineauth.rest;
 import com.google.common.net.MediaType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentText;
 import spark.Request;
 import spark.Response;
 import spark.utils.IOUtils;
@@ -11,6 +13,7 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
+import trollogyadherent.offlineauth.packet.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
@@ -496,11 +499,23 @@ public class Rest {
             }
 
             if (changeResult.getStatusCode() == 200) {
-                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    IMessage msg = new ResetCachesPacket.SimpleMessage();
-                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                /* Checking if player is ingame and if yes, deleting some caches */
+                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
+                if (dbpd != null) {
+                    String displayname = dbpd.getDisplayname();
+                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                            OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
+                            ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
+
+                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                                IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            }
+                            break;
+                        }
+                    }
                 }
-                ServerSkinUtil.clearSkinCache();
             }
 
             return JsonUtil.objectToJson(changeResult);

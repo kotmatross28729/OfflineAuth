@@ -127,6 +127,9 @@ public class Util {
 
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
     public static String getIP(ServerData serverData) {
+        if (serverData == null) {
+            return null;
+        }
         return serverData.serverIP.split(":")[0];
     }
 
@@ -331,6 +334,9 @@ public class Util {
     }
 
     public static OAServerData getCurrentOAServerData() {
+        if (OfflineAuth.varInstanceClient.selectedServerData == null) {
+            return null;
+        }
         for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
             if (getIP(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getIp()) && getPort(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getPort())) {
                 return oasd;

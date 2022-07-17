@@ -65,6 +65,7 @@ public class SkinGuiRenderTicker
     private static boolean erroredOut = false;
 
     private static ResourceLocation skinResourceLocation = null;
+    private static EntityClientPlayerMP clientPlayerMP = null;
 
     public SkinGuiRenderTicker()
     {
@@ -80,10 +81,10 @@ public class SkinGuiRenderTicker
         {
             try
             {
-                if ((mcClient.thePlayer == null) || (mcClient.thePlayer.worldObj == null))
+                if ((clientPlayerMP == null) || (clientPlayerMP.worldObj == null))
                     init();
 
-                if ((world != null) && (mcClient.thePlayer != null))
+                if ((world != null) && (clientPlayerMP != null))
                 {
                     ScaledResolution sr = new ScaledResolution(mcClient, mcClient.displayWidth, mcClient.displayHeight);
                     final int mouseX = (Mouse.getX() * sr.getScaledWidth()) / mcClient.displayWidth;
@@ -92,16 +93,15 @@ public class SkinGuiRenderTicker
                     float targetHeight = (float) (sr.getScaledHeight_double() / 3.0F) / 1.8F;
 
                     if (skinResourceLocation != null) {
-                        OfflineAuth.varInstanceClient.skinLocationfield.set(mcClient.thePlayer, skinResourceLocation);
+                        OfflineAuth.varInstanceClient.skinLocationfield.set(clientPlayerMP, skinResourceLocation);
                     }
 
                     EntityUtil.drawEntityOnScreen(
                             sr.getScaledWidth() - distanceToSide,
-                            (int) ((sr.getScaledHeight() / 2) + (mcClient.thePlayer.height * targetHeight)) - 40,
+                            (int) ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - 40,
                             targetHeight,
                             sr.getScaledWidth() - distanceToSide - mouseX,
-                            ((sr.getScaledHeight() / 2) + (mcClient.thePlayer.height * targetHeight)) - (mcClient.thePlayer.height * targetHeight * (mcClient.thePlayer.getEyeHeight() / mcClient.thePlayer.height)) - mouseY,
-                            mcClient.thePlayer);
+                            ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - (clientPlayerMP.height * targetHeight * (clientPlayerMP.getEyeHeight() / clientPlayerMP.height)) - mouseY, clientPlayerMP);
                 }
             }
             catch (Throwable e)
@@ -109,7 +109,7 @@ public class SkinGuiRenderTicker
                 OfflineAuth.error("Player model rendering encountered a serious error and has been disabled for the remainder of this session.");
                 e.printStackTrace();
                 erroredOut = true;
-                mcClient.thePlayer = null;
+                clientPlayerMP = null;
                 world = null;
             }
         }
@@ -124,16 +124,21 @@ public class SkinGuiRenderTicker
             if (createNewWorld)
                 world = new FakeWorld();
 
-            if (createNewWorld || (mcClient.thePlayer == null))
+            if (createNewWorld || (clientPlayerMP == null))
             {
-                mcClient.thePlayer = new EntityClientPlayerMP(mcClient, world, mcClient.getSession(), null, null);
+                /*mcClient.thePlayer = new EntityClientPlayerMP(mcClient, world, mcClient.getSession(), null, null);
                 mcClient.thePlayer.dimension = 0;
                 mcClient.thePlayer.movementInput = new MovementInputFromOptions(mcClient.gameSettings);
                 mcClient.thePlayer.eyeHeight = 1.82F;
-                setRandomMobItem(mcClient.thePlayer);
+                setRandomMobItem(mcClient.thePlayer);*/
+                clientPlayerMP = new EntityClientPlayerMP(mcClient, world, mcClient.getSession(), null, null);
+                clientPlayerMP.dimension = 0;
+                clientPlayerMP.movementInput = new MovementInputFromOptions(mcClient.gameSettings);
+                clientPlayerMP.eyeHeight = 1.82F;
+                setRandomMobItem(clientPlayerMP);
             }
 
-            RenderManager.instance.cacheActiveRenderInfo(world, mcClient.renderEngine, mcClient.fontRenderer, mcClient.thePlayer, mcClient.thePlayer, mcClient.gameSettings, 0.0F);
+            RenderManager.instance.cacheActiveRenderInfo(world, mcClient.renderEngine, mcClient.fontRenderer, clientPlayerMP, clientPlayerMP, mcClient.gameSettings, 0.0F);
             savedScreen = mcClient.currentScreen;
         }
         catch (Throwable e)
@@ -141,7 +146,7 @@ public class SkinGuiRenderTicker
             OfflineAuth.error("Main menu mob rendering encountered a serious error and has been disabled for the remainder of this session.");
             e.printStackTrace();
             erroredOut = true;
-            mcClient.thePlayer = null;
+            clientPlayerMP = null;
             world = null;
         }
     }
@@ -192,7 +197,7 @@ public class SkinGuiRenderTicker
             FMLCommonHandler.instance().bus().unregister(this);
             isRegistered = false;
             world = null;
-            mcClient.thePlayer = null;
+            clientPlayerMP = null;
         }
     }
 
@@ -247,12 +252,16 @@ public class SkinGuiRenderTicker
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
         ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation, offlineTextureObject);
 
-        if (mcClient != null && mcClient.thePlayer != null) {
-            setRandomMobItem(mcClient.thePlayer);
+        if (mcClient != null && clientPlayerMP != null) {
+            setRandomMobItem(clientPlayerMP);
         }
     }
 
     public boolean isSkinResourceLocationNull() {
         return skinResourceLocation == null;
+    }
+
+    public ResourceLocation getSkinResourceLocation() {
+        return skinResourceLocation;
     }
 }

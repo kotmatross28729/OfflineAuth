@@ -2,6 +2,7 @@ package trollogyadherent.offlineauth.gui.skin;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.resources.*;
@@ -50,7 +51,11 @@ public class SkinManagmentGUI extends GuiScreen {
     public void initGui()
     {
         this.buttonList.add(new GuiOptionButton(2, this.width / 2 - /*154*/234, this.height - 48, I18n.format("Open skin folder")));
-        this.buttonList.add(new GuiOptionButton(1, this.width / 2  - 76/* + 4*/, this.height - 48, I18n.format("Upload")));
+        if (ClientUtil.isSinglePlayer()) {
+            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("Set")));
+        } else {
+            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("Upload")));
+        }
         this.buttonList.add(new GuiOptionButton(3, this.width / 2 + 84, this.height - 48, I18n.format("Done")));
         this.availableSkins = new ArrayList();
         this.status = "Select Skin";
@@ -169,9 +174,22 @@ public class SkinManagmentGUI extends GuiScreen {
                     Sys.openURL("file://" + s);
                 }
             }
-            /* Done button */
+            /* Upload button */
             else if (button.id == 1)
             {
+                if (ClientUtil.isSinglePlayer()) {
+                    if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation() != null) {
+                        try {
+                            OfflineAuth.varInstanceClient.skinLocationfield.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation());
+                        } catch (IllegalAccessException e) {
+                            OfflineAuth.error("Fatal error while applying skin");
+                            e.printStackTrace();
+                        }
+                    }
+                    this.mc.displayGuiScreen(this.previous);
+                    return;
+                }
+
                 String skinName = null;
                 if (getAvailableSkins().size() > 0 && this.availableSkinsListGUI.selectedIndex >= 0) {
                     skinName = ((SkinListEntry)this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName;
@@ -218,6 +236,7 @@ public class SkinManagmentGUI extends GuiScreen {
                     throw new RuntimeException(e);
                 }
                 //this.mc.displayGuiScreen(this.previous);
+                /* Done button */
             } else if (button.id == 3) {
                 ////this.mc.thePlayer = null;
                 this.mc.displayGuiScreen(this.previous);
