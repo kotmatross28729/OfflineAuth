@@ -34,7 +34,9 @@ public class GameOverlayGuiHandler {
 
     @SubscribeEvent
     public void open(RenderGameOverlayEvent.Pre e) throws IllegalAccessException {
-        System.out.println(Minecraft.getMinecraft().currentScreen);
+        /* Turns out it's not a gui */
+
+        //System.out.println(Minecraft.getMinecraft().currentScreen);
         //if () {
             //reflectedBtnLst = btnlst.get(e.gui);
         //}

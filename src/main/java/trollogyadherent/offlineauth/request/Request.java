@@ -80,7 +80,12 @@ public class Request {
 
     public static StatusResponseObject register(String ip, String port, String identifier, String displayname, String password, String uuid, String token, String clientPubKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         if (ClientUtil.getServerPublicKey(ip, port) == null) {
-            return new StatusResponseObject("Could not find server public key in cache", 500);
+            PublicKey pubKey = getServerPubKey(ip, port);
+            if (pubKey == null) {
+                return new StatusResponseObject("Couldn't obtain server public key", 500);
+            }
+            Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port, pubKey));
+            return new StatusResponseObject("Please try again, if key fingerprint is correct", 500);
         }
 
         String baseUrl = "http://" + ip + ":" + port + "/";
