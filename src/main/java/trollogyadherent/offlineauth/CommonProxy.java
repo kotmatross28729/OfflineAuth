@@ -106,9 +106,8 @@ public class CommonProxy {
 
     // register server commands in this event handler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandUUID());
-
         if (Util.isServer()) {
+            event.registerServerCommand(new CommandUUID());
             event.registerServerCommand(new CommandRegisterPlayerServer());
             event.registerServerCommand(new CommandPlayerExistsServer());
             event.registerServerCommand(new CommandDeletePlayer());
