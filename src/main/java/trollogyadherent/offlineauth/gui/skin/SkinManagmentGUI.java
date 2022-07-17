@@ -280,7 +280,7 @@ public class SkinManagmentGUI extends GuiScreen {
         super.keyTyped(c, k);
 
         if (k == Keyboard.KEY_ESCAPE) {
-            /////this.mc.thePlayer = null;
+            this.mc.displayGuiScreen(this.previous);
         }
     }
 }
