@@ -2,8 +2,6 @@ package trollogyadherent.offlineauth.skin.client;
 
 import com.google.common.io.Files;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
@@ -16,6 +14,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ClientSkinUtil {
     public static class OfflineTextureObject extends AbstractTexture
@@ -43,15 +42,15 @@ public class ClientSkinUtil {
 
     }
 
-    public BufferedImage loadImage(String name)
+    public static BufferedImage bufferedImageFromskinCache(String name)
     {
         try
         {
             //BufferedImage result = ImageIO.read(new File(new File(Minecraft.getMinecraft().mcDataDir, "cachedImages"), name));
-            BufferedImage result = ImageIO.read(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name));
-            if (result.getWidth() != 64 || (result.getHeight() != 64 && result.getHeight() != 32)) {
+            BufferedImage result = ImageIO.read(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"));
+            /*if (result.getWidth() != 64 || (result.getHeight() != 64 && result.getHeight() != 32)) {
                 return null;
-            }
+            }*/
             if (result.getHeight() == 64) {
                 result = new LegacyConversion().convert(result);
             }
@@ -59,6 +58,7 @@ public class ClientSkinUtil {
         }
         catch (IOException e)
         {
+            OfflineAuth.error("Can't read image: " + name);
             return null;
         }
     }
@@ -74,21 +74,28 @@ public class ClientSkinUtil {
         OfflineAuth.varInstanceClient.textureManager.loadTexture(resourceLocation, offlineTextureObject);
     }
 
+    public static ResourceLocation loadSkinFromCache(String skinName) {
+        BufferedImage img = bufferedImageFromskinCache(skinName);
+        if (img == null) {
+            return null;
+        }
+        OfflineTextureObject obj = new ClientSkinUtil.OfflineTextureObject(img);
+        ResourceLocation location = new ResourceLocation("offlineauth", "skins/" + skinName);
+        loadTexture(img, location, obj);
+        return location;
+    }
+
     public static boolean skinPresentOnClient(String name) {
-        return Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"))
-                || Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinsPath, name + ".png"));
+        return Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
     }
 
     public static File getSkinFile(String name) {
-        if (!skinPresentOnClient(name)) {
-            OfflineAuth.warn("Skin " + name + " not found!");
-            return null;
-        }
         if (Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"))) {
             return new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png");
-        } else {
+        } else if (Util.fileExists(new File(OfflineAuth.varInstanceClient.clientSkinsPath, name + ".png"))) {
             return new File(OfflineAuth.varInstanceClient.clientSkinsPath, name + ".png");
         }
+        return null;
     }
 
     public static void stringToClientSkin(String base64skin, String name) throws IOException {
@@ -97,6 +104,14 @@ public class ClientSkinUtil {
 
     public static void bytesToClientSkin(byte[] bytes, String name) throws IOException {
         Util.bytesSaveToFile(bytes, new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png"));
+    }
+
+    @SuppressWarnings("CheckReturnValue")
+    public static void removeSkinFromCache(String name) {
+        File skin = new File(OfflineAuth.varInstanceClient.clientSkinCachePath, name + ".png");
+        if (skin.exists()) {
+            skin.delete();
+        }
     }
 
     public static void clearSkinCache() {
@@ -150,5 +165,20 @@ public class ClientSkinUtil {
             }
         }
         return res;
+    }
+
+
+    public static void transferDefaultSkins() throws IOException {
+        String[] skins = {"dream", "popbob", "herobrine", "chuck", "rezi", "popularmmos"};
+        for (String skin : skins) {
+            InputStream is = ClientSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/client/" + skin + ".png");
+            if (is == null) {
+                OfflineAuth.error("Default skin '" + skin + "' resource not found!");
+                continue;
+            }
+            BufferedImage img = ImageIO.read(is);
+            File output = new File(OfflineAuth.varInstanceClient.clientSkinsPath + File.separator + skin + ".png");
+            ImageIO.write(img, "png", output);
+        }
     }
 }

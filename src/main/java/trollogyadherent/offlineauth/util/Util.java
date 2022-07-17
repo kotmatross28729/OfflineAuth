@@ -15,10 +15,7 @@ import trollogyadherent.offlineauth.rest.OAServerData;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -214,11 +211,18 @@ public class Util {
         return ByteBuffer.wrap(temp).getInt();
     }
 
-    public static String fileHash(File file) throws NoSuchAlgorithmException {
+    public static String fileHash(File file) {
         if (file == null || !file.exists()) {
             return null;
         }
-        MessageDigest md = MessageDigest.getInstance("MD5");
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            OfflineAuth.error("Failed to calculate hash of " + file.getAbsolutePath());
+            e.printStackTrace();
+            return null;
+        }
         try (InputStream is = Files.newInputStream(Paths.get(file.getPath()));
              DigestInputStream dis = new DigestInputStream(is, md))
         {
@@ -234,6 +238,71 @@ public class Util {
         }
 
         return res;
+    }
+
+    // https://gist.github.com/zeroleaf/6809843
+    /**
+     * Generate a file 's sha1 hash code.
+     * @param file file
+     * @return sha1 hash code of this file
+     */
+    public static String sha1Code(File file) {
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            OfflineAuth.error("Failed to calculate sha1 code of " + file.getAbsolutePath());
+            e.printStackTrace();
+            return null;
+        }
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            OfflineAuth.error("Failed to calculate sha1 code of " + file.getAbsolutePath());
+            e.printStackTrace();
+            return null;
+        }
+        DigestInputStream digestInputStream = new DigestInputStream(fileInputStream, digest);
+        byte[] bytes = new byte[1024];
+        // read all file content
+        while (true) {
+            try {
+                if (!(digestInputStream.read(bytes) > 0)) break;
+            } catch (IOException e) {
+                OfflineAuth.error("Failed to calculate sha1 code of " + file.getAbsolutePath());
+                e.printStackTrace();
+                return null;
+            }
+            ;
+        }
+
+//        digest = digestInputStream.getMessageDigest();
+        byte[] resultByteArry = digest.digest();
+        return bytesToHexString(resultByteArry);
+    }
+
+    /**
+     * Convert a array of byte to hex String. <br/>
+     * Each byte is covert a two character of hex String. That is <br/>
+     * if byte of int is less than 16, then the hex String will append <br/>
+     * a character of '0'.
+     *
+     * @param bytes array of byte
+     * @return hex String represent the array of byte
+     */
+    public static String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            int value = b & 0xFF;
+            if (value < 16) {
+                // if value less than 16, then it's hex String will be only
+                // one character, so we need to append a character of '0'
+                sb.append("0");
+            }
+            sb.append(Integer.toHexString(value).toUpperCase());
+        }
+        return sb.toString();
     }
 
     public static boolean isOp(EntityPlayerMP entityPlayerMP) {

@@ -1,10 +1,14 @@
 package trollogyadherent.offlineauth.command;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.packet.PacketHandler;
+import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
@@ -59,7 +63,7 @@ public class CommandTest implements ICommand {
             return;
         }
 
-        //sender.addChatMessage(new ChatComponentText(OfflineAuth.varInstanceServer.playerRegistry.toString()));
+        sender.addChatMessage(new ChatComponentText(OfflineAuth.varInstanceServer.playerRegistry.toString()));
 
 
         /* try {
@@ -204,6 +208,12 @@ public class CommandTest implements ICommand {
 
             if (argString.length == 0) {
 
+            }   else {
+                System.out.println("sending delete caches packets");
+                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    IMessage msg = new ResetCachesPacket.SimpleMessage();
+                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                }
             }
 
 

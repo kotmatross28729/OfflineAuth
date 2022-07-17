@@ -6,9 +6,8 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
-import trollogyadherent.offlineauth.registry.ClientEntityPlayerRegistry;
+import trollogyadherent.offlineauth.registry.newreg.ClientRegistry;
 import trollogyadherent.offlineauth.rest.OAServerData;
-import trollogyadherent.offlineauth.registry.ClientPlayerRegistry;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -20,10 +19,11 @@ public class VarInstanceClient {
     public File datafile;
     public ArrayList<OAServerData> OAserverDataCache;
     public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-    public Field skinLocationfield = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
-    //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
-    public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
-    public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
+    public Field skinLocationfield = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");//public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
+
+    //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
+    //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
+    public ClientRegistry clientRegistry = new ClientRegistry();
     public boolean queriedForPlayerData = false;
     public boolean queriedForSkinFile = false;
     public Thread serverStatusVibecheckThread = null;

@@ -259,7 +259,7 @@ public class Database {
     }
 
     public static StatusResponseObject changePlayerSkin(String identifier, String password, byte[] skinBytes, boolean force) {
-        if (force && identifier == null || (password == null && !force) || skinBytes == null || skinBytes.length == 1) {
+        if (force && identifier == null || (password == null && !force) || (password.equals("") && !force) || skinBytes == null || skinBytes.length == 1) {
             return new StatusResponseObject("Failed, identifier or password, or skin null", 500);
         }
 

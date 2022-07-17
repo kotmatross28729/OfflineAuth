@@ -338,8 +338,7 @@ public class Request {
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
             String responseString = EntityUtils.toString(response.getEntity());
-            StatusResponseObject s = (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
-            return s;
+            return(StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
         } catch (Exception e) {
             OfflineAuth.error(e.getMessage());
             return new StatusResponseObject("Connection failed! Check if the port is correct", 500);

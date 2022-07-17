@@ -6,7 +6,10 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.database.DBPlayerData;
+import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -38,15 +41,30 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                     return null;
                 }
                 if (ServerSkinUtil.skinCachedOnServer(message.skinName)) {
-                    try {
-                        message.skinHash = Util.fileHash(ServerSkinUtil.getSkinFile(message.skinName));
-                    } catch (NoSuchAlgorithmException e) {
+                        message.skinHash = Util.sha1Code(ServerSkinUtil.getSkinFile(message.skinName));
+                    if (message.skinHash == null) {
+                        message.skinHash = "-1";
                         OfflineAuth.error("Failed to get hash for skin " + message.skinName);
-                        OfflineAuth.error(e.getMessage());
                         //e.printStackTrace();
                     }
                 } else {
-                    message.skinHash = "-1";
+                    DBPlayerData dbpd = Database.getPlayerDataByIdentifier(message.skinName);
+                    if (dbpd == null) {
+                        message.skinHash = "-1";
+                        message.exchangeCode = 1;
+                        return message;
+                    }
+                    byte[] skinBytes = dbpd.getSkinBytes();
+                    if (skinBytes == null || skinBytes.length == 1) {
+                        message.skinHash = "-1";
+                    }
+                    ServerSkinUtil.saveBytesToSkinCache(dbpd.getSkinBytes(), dbpd.getDisplayname());
+
+                        message.skinHash = Util.sha1Code(ServerSkinUtil.getSkinFile(message.skinName));
+                     if (message.skinHash == null) {
+                        message.skinHash = "-1";
+                        OfflineAuth.error("Failed to get hash for skin " + message.skinName);
+                    }
                 }
 
                 message.exchangeCode = 1;
@@ -62,30 +80,32 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                     OfflineAuth.warn("Skin " + message.skinName + " not found on server");
                     return null;
                 }
-                /*if (!ClientSkinUtil.skinCachedOnClient(message.skinName)) {
+                /*
+                if (!ClientSkinUtil.skinCachedOnClient(message.skinName)) {
                     OfflineAuth.warn("Skin " + message.skinName + " not found on client");
                     return null;
-                }*/
+                }
+                */
 
-                try {
-                    String localSkinHash = "0";
-                    if (ClientSkinUtil.skinPresentOnClient(message.skinName)) {
-                        localSkinHash = Util.fileHash(ClientSkinUtil.getSkinFile(message.skinName));
-                    }
-                    if (localSkinHash == null) {
-                        return null;
-                    }
-                    /* That means we have cached the skin, and it's the same file */
-                    if (localSkinHash.equals(message.skinHash)) {
-                        OfflineAuth.info("Skin " + message.skinName + " cached");
-                        return null;
-                    } else {
-                        /* The server will know we want to download the skin */
-                    }
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
+                String localSkinHash = "0";
+                if (ClientSkinUtil.skinPresentOnClient(message.skinName)) {
+                    localSkinHash = Util.sha1Code(ClientSkinUtil.getSkinFile(message.skinName));
+                }
+                if (localSkinHash == null) {
                     return null;
                 }
+                /* That means we have cached the skin, and it's the same file */
+                if (localSkinHash.equals(message.skinHash)) {
+                    OfflineAuth.info("Skin " + message.skinName + " already cached, not downloading");
+                    ResourceLocation skinResourceLocation = ClientSkinUtil.loadSkinFromCache(message.skinName);
+                    OfflineAuth.varInstanceClient.clientRegistry.setResourceLocation(message.displayName, skinResourceLocation);
+                    OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);
+                    return null;
+                } else {
+                    /* The server will know we want to download the skin */
+                    OfflineAuth.info("Skin " + message.skinName + " not cached, downloading");
+                }
+
 
                 message.exchangeCode = 2;
                 return message;
@@ -94,6 +114,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             if (ctx.side.isServer() && message.exchangeCode == 2)
             {
                 System.out.println("DownloadSkinPacket onMessage triggered, code 2 (from client)");
+                OfflineAuth.info("Player " + ctx.getServerHandler().playerEntity.getDisplayName() + " requests the skinbytes of " + message.skinName);
 
                 try {
                     message.skinBytes = Util.fileToBytes(ServerSkinUtil.getSkinFile(message.skinName));
@@ -110,9 +131,11 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             {
                 System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
                 try {
+                    OfflineAuth.info("Writing received skin to file: " + message.skinName);
                     ClientSkinUtil.bytesToClientSkin(message.skinBytes, message.skinName);
-                    OfflineAuth.varInstanceClient.playerRegistry.clear();
-                    OfflineAuth.varInstanceClient.queriedForSkinFile = false;
+                    ResourceLocation skinResourceLocation = ClientSkinUtil.loadSkinFromCache(message.skinName);
+                    OfflineAuth.varInstanceClient.clientRegistry.setResourceLocation(message.displayName, skinResourceLocation);
+                    OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -127,6 +150,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             private static final String c = ",";
 
             private int exchangeCode;  // When server queries for password, it's 0. When client responds, it's 1
+            private String displayName;
             private String skinName;
             private byte[] skinBytes;
             private String skinHash;
@@ -134,10 +158,11 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             // this constructor is required otherwise you'll get errors (used somewhere in fml through reflection)
             public SimpleMessage() {}
 
-            public SimpleMessage(String skinname)
+            public SimpleMessage(String skinName, String displayName)
             {
                 this.exchangeCode = 0;
-                this.skinName = skinname;
+                this.skinName = skinName;
+                this.displayName = displayName;
             }
 
             @Override
@@ -152,11 +177,12 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
                 this.skinBytes = Arrays.copyOfRange(receivingData, 9 + byteDataLen, receivingData.length);
 
-                String[] dataStringSplit = stringData.split(",");
+                String[] dataStringSplit = stringData.split(c);
                 this.exchangeCode = Integer.parseInt(dataStringSplit[0]);
                 this.skinName = dataStringSplit[1];
-                if (dataStringSplit.length == 3) {
-                    this.skinHash = dataStringSplit[2];
+                this.displayName = dataStringSplit[2];
+                if (dataStringSplit.length == 4) {
+                    this.skinHash = dataStringSplit[3];
                 }
             }
 
@@ -164,7 +190,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             public void toBytes(ByteBuf buf)
             {
                 try {
-                    String stringData = this.exchangeCode + c + this.skinName + c + this.skinHash;
+                    String stringData = this.exchangeCode + c + this.skinName + c + this.displayName + c + this.skinHash;
                     byte[] byteData = stringData.getBytes(Charsets.UTF_8);
                     int byteDataLen = byteData.length;
                     byte[] byteDataLenBytes = Util.fillByteArrayLeading(BigInteger.valueOf(byteDataLen).toByteArray(), 4);

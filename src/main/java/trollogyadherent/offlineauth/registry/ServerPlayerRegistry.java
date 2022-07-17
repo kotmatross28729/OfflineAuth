@@ -46,6 +46,14 @@ public class ServerPlayerRegistry {
         playerDataList.add(spd);
     }
 
+    public void setSkin(String displayName, String skinName) {
+        ServerPlayerData spd = getPlayerDataByDisplayName(displayName);
+        if (spd == null) {
+            return;
+        }
+        spd.skinName = skinName;
+    }
+
     @Override
     public String toString() {
         if (this.playerDataList.size() == 0) {

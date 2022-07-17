@@ -8,7 +8,9 @@ import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
 import trollogyadherent.offlineauth.event.ClientEventListener;
 import trollogyadherent.offlineauth.gui.GuiHandler;
+import trollogyadherent.offlineauth.gui.skin.SkinGuiHandler;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 
 ///import trollogyadherent.offlineauth.data.GsonTester;
@@ -33,6 +35,7 @@ public class ClientProxy extends CommonProxy {
 
         /* Config, sync is in common proxy */
         MinecraftForge.EVENT_BUS.register(new GuiHandler());
+        MinecraftForge.EVENT_BUS.register(new SkinGuiHandler());
         //Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile());
 
         /* Data file containing server infos */
@@ -55,6 +58,18 @@ public class ClientProxy extends CommonProxy {
         ClientEventListener clientPlayerJoined = new ClientEventListener();
         MinecraftForge.EVENT_BUS.register(clientPlayerJoined);
         FMLCommonHandler.instance().bus().register(clientPlayerJoined);
+
+        /* If there are no default skins in the default skin directory, unpacks its own skins */
+        File defaultSkinDir = new File(OfflineAuth.varInstanceClient.clientSkinsPath);
+        String[] fileList = defaultSkinDir.list();
+        if (fileList == null) {
+            OfflineAuth.error("Could not get default server skin directory!");
+            return;
+        }
+        if (fileList.length == 0) {
+            OfflineAuth.info("No skins present in the default skin directory, populating it with default ones");
+            ClientSkinUtil.transferDefaultSkins();
+        }
     }
 
     @SubscribeEvent

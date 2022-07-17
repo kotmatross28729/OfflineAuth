@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+@SuppressWarnings("UnusedReturnValue")
 public class ServerSkinUtil {
     public static boolean skinCachedOnServer(String name) {
         return (Util.fileExists(new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png")) || Util.fileExists(new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath, name + ".png")));
@@ -27,7 +28,16 @@ public class ServerSkinUtil {
     }
 
     public static void transferDefaultSkins() throws IOException {
-        for (int i = 0; i < 8; i ++) {
+        InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png");
+        if (is == null) {
+            OfflineAuth.error("Default skin resource not found!");
+            return;
+        }
+        BufferedImage img = ImageIO.read(is);
+        File output = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath + File.separator + "default.png");
+        ImageIO.write(img, "png", output);
+
+        /*for (int i = 0; i < 8; i ++) {
             String imageName = "default" + i + ".png";
             InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/" + imageName);
             if (is == null) {
@@ -37,7 +47,7 @@ public class ServerSkinUtil {
             BufferedImage img = ImageIO.read(is);
             File output = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath + File.separator + imageName);
             ImageIO.write(img, "png", output);
-        }
+        }*/
     }
 
     public static void saveBytesToSkinCache(byte[] skinBytes, String displayname) {
@@ -56,6 +66,7 @@ public class ServerSkinUtil {
         }
     }
 
+    @SuppressWarnings("CheckReturnValue")
     public static void removeSkinFromCache(String name) {
         File skin = new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png");
         if (skin.exists()) {
@@ -63,6 +74,7 @@ public class ServerSkinUtil {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static String getRandomDefaultSkinName() {
         File defaultSkinDir = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath);
         String[] fileList = defaultSkinDir.list();
@@ -80,10 +92,10 @@ public class ServerSkinUtil {
         int i = 0;
         for (String s : fileList) {
             if (Files.getFileExtension(s).equals("png")) {
+                if (i == rand) {
+                    return Files.getNameWithoutExtension(s);
+                }
                 i ++;
-            }
-            if (i == rand) {
-                return Files.getNameWithoutExtension(s);
             }
         }
         return null;

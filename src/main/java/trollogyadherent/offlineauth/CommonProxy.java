@@ -8,6 +8,7 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.Rest;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -113,7 +114,6 @@ public class CommonProxy {
             event.registerServerCommand(new CommandDeletePlayer());
             event.registerServerCommand(new CommandConnectDBServer());
             event.registerServerCommand(new CommandTest());
-            event.registerServerCommand(new CommandSkinChange());
             event.registerServerCommand(new CommandSetRestPassword());
             event.registerServerCommand(new CommandListUsers());
             event.registerServerCommand(new CommandDeleteRestPassword());
@@ -121,6 +121,7 @@ public class CommonProxy {
             event.registerServerCommand(new CommandGetMyUUID());
             event.registerServerCommand(new CommandChangePlayerUUID());
             event.registerServerCommand(new CommandConfig());
+            event.registerServerCommand(new CommandDeleteSkin());
         }
 
     }

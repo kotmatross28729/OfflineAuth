@@ -130,7 +130,7 @@ public class RsaKeyUtil {
 
     public static String encrypt(String message, Object key, KeyType type) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
-        Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         if (type == KeyType.PRIVATE) {
             cipher.init(Cipher.ENCRYPT_MODE, (PrivateKey)key);
         } else {
@@ -151,7 +151,7 @@ public class RsaKeyUtil {
 
     public static String decrypt(String message, Object key, KeyType type) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         byte[] encryptedMessageBytes = Base64.getDecoder().decode(message);
-        Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         if (type == KeyType.PRIVATE) {
             cipher.init(Cipher.DECRYPT_MODE, (PrivateKey)key);
         } else {

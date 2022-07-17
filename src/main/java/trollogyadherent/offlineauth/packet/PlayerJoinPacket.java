@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.packet;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -7,7 +8,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.http.util.EntityUtils;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
@@ -18,9 +18,7 @@ import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.request.RequestUtil;
 import trollogyadherent.offlineauth.request.objects.VibeCheckRequestBodyObject;
 import trollogyadherent.offlineauth.rest.OAServerData;
-import trollogyadherent.offlineauth.rest.ResponseObject;
 import trollogyadherent.offlineauth.rest.RestUtil;
-import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.*;
@@ -48,7 +46,6 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
         {
             /* Deleting skin cache */
             ClientSkinUtil.clearSkinCache();
-
 
             OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
             if (oasd == null) {
@@ -136,6 +133,14 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
         try {
             if (ctx.side.isServer() && message.exchangecode == 1)
             {
+                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    if (((EntityPlayerMP)o).getDisplayName().equals(entityPlayerMP.getDisplayName())) {
+                        continue;
+                    }
+                    IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(entityPlayerMP.getDisplayName());
+                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                }
+
                 System.out.println("PlayerJoinPacket onMessage triggered, code 1 (from client)");
                 if (message.encryptedData.equals("-")) {
                     entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
@@ -210,10 +215,6 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             skinName = dbpd.getDisplayname();
                         }
 
-                        /*if (ctx.getServerHandler().playerEntity.getDisplayName().equals("test")) {
-                            skinName = "sneed";
-                        }*/
-
                         /* Adding player to registry */
                         System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
                         System.out.println(OfflineAuth.varInstanceServer.playerRegistry);
@@ -227,6 +228,11 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                     OfflineAuth.error(e.getMessage());
                     e.printStackTrace();
                 }
+
+                /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    IMessage msg = new ResetCachesPacket.SimpleMessage();
+                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                }*/
                 return null;
             } else {
                 entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);

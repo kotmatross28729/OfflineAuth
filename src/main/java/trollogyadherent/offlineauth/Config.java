@@ -33,6 +33,7 @@ public class Config {
         public static final boolean allowOpsUUIDChange = false;
         public static final boolean allowDisplayNameChange = true;
         public static final boolean allowOpsDisplayNameChange = true;
+        public static final int maxSkinBytes = 500000;
     }
 
     /* Basically an enum for different config categories */
@@ -60,6 +61,7 @@ public class Config {
     public static boolean allowOpsUUIDChange = Defaults.allowOpsUUIDChange;
     public static boolean allowOpsDisplayNameChange = Defaults.allowOpsDisplayNameChange;
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
+    public static int maxSkinBytes = Defaults.maxSkinBytes;
 
     /* Sync for when config has changed, client */
     public static void synchronizeConfigurationClient(File configFile, boolean force) {
@@ -121,6 +123,9 @@ public class Config {
 
             Property allowDisplayNameChangeProperty = config.get(Categories.generalServer, "allowDisplayNameChange", Defaults.allowDisplayNameChange, "Allow or disallow users to change displaynames");
             allowDisplayNameChange = allowDisplayNameChangeProperty.getBoolean();
+
+            Property maxSkinBytesProperty = config.get(Categories.generalServer, "maxSkinBytes", Defaults.maxSkinBytes, "Maximum amount of bytes allowed in incoming skin upload request");
+            maxSkinBytes = maxSkinBytesProperty.getInt();
         }
 
         if(config.hasChanged()) {

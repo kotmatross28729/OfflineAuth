@@ -8,6 +8,7 @@ import net.minecraft.client.resources.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Util;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
@@ -38,6 +39,7 @@ public class SkinManagmentGUI extends GuiScreen {
 
     private GuiButton done;
     private GuiButton cancel;
+    private String status;
 
     private AvailableSkinsListGUI availableSkinsListGUI;
 
@@ -47,9 +49,11 @@ public class SkinManagmentGUI extends GuiScreen {
 
     public void initGui()
     {
-        this.buttonList.add(new GuiOptionButton(2, this.width / 2 - 154, this.height - 48, I18n.format("Open skin folder")));
-        this.buttonList.add(new GuiOptionButton(1, this.width / 2 + 4, this.height - 48, I18n.format("Upload")));
+        this.buttonList.add(new GuiOptionButton(2, this.width / 2 - /*154*/234, this.height - 48, I18n.format("Open skin folder")));
+        this.buttonList.add(new GuiOptionButton(1, this.width / 2  - 76/* + 4*/, this.height - 48, I18n.format("Upload")));
+        this.buttonList.add(new GuiOptionButton(3, this.width / 2 + 84, this.height - 48, I18n.format("Done")));
         this.availableSkins = new ArrayList();
+        this.status = "Select Skin";
         //this.field_146969_h = new ArrayList();
         //ResourcePackRepository resourcepackrepository = this.mc.getResourcePackRepository();
         //resourcepackrepository.updateRepositoryEntriesAll();
@@ -78,7 +82,7 @@ public class SkinManagmentGUI extends GuiScreen {
         String[] skinNames = ClientSkinUtil.getAvailableSkinNames();
         if (skinNames != null) {
             for (String s : skinNames) {
-                System.out.println("Adding skin " + s);
+                //System.out.println("Adding skin " + s);
                 SkinListEntry entry = new SkinListEntry(this, s);
                 this.availableSkins.add(entry);
             }
@@ -201,17 +205,22 @@ public class SkinManagmentGUI extends GuiScreen {
                     }
                 }
                 try {
+                    status = "Uploading...";
                     StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes, clientPubKey, clientPriv);
-                    if (stat != null) {
-                        return;
+                    if (stat.getStatusCode() == 200) {
+                        status = (char) 167 + "a" + stat.getStatus();
+                    } else {
+                        status = (char) 167 + "4" + stat.getStatus();
                     }
-                    System.out.println(stat.getStatus());
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                          InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
                          BadPaddingException | InvalidKeyException e) {
                     throw new RuntimeException(e);
                 }
                 //this.mc.displayGuiScreen(this.previous);
+            } else if (button.id == 3) {
+                ////this.mc.thePlayer = null;
+                this.mc.displayGuiScreen(this.previous);
             }
         }
     }
@@ -242,8 +251,17 @@ public class SkinManagmentGUI extends GuiScreen {
     {
         this.drawBackground(0);
         this.availableSkinsListGUI.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, I18n.format("Select Skin"), this.width / 2, 16, 16777215);
+        this.drawCenteredString(this.fontRendererObj, I18n.format(status), this.width / 2, 16, 16777215);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void keyTyped(char c, int k) {
+        super.keyTyped(c, k);
+
+        if (k == Keyboard.KEY_ESCAPE) {
+            /////this.mc.thePlayer = null;
+        }
     }
 }

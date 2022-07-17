@@ -1,6 +1,9 @@
 package trollogyadherent.offlineauth.rest;
 
 import com.google.common.net.MediaType;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.player.EntityPlayerMP;
 import spark.Request;
 import spark.Response;
 import spark.utils.IOUtils;
@@ -8,8 +11,11 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
+import trollogyadherent.offlineauth.packet.PacketHandler;
+import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.request.objects.*;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.*;
 
 import javax.crypto.BadPaddingException;
@@ -472,18 +478,32 @@ public class Rest {
             validToken = OfflineAuth.varInstanceServer.keyTokenRegistry.grantIdentifierAccess(identifier, token, type);
         }
 
+        /* The verification token MUST be consumed, that's why these two simple checks are not at the top of the function */
+        if (!Config.allowSkinUpload) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Skin upload is disabled", 500));
+        }
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Skin too large, limit: " + Config.maxSkinBytes + " bytes", 500));
+        }
+
         try {
             StatusResponseObject changeResult;
             if (validToken) {
-                System.out.println(skinBytes);
                 changeResult = Database.changePlayerSkin(identifier, "", skinBytes, true);
             } else {
                 changeResult = Database.changePlayerSkin(identifier, password, skinBytes, false);
             }
 
-            String res = JsonUtil.objectToJson(changeResult);
-            System.out.println(res);
-            return res;
+            if (changeResult.getStatusCode() == 200) {
+                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    IMessage msg = new ResetCachesPacket.SimpleMessage();
+                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                }
+                ServerSkinUtil.clearSkinCache();
+            }
+
+            return JsonUtil.objectToJson(changeResult);
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing displayname", 500);

@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.event;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -11,9 +12,8 @@ import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.PlayerJoinPacket;
-import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
+import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.util.ServerUtil;
-import trollogyadherent.offlineauth.util.Util;
 
 import java.util.UUID;
 
@@ -72,5 +72,10 @@ public class ServerEventListener {
         System.out.println("SNEED ALERT Player logged out: " + e.player.getDisplayName());
         System.out.println("Removing skinRegistry entry for displayname " + e.player.getDisplayName());
         OfflineAuth.varInstanceServer.playerRegistry.deleteByIdentifier(OfflineAuth.varInstanceServer.playerRegistry.getIdentifierFromDisplayName(e.player.getDisplayName()));
+        System.out.println(OfflineAuth.varInstanceServer.playerRegistry.toString());
+        /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+            IMessage msg = new ResetCachesPacket.SimpleMessage();
+            PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+        }*/
     }
 }
