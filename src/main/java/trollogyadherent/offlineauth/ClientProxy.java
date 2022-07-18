@@ -3,6 +3,7 @@ package trollogyadherent.offlineauth;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
@@ -37,7 +38,7 @@ public class ClientProxy extends CommonProxy {
         /* Config, sync is in common proxy */
         MinecraftForge.EVENT_BUS.register(new GuiHandler());
         MinecraftForge.EVENT_BUS.register(new SkinGuiHandler());
-        MinecraftForge.EVENT_BUS.register(new GameOverlayGuiHandler());
+        MinecraftForge.EVENT_BUS.register(new GameOverlayGuiHandler(Minecraft.getMinecraft()));
         //Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile());
 
         /* Data file containing server infos */

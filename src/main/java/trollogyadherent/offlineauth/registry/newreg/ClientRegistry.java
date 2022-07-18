@@ -95,6 +95,22 @@ public class ClientRegistry {
         return data.skinNameIsBeingQueried;
     }
 
+    public void setTabMenuResourceLocation(String displayName, ResourceLocation tabMenuResourceLocation) {
+        Data data = getDataByDisplayName(displayName);
+        if (data == null) {
+            return;
+        }
+        data.tabMenuResourceLocation = tabMenuResourceLocation;
+    }
+
+    public ResourceLocation getTabMenuResourceLocation(String displayName) {
+        Data data = getDataByDisplayName(displayName);
+        if (data == null) {
+            return null;
+        }
+        return data.tabMenuResourceLocation;
+    }
+
     public void clear() {
         this.playerEntities = new ArrayList<>();
     }
@@ -104,6 +120,7 @@ public class ClientRegistry {
         ResourceLocation skinResourceLocation;
         EntityPlayer entityPlayer;
         boolean skinNameIsBeingQueried;
+        ResourceLocation tabMenuResourceLocation;
 
         Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer) {
             this.skinName = skinName;

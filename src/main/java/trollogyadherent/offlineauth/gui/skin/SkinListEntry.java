@@ -56,7 +56,7 @@ public class SkinListEntry {
             bufferedImage = bufferedImageNew;
         }
         this.offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
-        temp = new ResourceLocation("offlineauth", "slinlistentryskins/" + skinName);
+        temp = new ResourceLocation("offlineauth", "skinlistentryskins/" + skinName);
         ClientSkinUtil.loadTexture(bufferedImage, temp, this.offlineTextureObject);
     }
 

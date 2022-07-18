@@ -37,6 +37,7 @@ public class VarInstanceClient {
 
     /* Initialized in post init, client proxy, because it needs mods to load their items first (3d player model holding items) */
     public SkinGuiRenderTicker skinGuiRenderTicker;
+    public String lastUsedOfflineSkinFile = Paths.get(OfflineAuth.rootPath, "lastskin").toString();;
 
     public VarInstanceClient() {
         skinLocationfield.setAccessible(true);

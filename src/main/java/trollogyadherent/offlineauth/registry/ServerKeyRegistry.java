@@ -4,6 +4,9 @@ import trollogyadherent.offlineauth.util.AesKeyUtil;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ServerKeyRegistry {
     private HashMap<String, AesKeyUtil.AesKeyPlusIv> map;
@@ -12,6 +15,13 @@ public class ServerKeyRegistry {
     public ServerKeyRegistry() {
         map = new HashMap<>();
         ipHostsUsagecount = new HashMap<>();
+        Runnable clearRegistryRunnable = new Runnable() {
+            public void run() {
+                clear();
+            }
+        };
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(clearRegistryRunnable, 0, 5, TimeUnit.SECONDS);
     }
 
     String concatIpHost(String ip, String host) {
@@ -44,5 +54,9 @@ public class ServerKeyRegistry {
 
     public void remove(String ip, String host) {
         map.remove(concatIpHost(ip, host));
+    }
+
+    public void clear() {
+        map = new HashMap<>();
     }
 }
