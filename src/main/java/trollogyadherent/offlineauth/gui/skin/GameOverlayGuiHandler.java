@@ -111,10 +111,10 @@ public class GameOverlayGuiHandler extends GuiIngame{
                         OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName));
                     } else {
                         ResourceLocation rl;
-                        File imageFile = ClientSkinUtil.getSkinFile(displayName);
+                        File imageFile = ClientSkinUtil.getSkinFile(OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName));
                         if (imageFile == null || !imageFile.exists()) {
                             //OfflineAuth.error("Error skin image does not exist: " + displayName);
-                            return;
+                            continue;
                         } else {
                             if (OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName) == null) {
                                 BufferedImage bufferedImage;
