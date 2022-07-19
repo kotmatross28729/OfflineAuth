@@ -107,18 +107,18 @@ public class CommonProxy {
     // register server commands in this event handler
     public void serverStarting(FMLServerStartingEvent event) {
         if (Util.isServer()) {
-            event.registerServerCommand(new CommandUUID());
+            //event.registerServerCommand(new CommandUUID());
             event.registerServerCommand(new CommandRegisterPlayerServer());
             event.registerServerCommand(new CommandPlayerExistsServer());
             event.registerServerCommand(new CommandDeletePlayer());
-            event.registerServerCommand(new CommandConnectDBServer());
-            event.registerServerCommand(new CommandTest());
-            event.registerServerCommand(new CommandSetRestPassword());
+            //event.registerServerCommand(new CommandConnectDBServer());
+            //event.registerServerCommand(new CommandTest());
+            //event.registerServerCommand(new CommandSetRestPassword());
             event.registerServerCommand(new CommandListUsers());
-            event.registerServerCommand(new CommandDeleteRestPassword());
+            //event.registerServerCommand(new CommandDeleteRestPassword());
             event.registerServerCommand(new CommandGenToken());
-            event.registerServerCommand(new CommandGetMyUUID());
-            event.registerServerCommand(new CommandChangePlayerUUID());
+            //event.registerServerCommand(new CommandGetMyUUID());
+            //event.registerServerCommand(new CommandChangePlayerUUID());
             event.registerServerCommand(new CommandConfig());
             event.registerServerCommand(new CommandDeleteSkin());
             event.registerServerCommand(new CommandGetServerFingerprint());

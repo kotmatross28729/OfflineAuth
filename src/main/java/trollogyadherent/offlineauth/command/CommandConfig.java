@@ -29,7 +29,7 @@ public class CommandConfig implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender var1) {
-        return "oaconfig <list|help|get|set> [config_string] [value]";
+        return "/oaconfig <list|help|get|set> [config_string] [value]";
     }
 
     @Override

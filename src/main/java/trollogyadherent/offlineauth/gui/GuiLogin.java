@@ -357,6 +357,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     private void actionRegister() {
+        actionSave(true, false);
         if (!Util.validUsername(displayname.getText())) {
             message = (char) 167 + "4Invalid Display Name. Must be alphanumeric and from 3 to 16 chars.";
             return;

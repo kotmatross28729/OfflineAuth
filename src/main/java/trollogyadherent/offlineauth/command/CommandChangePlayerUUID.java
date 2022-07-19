@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.command;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,12 +8,9 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.packet.CopyToClipboardPacket;
-import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
