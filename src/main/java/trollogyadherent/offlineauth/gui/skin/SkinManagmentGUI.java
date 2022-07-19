@@ -186,6 +186,7 @@ public class SkinManagmentGUI extends GuiScreen {
                             e.printStackTrace();
                         }
                     }
+                    ClientSkinUtil.setLastUsedOfflineSkinName(((SkinListEntry)this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName);
                     this.mc.displayGuiScreen(this.previous);
                     return;
                 }

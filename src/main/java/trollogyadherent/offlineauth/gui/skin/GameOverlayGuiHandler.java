@@ -121,7 +121,6 @@ public class GameOverlayGuiHandler extends GuiIngame{
                                 try {
                                     bufferedImage = ImageIO.read(imageFile);
                                     if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
-                                        System.out.println("texture is not square, " + displayName);
                                         BufferedImage bufferedImageNew = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight() * 2, bufferedImage.getType());
                                         Graphics g = bufferedImageNew.getGraphics();
                                         g.drawImage(bufferedImage, 0, 0, null);

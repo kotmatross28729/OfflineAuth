@@ -12,15 +12,22 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+import trollogyadherent.offlineauth.skin.client.LegacyConversion;
 import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class ClientEventListener {
@@ -29,8 +36,6 @@ public class ClientEventListener {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onPlayerJoin(EntityJoinWorldEvent e) {
-        //System.out.println("something joined: " + e.entity.getClass().getName());
-
         /* If singleplayer, we don't do that */
         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isSinglePlayer()) {
             return;
@@ -113,6 +118,7 @@ public class ClientEventListener {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onPlayerLeaveFMLEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+        OfflineAuth.varInstanceClient.offlineSkinLoaded = false;
         /* If singleplayer, we don't do that */
         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isSinglePlayer()) {
             return;
@@ -138,7 +144,9 @@ public class ClientEventListener {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void ontick(TickEvent.PlayerTickEvent e) throws IllegalAccessException {
-        if (ClientUtil.isSinglePlayer()) {
+        /* Tick only for current player */
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc == null) {
             return;
         }
 
@@ -147,11 +155,14 @@ public class ClientEventListener {
             return;
         }
 
-        /* Tick only for current player */
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc == null) {
+        if (ClientUtil.isSinglePlayer()) {
+            if (!OfflineAuth.varInstanceClient.offlineSkinLoaded) {
+                OfflineAuth.varInstanceClient.offlineSkinLoaded = true;
+                loadOfflineSkin();
+            }
             return;
         }
+
         EntityClientPlayerMP player = mc.thePlayer;
         /* We only want to load our own skin */
         if (!e.player.getDisplayName().equals(player.getDisplayName())) {
@@ -233,5 +244,36 @@ public class ClientEventListener {
         }
 
         OfflineAuth.varInstanceClient.skinLocationfield.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+    }
+
+    public static void loadOfflineSkin() {
+        String skinName = ClientSkinUtil.getLastUsedOfflineSkinName();
+        if (skinName != null) {
+            ResourceLocation rl = new ResourceLocation("offlineauth", "offlineskin/" + skinName);
+            File imageFile = ClientSkinUtil.getSkinFile(skinName);
+            if (imageFile == null || !imageFile.exists()) {
+                OfflineAuth.error("Error skin image does not exist: " + skinName);
+                return;
+            }
+            BufferedImage bufferedImage;
+            try {
+                bufferedImage = ImageIO.read(imageFile);
+            } catch (IOException e_) {
+                OfflineAuth.error("Error loading skin image " + skinName);
+                e_.printStackTrace();
+                return;
+            }
+            if (bufferedImage.getHeight() == 64) {
+                bufferedImage = new LegacyConversion().convert(bufferedImage);
+            }
+            ClientSkinUtil.OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
+            ClientSkinUtil.loadTexture(bufferedImage, rl, offlineTextureObject);
+            try {
+                OfflineAuth.varInstanceClient.skinLocationfield.set(Minecraft.getMinecraft().thePlayer, rl);
+            } catch (IllegalAccessException e_) {
+                OfflineAuth.error("Fatal error while applying skin");
+                e_.printStackTrace();
+            }
+        }
     }
 }

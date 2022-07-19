@@ -12,9 +12,7 @@ import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class ClientSkinUtil {
     public static class OfflineTextureObject extends AbstractTexture
@@ -179,6 +177,27 @@ public class ClientSkinUtil {
             BufferedImage img = ImageIO.read(is);
             File output = new File(OfflineAuth.varInstanceClient.clientSkinsPath + File.separator + skin + ".png");
             ImageIO.write(img, "png", output);
+        }
+    }
+
+    public static void setLastUsedOfflineSkinName(String name) {
+        try {
+            FileWriter writer = new FileWriter(OfflineAuth.varInstanceClient.lastUsedOfflineSkinFile);
+            writer.write(name);
+            writer.close();
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to save last used offline skin to file!");
+            e.printStackTrace();
+        }
+    }
+
+    public static String getLastUsedOfflineSkinName() {
+        try {
+            return new BufferedReader(new FileReader(OfflineAuth.varInstanceClient.lastUsedOfflineSkinFile)).readLine();
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to load last used offline skin from file!");
+            e.printStackTrace();
+            return null;
         }
     }
 }

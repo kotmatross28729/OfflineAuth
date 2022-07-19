@@ -240,14 +240,6 @@ public class SkinGuiRenderTicker
         if (bufferedImage.getHeight() == 64) {
             bufferedImage = new LegacyConversion().convert(bufferedImage);
         }
-        /*if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
-            System.out.println("texture is not square, " + skinName);
-            BufferedImage bufferedImageNew = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight() * 2, bufferedImage.getType());
-            Graphics g = bufferedImageNew.getGraphics();
-            g.drawImage(bufferedImage, 0, 0, null);
-            g.dispose();
-            bufferedImage = bufferedImageNew;
-        }*/
         ClientSkinUtil.OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
         ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation, offlineTextureObject);
