@@ -146,9 +146,8 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                     entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                 }
 
-                //if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(ctx.getServerHandler().netManager.getSocketAddress()., request.host())) {
                 String ip  = ((InetSocketAddress)ctx.getServerHandler().playerEntity.playerNetServerHandler.netManager.getSocketAddress()).getAddress().getHostAddress();
-                String host = ((InetSocketAddress)ctx.getServerHandler().playerEntity.playerNetServerHandler.netManager.getSocketAddress()).getHostName() + ":" + Config.port;
+                String host = ((InetSocketAddress)ctx.getServerHandler().playerEntity.playerNetServerHandler.netManager.getSocketAddress()).getHostString();
                 if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(ip, host)) {
                     OfflineAuth.info("No keypair associated with this host and ip");
                     entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
