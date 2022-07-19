@@ -24,7 +24,9 @@ import trollogyadherent.offlineauth.util.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -57,6 +59,11 @@ public class Rest {
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeySpecException, BadPaddingException, NoSuchProviderException, InvalidKeyException {
         OfflineAuth.info("Someone tries to check my vibe, ip: " + request.ip() + ", host: " + request.host());
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
+
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.ip(), request.host())) {
             OfflineAuth.info("No keypair associated with this host and ip");
             return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
@@ -101,6 +108,10 @@ public class Rest {
     public static String register(Request request, Response response) throws NoSuchAlgorithmException {
         //OfflineAuth.info("Someone tries to register an account, identifier: " + request.queryParams("identifier") + ", displayname: " + request.queryParams("displayname"));
         OfflineAuth.info("Someone tries to register an account, ip: " + request.ip() + ", host: " + request.host());
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.ip(), request.host())) {
             OfflineAuth.info("No keypair associated with this host and ip");
@@ -147,6 +158,10 @@ public class Rest {
     public static String delete(Request request, Response response) throws NoSuchAlgorithmException {
         OfflineAuth.info("Someone tries to delete an account, ip: " + request.ip() + ", host: " + request.host());
 
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
+
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.ip(), request.host())) {
             OfflineAuth.info("No keypair associated with this host and ip");
             return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
@@ -190,6 +205,10 @@ public class Rest {
     public static String changePassword(Request request, Response response) throws NoSuchAlgorithmException {
         OfflineAuth.info("Someone tries to change a password, ip: " + request.ip() + ", host: " + request.host());
 
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
+
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.ip(), request.host())) {
             OfflineAuth.info("No keypair associated with this host and ip");
             return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
@@ -218,6 +237,10 @@ public class Rest {
 
     public static String changeDisplayName(Request request, Response response) throws NoSuchAlgorithmException {
         OfflineAuth.info("Someone tries to change a displayname, identifier: " + request.queryParams("identifier") + ", new display name: " + request.queryParams("new"));
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
 
         ChangeDisplaynameRequestBodyObject rbo = (ChangeDisplaynameRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.ip(), request.host()), ChangeDisplaynameRequestBodyObject.class);
         if (rbo == null) {
@@ -252,7 +275,7 @@ public class Rest {
         }
     }
 
-    /* Not secure, deprecated */
+    /* Not secure, unused */
     public static String listAccounts(Request request, Response response) throws NoSuchAlgorithmException, InvalidKeySpecException {
         OfflineAuth.info("Someone tries to list all accounts");
         String restpassword = request.queryParams("restpassword");
@@ -290,7 +313,7 @@ public class Rest {
         }
     }
 
-    /* Not secure, deprecated */
+    /* Not secure, unused */
     public static String handleToken(Request request, Response response) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         if (request.queryParams("action") == null) {
             return JsonUtil.objectToJson(new StatusResponseObject("Please specify an action: list, generate, delete, clear", 500));
@@ -349,31 +372,31 @@ public class Rest {
     }
 
     public static Object handlePubKey(Request request, Response response) throws IOException {
-        //try {
-            //byte[] pubKeyBytes = ServerUtil.loadServerPublicKey().getEncoded();
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
 
-            File pubKeyFile = new File(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "public.key");
-            response.header("Content-Disposition", "attachment; filename=\"public.key\"");
-            response.type(MediaType.OCTET_STREAM.toString());
-            response.raw().setContentLength((int) pubKeyFile.length());
-            //response.status();
+        File pubKeyFile = new File(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "public.key");
+        response.header("Content-Disposition", "attachment; filename=\"public.key\"");
+        response.type(MediaType.OCTET_STREAM.toString());
+        response.raw().setContentLength((int) pubKeyFile.length());
+        //response.status();
 
-            final ServletOutputStream os = response.raw().getOutputStream();
-            final FileInputStream in = new FileInputStream(pubKeyFile);
-            IOUtils.copy(in, os);
-            in.close();
-            os.close();
+        final ServletOutputStream os = response.raw().getOutputStream();
+        final FileInputStream in = new FileInputStream(pubKeyFile);
+        IOUtils.copy(in, os);
+        in.close();
+        os.close();
 
-            return null;
-        /*} catch (IOException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
-            return JsonUtil.objectToJson(new StatusResponseObject("Error while getting key", 500));
-            //throw new RuntimeException(e);
-        }*/
+        return null;
     }
 
     public static Object handleTempPubKey(Request request, Response response) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         OfflineAuth.info("Ip " + request.ip() + " from host " + request.host() + " requests temporary public key");
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
 
         AesKeyUtil.AesKeyPlusIv tempAesKeyPlusIv = OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.ip(), request.host());
         /* Concatenating iv and aes key byte arrays, just a fancy way to do it */
@@ -414,6 +437,11 @@ public class Rest {
 
     public static String handleTokenChallenge(Request request, Response response) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         OfflineAuth.info("Someone tries to get a key token, ip: " + request.ip() + ", host: " + request.host());
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
+
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.ip(), request.host())) {
             OfflineAuth.info("No keypair associated with this host and ip");
             return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
@@ -488,6 +516,16 @@ public class Rest {
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("Skin too large, limit: " + Config.maxSkinBytes + " bytes", 500));
+        }
+
+        /* Checking if the bytes are a legit png */
+        try {
+            BufferedImage test = ImageIO.read(new ByteArrayInputStream(skinBytes));
+            if (test == null) {
+                return JsonUtil.objectToJson(new StatusResponseObject("Invalid skin file!", 500));
+            }
+        } catch (IOException e) {
+            return JsonUtil.objectToJson(new StatusResponseObject("Invalid skin file!", 500));
         }
 
         try {

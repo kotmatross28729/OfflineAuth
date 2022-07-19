@@ -46,9 +46,9 @@ public class ClientSkinUtil {
         {
             //BufferedImage result = ImageIO.read(new File(new File(Minecraft.getMinecraft().mcDataDir, "cachedImages"), name));
             BufferedImage result = ImageIO.read(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"));
-            /*if (result.getWidth() != 64 || (result.getHeight() != 64 && result.getHeight() != 32)) {
+            if (result == null) {
                 return null;
-            }*/
+            }
             if (result.getHeight() == 64) {
                 result = new LegacyConversion().convert(result);
             }

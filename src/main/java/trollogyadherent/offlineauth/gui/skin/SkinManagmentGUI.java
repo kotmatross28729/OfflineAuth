@@ -28,9 +28,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 public class SkinManagmentGUI extends GuiScreen {
@@ -225,7 +223,9 @@ public class SkinManagmentGUI extends GuiScreen {
                 }
                 try {
                     status = "Uploading...";
-                    StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes, clientPubKey, clientPriv);
+                    /*byte [] fakeBytes = new byte[skinBytes.length];
+                    new Random().nextBytes(fakeBytes);*/
+                    StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes /*fakeBytes*/, clientPubKey, clientPriv);
                     if (stat.getStatusCode() == 200) {
                         status = (char) 167 + "a" + stat.getStatus();
                     } else {
