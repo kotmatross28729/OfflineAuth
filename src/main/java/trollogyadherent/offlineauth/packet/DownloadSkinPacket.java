@@ -48,7 +48,8 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                         //e.printStackTrace();
                     }
                 } else {
-                    DBPlayerData dbpd = Database.getPlayerDataByIdentifier(message.skinName);
+                    //DBPlayerData dbpd = Database.getPlayerDataByIdentifier(message.skinName);
+                    DBPlayerData dbpd = Database.getPlayerDataByDisplayName(message.displayName);
                     if (dbpd == null) {
                         message.skinHash = "-1";
                         message.exchangeCode = 1;

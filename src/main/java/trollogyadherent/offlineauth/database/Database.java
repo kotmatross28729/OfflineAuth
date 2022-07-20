@@ -206,10 +206,8 @@ public class Database {
         try {
             if (isCommand || playerValidIgnoreDisplayName(identifier, password)) {
 
-                String data = identifier + "," + newDisplayName + "," + pd.uuid + "," + pd.passwordHash + "," + pd.salt + "," + pd.skinBytes + "," + pd.publicKey;
-
                 try {
-                    OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), bytes("data:" + data));
+                    putPlayerDataInDB(identifier, newDisplayName, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes);
 
                     return new StatusResponseObject("Successfully changed displayname!", 200);
                 } catch (Error e) {

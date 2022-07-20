@@ -523,11 +523,11 @@ public class GuiLogin extends GuiScreen {
                     } else {
                         message = (char) 167 + "4Error while talking with the server";
                     }
-                } catch (URISyntaxException | IOException | NoSuchAlgorithmException | InvalidKeySpecException |
+                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException  |
                          InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
-                         BadPaddingException | InvalidKeyException | NoSuchProviderException e) {
+                         BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException  e) {
                     OfflineAuth.error(e.getMessage());
-                    //throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         });

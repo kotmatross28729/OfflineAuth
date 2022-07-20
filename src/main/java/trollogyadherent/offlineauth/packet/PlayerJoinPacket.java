@@ -85,7 +85,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                     OfflineAuth.error("Client Private or public key is null");
                     return message;
                 }
-                String tempToken = null;
+                String tempToken;
                 try {
                     tempToken = Request.getChallengeToken(oasd.getIp(), oasd.getRestPort(), oasd.getIdentifier(), clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.VIBECHECK);
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
@@ -102,7 +102,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                 clientKeyToken = tempToken;
             }
 
-            AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = null;
+            AesKeyUtil.AesKeyPlusIv aesKeyPlusIv;
             try {
                 aesKeyPlusIv = Request.getServerTempKeyPlusIv(oasd.getIp(), oasd.getRestPort());
             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -155,6 +155,10 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                 }
                 byte[] encryptedMessageBytes = Base64.getDecoder().decode(message.encryptedData);
                 VibeCheckRequestBodyObject rbo = (VibeCheckRequestBodyObject) RestUtil.getRequestBodyObject(encryptedMessageBytes, OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(ip, host), VibeCheckRequestBodyObject.class);
+                if (rbo == null) {
+                    entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
+                    return null;
+                }
 
                 String identifier = rbo.getIdentifier();
                 String displayname = rbo.getDisplayname();

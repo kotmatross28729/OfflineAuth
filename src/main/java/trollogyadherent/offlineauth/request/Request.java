@@ -207,7 +207,6 @@ public class Request {
 
         post.setEntity(RequestUtil.getChangeDisplaynameRequestBody(aesKeyPlusIv, identifier, password, newDisplayName, clientKeyToken));
 
-
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
             String responseString = EntityUtils.toString(response.getEntity());

@@ -26,6 +26,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -236,10 +237,14 @@ public class Rest {
     }
 
     public static String changeDisplayName(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to change a displayname, identifier: " + request.queryParams("identifier") + ", new display name: " + request.queryParams("new"));
+        OfflineAuth.info("Someone tries to change a displayname, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+        }
+
+        if (!Config.allowDisplayNameChange) {
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, false, 500);
         }
 
         ChangeDisplaynameRequestBodyObject rbo = (ChangeDisplaynameRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), ChangeDisplaynameRequestBodyObject.class);
