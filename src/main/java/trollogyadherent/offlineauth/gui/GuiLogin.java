@@ -196,7 +196,7 @@ public class GuiLogin extends GuiScreen {
         this.offline = new GuiButton(1, this.width / 2 - 50, this.basey + 135, 100, 20, "Check Registration");
         this.deleteAccount = new GuiButton(2, this.width / 2 + 55, this.basey + 135, 100, 20, "Delete Account");
         this.changePW = new GuiButton(3, this.width / 2 - 155, this.basey + 165, 100, 20, "Change Password");
-        this.changeDisplayName = new GuiButton(31, this.width / 2 - 50, this.basey + 165, 100, 20, "Change Displayn.");
+        this.changeDisplayName = new GuiButton(31, this.width / 2 - 50, this.basey + 165, 100, 20, "Change Name");
         this.uploadSkin = new GuiButton(4, this.width / 2 + 55, this.basey + 165, 100, 20, "Upload Skin");
         this.togglePWButton = new TogglePWButton(10, this.pw.xPosition + this.pw.width - 18, this.pw.yPosition + 2, 16, 16);
         this.buttonList.add(this.login);

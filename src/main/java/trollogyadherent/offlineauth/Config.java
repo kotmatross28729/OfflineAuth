@@ -26,7 +26,7 @@ public class Config {
         public static final boolean allowSkinUpload = true;
         public static final String motd = "Hello World"; //unused
         public static final String other = "Sneed's Feed & Seed"; //unused
-        public static final String kickMessage = "You are not registerd on this server!";
+        public static final String kickMessage = "You are not registered on this server!";
         public static final boolean userListPublic = false;
         public static final String accountDeletionKickMessage = "Your account has been terminated ;_;";
         public static final boolean allowOpsTokenGen = true;
