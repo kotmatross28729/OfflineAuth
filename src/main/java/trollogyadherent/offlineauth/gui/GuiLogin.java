@@ -184,7 +184,7 @@ public class GuiLogin extends GuiScreen {
         this.newPW.setText("");
 
         this.port = new GuiTextField(this.fontRendererObj,this.width / 2 - 55, this.basey + 60, 50, 20);
-        this.port.setText("4567");
+        this.port.setText(String.valueOf(Config.port));
         this.port.setMaxStringLength(512);
 
         this.token = new GuiTextField(this.fontRendererObj,this.width / 2 + 5, this.basey + 60, 150, 20);
