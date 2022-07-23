@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ServerEventListener {
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent e) throws IllegalAccessException {
-        System.out.println("SNEED ALERT Player logged in: " + e.player.getDisplayName());
+        OfflineAuth.info("Player joined server: " + e.player.getDisplayName());
         EntityPlayer player = e.player;
 
         IMessage msg = new PlayerJoinPacket.SimpleMessage();
@@ -69,10 +69,10 @@ public class ServerEventListener {
 
     @SubscribeEvent
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent e) {
-        System.out.println("SNEED ALERT Player logged out: " + e.player.getDisplayName());
-        System.out.println("Removing skinRegistry entry for displayname " + e.player.getDisplayName());
+        OfflineAuth.info("Player quit server out: " + e.player.getDisplayName());
+        //System.out.println("Removing skinRegistry entry for displayname " + e.player.getDisplayName());
         OfflineAuth.varInstanceServer.playerRegistry.deleteByIdentifier(OfflineAuth.varInstanceServer.playerRegistry.getIdentifierFromDisplayName(e.player.getDisplayName()));
-        System.out.println(OfflineAuth.varInstanceServer.playerRegistry.toString());
+        //System.out.println(OfflineAuth.varInstanceServer.playerRegistry.toString());
         /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
             IMessage msg = new ResetCachesPacket.SimpleMessage();
             PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);

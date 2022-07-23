@@ -104,12 +104,10 @@ public class Request {
              CloseableHttpResponse response = httpClient.execute(post)) {
 
             String responseString = EntityUtils.toString(response.getEntity());
-            System.out.println("Response: " + responseString);
             return (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
         } catch (Exception e) {
-            //e.printStackTrace();
-            //OfflineAuth.error("Failed to create user " + username + "!");
             OfflineAuth.error(e.getMessage());
+            e.printStackTrace();
             return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
         }
     }

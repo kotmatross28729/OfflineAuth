@@ -6,7 +6,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 
 @SideOnly(Side.CLIENT)
-class GuiPasswordField extends GuiTextFieldCopy {
+class GuiPasswordField extends GuiTextFieldCopyForPassword {
 
     GuiPasswordField(FontRenderer renderer, int posx, int posy, int x, int y) {
         super(renderer, posx, posy, x, y);
@@ -23,7 +23,6 @@ class GuiPasswordField extends GuiTextFieldCopy {
     /* Ripped from mojang code */
     public void drawTextBox() {
         String s_ = this.getPW();
-        setText(this.getText());
 
         if (super.getVisible())
         {

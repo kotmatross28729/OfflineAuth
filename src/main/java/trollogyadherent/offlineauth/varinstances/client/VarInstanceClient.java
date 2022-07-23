@@ -20,7 +20,6 @@ public class VarInstanceClient {
     public ArrayList<OAServerData> OAserverDataCache;
     public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     public Field skinLocationfield = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");//public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
-
     //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
     //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
     public ClientRegistry clientRegistry = new ClientRegistry();

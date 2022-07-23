@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
@@ -47,7 +48,7 @@ public class GuiLogin extends GuiScreen {
     private GuiButton save;
     private GuiCheckBox useKey;
     private GuiButton manageKey;
-    private GuiTextField displayname;
+    private GuiTextFieldEnabledSectionSign displayname;
 
     private GuiScreen prev;
     public GuiScreen prev_ = prev;
@@ -104,13 +105,13 @@ public class GuiLogin extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
 
-        this.drawString(this.fontRendererObj, "Identifier:", this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Display Name:", this.width / 2 - 155, this.basey + 45, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Port:", this.width / 2 - 55, this.basey + 45, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Password:", this.width / 2 - 55, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "New Password:", this.width / 2 + 55, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Use Key:", this.width / 2 - 155,  this.basey + 90, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Registration Token:", this.width / 2 + 5, this.basey + 45, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.identifier"), this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.displayname"), this.width / 2 - 155, this.basey + 45, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.port"), this.width / 2 - 55, this.basey + 45, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.password"), this.width / 2 - 55, this.basey, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.new_password"), this.width / 2 + 55, this.basey, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.use_key"), this.width / 2 - 155,  this.basey + 90, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.registration_token"), this.width / 2 + 5, this.basey + 45, Color.WHITE.getRGB());
         if (!(this.message == null || this.message.isEmpty())) {
             this.drawCenteredString(this.fontRendererObj, this.message, this.width / 2, this.basey - 15, 0xFFFFFF);
         }
@@ -173,7 +174,7 @@ public class GuiLogin extends GuiScreen {
         this.identifier.setMaxStringLength(512);
         //this.username.setFocused(true);
 
-        this.displayname = new GuiTextField(this.fontRendererObj, this.width / 2 - 155, this.basey + 60, 90, 20);
+        this.displayname = new GuiTextFieldEnabledSectionSign(this.fontRendererObj, this.width / 2 - 155, this.basey + 60, 90, 20);
         this.displayname.setMaxStringLength(512);
 
         this.pw = new GuiPasswordField(this.fontRendererObj, this.width / 2 - 55, this.basey + 15, 100, 20);
@@ -192,12 +193,12 @@ public class GuiLogin extends GuiScreen {
         this.token.setMaxStringLength(512);
 
 
-        this.login = new GuiButton(0, this.width / 2 - 155, this.basey + 135, 100, 20, "Register");
-        this.offline = new GuiButton(1, this.width / 2 - 50, this.basey + 135, 100, 20, "Check Registration");
-        this.deleteAccount = new GuiButton(2, this.width / 2 + 55, this.basey + 135, 100, 20, "Delete Account");
-        this.changePW = new GuiButton(3, this.width / 2 - 155, this.basey + 165, 100, 20, "Change Password");
-        this.changeDisplayName = new GuiButton(31, this.width / 2 - 50, this.basey + 165, 100, 20, "Change Name");
-        this.uploadSkin = new GuiButton(4, this.width / 2 + 55, this.basey + 165, 100, 20, "Upload Skin");
+        this.login = new GuiButton(0, this.width / 2 - 155, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.register"));
+        this.offline = new GuiButton(1, this.width / 2 - 50, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.check_registration"));
+        this.deleteAccount = new GuiButton(2, this.width / 2 + 55, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.delete_account"));
+        this.changePW = new GuiButton(3, this.width / 2 - 155, this.basey + 165, 100, 20, I18n.format("offlineauth.guilogin.btn.change_password"));
+        this.changeDisplayName = new GuiButton(31, this.width / 2 - 50, this.basey + 165, 100, 20, I18n.format("offlineauth.guilogin.btn.change_name"));
+        this.uploadSkin = new GuiButton(4, this.width / 2 + 55, this.basey + 165, 100, 20, I18n.format("offlineauth.guilogin.btn.upload_skin"));
         this.togglePWButton = new TogglePWButton(10, this.pw.xPosition + this.pw.width - 18, this.pw.yPosition + 2, 16, 16);
         this.buttonList.add(this.login);
         this.buttonList.add(this.offline);
@@ -207,15 +208,15 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.deleteAccount);
         this.buttonList.add(this.togglePWButton);
 
-        this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, "Save");
-        this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, "Cancel");
-        this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, "Config");
+        this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
+        this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
+        this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.config"));
         this.buttonList.add(this.config);
         this.buttonList.add(this.cancel);
         this.buttonList.add(this.save);
 
         this.useKey = new GuiCheckBox(8, this.width / 2 - 145, this.basey + 105, "", false);
-        this.manageKey = new GuiButton(9, this.width / 2 - 110, this.basey + 105, 50, 20, "Manage");
+        this.manageKey = new GuiButton(9, this.width / 2 - 110, this.basey + 105, 50, 20, I18n.format("offlineauth.guilogin.btn.manage"));
         //this.browsePrivateKey = new GuiButton(10, this.width / 2 - 55, this.basey + 60, 50, 20, "Browse");
         this.buttonList.add(this.useKey);
         this.buttonList.add(this.manageKey);
@@ -343,8 +344,8 @@ public class GuiLogin extends GuiScreen {
         ClientData.saveData();
 
         /* debug prints */
-        System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
-        System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
+        //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
+        //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
 
         /* According to config, either we go to parent GUI, or we stay in this GUI */
         if (quitGui && Config.savebuttonExit) {
@@ -359,10 +360,10 @@ public class GuiLogin extends GuiScreen {
     private void actionRegister() {
         actionSave(true, false);
         if (!Util.validUsername(displayname.getText())) {
-            message = (char) 167 + "4Invalid Display Name. Must be alphanumeric and from 3 to 16 chars.";
+            message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.invalid_displayname");
             return;
         }
-        message = (char) 167 + "7Registering...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.registering");
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -374,16 +375,14 @@ public class GuiLogin extends GuiScreen {
                     String uuid = "";
                     StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), uuid, token.getText(), clientPubKey);
                     if (stat.getStatusCode() == 200) {
-                        message = (char) 167 + "a" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
                     } else {
-                        message = (char) 167 + "4" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                     }
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    message = (char) 167 + "4Error while registering account (IOException)";
-                    e.printStackTrace();
                 } catch (NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException |
-                         InvalidKeyException | InvalidAlgorithmParameterException e) {
-                    throw new RuntimeException(e);
+                         InvalidKeyException | InvalidAlgorithmParameterException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_registering");
+                    e.printStackTrace();
                 }
             }
         });
@@ -396,7 +395,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     public void proceedWithAccountDeletion() {
-        message = (char) 167 + "7Deleting account...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.deleting");
 
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
@@ -411,17 +410,15 @@ public class GuiLogin extends GuiScreen {
 
                     StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), clientPubKey, clientPrivKey);
                     if (stat.getStatusCode() == 200) {
-                        message = (char) 167 + "a" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
                     } else {
-                        message = (char) 167 + "4" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                     }
-                } catch (IOException e) {
-                    message = (char) 167 + "4Error while deleting account (IOException)";
-                    e.printStackTrace();
                 } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
                          NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
-                         InvalidKeyException e) {
-                    throw new RuntimeException(e);
+                         InvalidKeyException | IOException e) {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_deleting");
+                    e.printStackTrace();
                 }
             }
         });
@@ -429,27 +426,23 @@ public class GuiLogin extends GuiScreen {
     }
 
     private void actionChangePW() {
-        message = (char) 167 + "7Changing account password...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_password");
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
                     StatusResponseObject stat = Request.changePW(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), newPW.getPW());
                     if (stat.getStatusCode() == 200) {
-                        message = (char) 167 + "a" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
                         pw.setText(newPW.getPW());
                         newPW.setText("");
                         actionSave(false, false);
                     } else {
-                        message = (char) 167 + "4" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                     }
-                } catch (IOException e) {
-                    message = (char) 167 + "4Error while changing account password (IOException)";
-                    e.printStackTrace();
                 } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
                          NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
-                         InvalidKeyException e) {
-                    //throw new RuntimeException(e);
-                    message = (char) 167 + "4Error while changing account password";
+                         InvalidKeyException | IOException e) {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_password");
                     e.printStackTrace();
                 }
             }
@@ -458,7 +451,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     private void actionCheckRegistration() {
-        message = (char) 167 + "7Checking registration...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_registration");
         actionSave(true, false);
         Thread vibeCheckThread = new Thread(new Runnable() {
             public void run() {
@@ -472,24 +465,20 @@ public class GuiLogin extends GuiScreen {
                         clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                     }
                     stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
-                } catch (URISyntaxException e) {
-                    message = (char) 167 + "4Error while checking registration";
-                    OfflineAuth.error(e.getMessage());
-                    //e.printStackTrace();
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                          InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
-                         BadPaddingException | InvalidKeyException | NoSuchProviderException e) {
-                    OfflineAuth.error(e.getMessage());
-                    //throw new RuntimeException(e);
+                         BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException e) {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
+                    e.printStackTrace();
                 }
                 if (stat != null && stat.getStatusCode() == 200) {
                     if (!stat.getDisplayName().equals("-")) {
-                        message = (char) 167 + "aRegistered and password valid!";
+                        message = Util.colorCode(Util.Color.GREEN) + I18n.format("offlineauth.guilogin.status.registered");
                     } else {
-                        message = (char) 167 + "4User not registered or password invalid!";
+                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.not_registered");
                     }
                 } else {
-                    message = (char) 167 + "4Error while checking registration";
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
                 }
             }
         });
@@ -503,7 +492,7 @@ public class GuiLogin extends GuiScreen {
 
     private void actionChangeDisplayName() {
         actionSave(true, false);
-        message = (char) 167 + "7Checking if server allows name change...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_name_change_allowed");
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -519,9 +508,9 @@ public class GuiLogin extends GuiScreen {
                         message = "";
                         Minecraft.getMinecraft().displayGuiScreen(new NameChangeGUI((GuiLogin) Minecraft.getMinecraft().currentScreen));
                     } else if (ro.getStatusCode() == 200 && !ro.isDisplayNameChangeAllowed()){
-                        message = (char) 167 + "4Server does not allow displayname change";
+                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.name_change_disallowed");
                     } else {
-                        message = (char) 167 + "4Error while talking with the server";
+                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_talking_server");
                     }
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException  |
                          InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
@@ -535,7 +524,7 @@ public class GuiLogin extends GuiScreen {
     }
 
     public void proceedWithDisplayNameChange() {
-        message = (char) 167 + "7Changing displayname...";
+        message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_displayname");
         Thread registerThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -548,13 +537,13 @@ public class GuiLogin extends GuiScreen {
                     }
                     StatusResponseObject stat = Request.changeDisplayName(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), displayname.getText(), clientPubKey, clientPrivKey);
                     if (stat.getStatusCode() == 200) {
-                        message = (char) 167 + "a" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
                         actionSave(true, false);
                     } else {
-                        message = (char) 167 + "4" + stat.getStatus();
+                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                     }
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-                    message = (char) 167 + "4Error while changing displayname";
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_displayname");
                     e.printStackTrace();
                 }
             }
@@ -563,7 +552,6 @@ public class GuiLogin extends GuiScreen {
     }
 
     public void actionTogglePWvisibility() {
-        System.out.println("testerino");
         this.togglePWButton.setVisible(!this.togglePWButton.isVisible());
         this.pw.setPwVisible(!this.pw.isPwVisible());
         this.pw.setFocused(false);

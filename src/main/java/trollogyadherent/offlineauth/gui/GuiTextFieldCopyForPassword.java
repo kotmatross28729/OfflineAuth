@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 /* Basically mojang code but some vars have modified access */
 @SideOnly(Side.CLIENT)
-public class GuiTextFieldCopy extends Gui
+public class GuiTextFieldCopyForPassword extends Gui
 {
     final FontRenderer field_146211_a;
     public int xPosition;
@@ -41,7 +41,7 @@ public class GuiTextFieldCopy extends Gui
     private boolean visible = true;
     private static final String __OBFID = "CL_00000670";
 
-    public GuiTextFieldCopy(FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_)
+    public GuiTextFieldCopyForPassword(FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_)
     {
         this.field_146211_a = p_i1032_1_;
         this.xPosition = p_i1032_2_;
@@ -295,7 +295,7 @@ public class GuiTextFieldCopy extends Gui
     /**
      * Call this method from your GuiScreen to process the keys into the textbox
      */
-    public boolean textboxKeyTyped(char p_146201_1_, int p_146201_2_)
+    public boolean textboxKeyTyped(char typedChar, int p_146201_2_)
     {
         if (!this.isFocused)
         {
@@ -303,7 +303,7 @@ public class GuiTextFieldCopy extends Gui
         }
         else
         {
-            switch (p_146201_1_)
+            switch (typedChar)
             {
                 case 1:
                     this.setCursorPositionEnd();
@@ -426,11 +426,11 @@ public class GuiTextFieldCopy extends Gui
 
                             return true;
                         default:
-                            if (ChatAllowedCharacters.isAllowedCharacter(p_146201_1_))
+                            if (ChatAllowedCharacters.isAllowedCharacter(typedChar) || typedChar == 167)
                             {
                                 if (this.isEnabled)
                                 {
-                                    this.writeText(Character.toString(p_146201_1_));
+                                    this.writeText(Character.toString(typedChar));
                                 }
 
                                 return true;

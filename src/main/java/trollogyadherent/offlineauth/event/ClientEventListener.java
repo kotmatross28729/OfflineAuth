@@ -51,7 +51,7 @@ public class ClientEventListener {
 
         String displayName = Minecraft.getMinecraft().thePlayer.getDisplayName();
 
-        System.out.println("Detected player join event, we joined");
+        //System.out.println("Detected player join event, we joined");
 
         OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity);
 
@@ -80,7 +80,7 @@ public class ClientEventListener {
 
         String displayName = ((AbstractClientPlayer) e.entity).getDisplayName();
 
-        System.out.println("Detected player join event: " + displayName);
+        //System.out.println("Detected player join event: " + displayName);
         OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity);
         /* Asking server for data about this guy, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
@@ -101,7 +101,7 @@ public class ClientEventListener {
             return;
         }
 
-        System.out.println("We left a world");
+        //System.out.println("We left a world");
         OfflineAuth.varInstanceClient.clientRegistry.clear();
     }
 
@@ -112,7 +112,7 @@ public class ClientEventListener {
     public void onPlayerJoinFMLEvent(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         OfflineAuth.info("Clearing memory skin cache 4");
         OfflineAuth.varInstanceClient.clientRegistry.clear();
-        System.out.println("Joined MP world");
+        //System.out.println("Joined MP world");
     }
 
     @SuppressWarnings("unused")
@@ -134,7 +134,7 @@ public class ClientEventListener {
         OfflineAuth.info("Clearing memory skin cache 5");
         //ClientSkinUtil.clearSkinCache();
         OfflineAuth.varInstanceClient.clientRegistry.clear();
-        System.out.println("Exited MP world");
+        //System.out.println("Exited MP world");
         //OfflineAuth.varInstanceClient.onDedicatedServer = false;
     }
 

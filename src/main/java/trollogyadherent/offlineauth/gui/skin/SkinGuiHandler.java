@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
@@ -74,9 +75,9 @@ public class SkinGuiHandler {
                 }
                 if (Minecraft.getMinecraft().getNetHandler() != null) {
                     if (ClientUtil.isSinglePlayer()) {
-                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, "Set Skin"));
+                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.set_skin")));
                     } else {
-                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, "Upload Skin"));
+                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.upload_skin")));
                     }
                 }
             }

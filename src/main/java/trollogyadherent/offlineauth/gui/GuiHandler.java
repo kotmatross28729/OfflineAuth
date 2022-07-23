@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.ServerListEntryNormal;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
@@ -35,6 +36,7 @@ public class GuiHandler {
     private String validText;
     private int validColor;
     private Thread validator;
+    private static int manageAuthButtonId = 420;
 
     static boolean enabled = true;
     static boolean bold = true;
@@ -58,14 +60,12 @@ public class GuiHandler {
             GuiMultiplayer multiplayerGui = (GuiMultiplayer) e.gui;
             //System.out.println(multiplayerGui);
             if (multiplayerGui.field_146803_h.field_148197_o != OfflineAuth.varInstanceClient.selectedServerIndex) {
-                System.out.println("testerino");
                 OfflineAuth.varInstanceClient.selectedServerIndex = multiplayerGui.field_146803_h.field_148197_o;
                 if (OfflineAuth.varInstanceClient.selectedServerIndex == -1) {
-                    System.out.println("WOULD RETURN");
                     return;
                 }
                 OfflineAuth.varInstanceClient.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(OfflineAuth.varInstanceClient.selectedServerIndex)).field_148301_e;
-                System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
+                //System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
 
                 /*try {
                     //reflectedBtnLst = btnlst.get(e.gui);
@@ -184,23 +184,29 @@ public class GuiHandler {
     @SubscribeEvent
     public void draw(DrawScreenEvent.Post e) {
         if (e.gui instanceof GuiMultiplayer && OfflineAuth.varInstanceClient.selectedServerIndex != -1) {
-            e.gui.drawString(e.gui.mc.fontRenderer, "Registered:", e.gui.width - 75, 10, Color.WHITE.getRGB());
-            e.gui.drawString(e.gui.mc.fontRenderer, (bold ? EnumChatFormatting.BOLD : "") + validText, e.gui.width - 15, 10, validColor);
+            String registeredText = I18n.format("offlineauth.registered");
+            int registeredTextWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(registeredText.replaceAll("\\P{InBasic_Latin}", "")) + 5;
+            String validTextFinal = (bold ? EnumChatFormatting.BOLD : "") + validText;
+            int validTextFinalWidth = 15;
+            e.gui.drawString(e.gui.mc.fontRenderer, validTextFinal, e.gui.width - validTextFinalWidth, 10, validColor);
+            e.gui.drawString(e.gui.mc.fontRenderer, registeredText, e.gui.width - validTextFinalWidth - registeredTextWidth, 10, Color.WHITE.getRGB());
 
             if (reflectedBtnLst != null) {
                 for (Object gb : ((java.util.List) reflectedBtnLst)) {
-                    if (((GuiButton) gb).id == 17325) {
+                    if (((GuiButton) gb).id == manageAuthButtonId) {
                         return;
                     }
                 }
-                ((java.util.List) reflectedBtnLst).add(new GuiButton(17325, e.gui.width - 160/*5*/, 5, 80, 20, "Manage Auth"));
+                String manage_authText = I18n.format("offlineauth.manage_auth");
+                int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText.replaceAll("\\P{InBasic_Latin}", "")) + 10;
+                ((java.util.List) reflectedBtnLst).add(new GuiButton(manageAuthButtonId, e.gui.width - validTextFinalWidth - registeredTextWidth - manage_authButtonWidth - 5, 5, /*80*/ manage_authButtonWidth, 20, manage_authText));
             }
         }
     }
 
     @SubscribeEvent
     public void action(ActionPerformedEvent.Post e) {
-        if ((e.gui instanceof GuiMultiplayer || e.gui instanceof GuiMainMenu) && e.button.id == 17325) {
+        if ((e.gui instanceof GuiMultiplayer || e.gui instanceof GuiMainMenu) && e.button.id == manageAuthButtonId) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiLogin(Minecraft.getMinecraft().currentScreen));
         }
     }

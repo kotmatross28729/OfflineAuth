@@ -4,6 +4,7 @@ import com.google.common.net.MediaType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import spark.Request;
@@ -62,12 +63,12 @@ public class Rest {
         OfflineAuth.info("Someone tries to check my vibe, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
             OfflineAuth.info("No keypair associated with this host and ip");
-            return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.no_keypair_associated", 500));
         }
 
         VibeCheckRequestBodyObject rbo = (VibeCheckRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), VibeCheckRequestBodyObject.class);
@@ -111,19 +112,19 @@ public class Rest {
         OfflineAuth.info("Someone tries to register an account, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
             OfflineAuth.info("No keypair associated with this host and ip");
-            return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.no_keypair_associated", 500));
         }
 
         RegisterRequestBodyObject rbo = (RegisterRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RegisterRequestBodyObject.class);
 
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            return JsonUtil.objectToJson(new StatusResponseObject("AES key mismatch", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.aes_mismatch", 500));
         }
 
         /*String uuid = "";
@@ -142,16 +143,16 @@ public class Rest {
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && Database.tokenIsValid(rbo.getToken())) {
                 regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), new byte[1], false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && !Database.tokenIsValid(rbo.getToken())) {
-                regResult = new StatusResponseObject("Invalid token!", 500);
+                regResult = new StatusResponseObject("offlineauth.rest.registration_invalid_token", 500);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration) {
-                regResult = new StatusResponseObject("Registration possible only with a token!", 500);
+                regResult = new StatusResponseObject("offlineauth.rest.registration_only_token", 500);
             } else {
-                regResult = new StatusResponseObject("Registration disabled on this server!", 500);
+                regResult = new StatusResponseObject("offlineauth.rest.registration_disabled", 500);
             }
             return JsonUtil.objectToJson(regResult);
         } catch (Exception e) {
             e.printStackTrace();
-            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while registering user", 500);
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.registration_error", 500);
             return JsonUtil.objectToJson(statusResponseObject);
         }
     }
@@ -160,19 +161,19 @@ public class Rest {
         OfflineAuth.info("Someone tries to delete an account, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
             OfflineAuth.info("No keypair associated with this host and ip");
-            return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.no_keypair_associated", 500));
         }
 
         DeleteAccountRequestBodyObject rbo = (DeleteAccountRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), DeleteAccountRequestBodyObject.class);
 
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            return JsonUtil.objectToJson(new StatusResponseObject("AES key mismatch", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.aes_mismatch", 500));
         }
 
         String identifier = rbo.getIdentifier();
@@ -186,7 +187,7 @@ public class Rest {
         }
 
         try {
-            StatusResponseObject delResult = new StatusResponseObject("Failed to delete user", 500);
+            StatusResponseObject delResult = new StatusResponseObject("offlineauth.rest.deletion_error", 500);
             /*if (rbo.getIdentifier() != null && request.queryParams("restpassword") != null && Database.restPasswordValid(request.queryParams("restpassword"))) {
                 delResult = Database.deleteUserData(request.queryParams("identifier"));
                 return JsonUtil.objectToJson(delResult);
@@ -198,7 +199,7 @@ public class Rest {
             return JsonUtil.objectToJson(delResult);
         } catch (Exception e) {
             e.printStackTrace();
-            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while deleting user", 500);
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.deletion_error", 500);
             return JsonUtil.objectToJson(statusResponseObject);
         }
     }
@@ -207,19 +208,19 @@ public class Rest {
         OfflineAuth.info("Someone tries to change a password, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
             OfflineAuth.info("No keypair associated with this host and ip");
-            return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.no_keypair_associated", 500));
         }
 
         ChangePasswordRequestBodyObject rbo = (ChangePasswordRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), ChangePasswordRequestBodyObject.class);
 
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            return JsonUtil.objectToJson(new StatusResponseObject("AES key mismatch", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.aes_mismatch", 500));
         }
 
         String identifier = rbo.getIdentifier();
@@ -231,7 +232,7 @@ public class Rest {
             return JsonUtil.objectToJson(changeResult);
         } catch (Exception e) {
             e.printStackTrace();
-            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing password", 500);
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_password_error", 500);
             return JsonUtil.objectToJson(statusResponseObject);
         }
     }
@@ -240,7 +241,7 @@ public class Rest {
         OfflineAuth.info("Someone tries to change a displayname, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!Config.allowDisplayNameChange) {
@@ -274,7 +275,7 @@ public class Rest {
             return JsonUtil.objectToJson(changeResult);
         } catch (Exception e) {
             e.printStackTrace();
-            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing displayname", 500);
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_displayname_error", 500);
             String res = JsonUtil.objectToJson(statusResponseObject);
             return res;
         }
@@ -378,7 +379,7 @@ public class Rest {
 
     public static Object handlePubKey(Request request, Response response) throws IOException {
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         File pubKeyFile = new File(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "public.key");
@@ -400,7 +401,7 @@ public class Rest {
         OfflineAuth.info("Ip " + request.raw().getRemoteAddr() + " from host " + request.raw().getRemoteHost() + " requests temporary public key");
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         AesKeyUtil.AesKeyPlusIv tempAesKeyPlusIv = OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
@@ -414,10 +415,9 @@ public class Rest {
         PrivateKey serverPrivKey = ServerUtil.loadServerPrivateKey();
         String aesKeyPlusIvStr = Base64.getEncoder().encodeToString(aesKeyPlusIvBytes);
         String encryptedAesKeyPlusIvStr  = RsaKeyUtil.encryptWithPrivateKey(aesKeyPlusIvStr, serverPrivKey);
-        System.out.println("hmmm");
 
         byte[] encryptedAesKeyPlusIvBytes64 = Base64.getEncoder().encode(encryptedAesKeyPlusIvStr.getBytes(StandardCharsets.UTF_8));
-        System.out.println(Base64.getEncoder().encodeToString(encryptedAesKeyPlusIvBytes64));
+        //System.out.println(Base64.getEncoder().encodeToString(encryptedAesKeyPlusIvBytes64));
         response.header("Content-Disposition", "attachment; filename=\"public.key\"");
         response.type(MediaType.OCTET_STREAM.toString());
         response.raw().setContentLength(encryptedAesKeyPlusIvBytes64.length);
@@ -444,12 +444,12 @@ public class Rest {
         OfflineAuth.info("Someone tries to get a key token, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Data too large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
             OfflineAuth.info("No keypair associated with this host and ip");
-            return JsonUtil.objectToJson(new StatusResponseObject("No keypair associated with this host and ip", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.no_keypair_associated", 500));
         }
 
         ChallengeRequestBodyObject rbo = (ChallengeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), ChallengeRequestBodyObject.class);
@@ -516,21 +516,21 @@ public class Rest {
 
         /* The verification token MUST be consumed, that's why these two simple checks are not at the top of the function */
         if (!Config.allowSkinUpload) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Skin upload is disabled", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.skin_upload_disabled", 500));
         }
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Skin too large, limit: " + Config.maxSkinBytes + " bytes", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.skin_too_large", 500));
         }
 
         /* Checking if the bytes are a legit png */
         try {
             BufferedImage test = ImageIO.read(new ByteArrayInputStream(skinBytes));
             if (test == null) {
-                return JsonUtil.objectToJson(new StatusResponseObject("Invalid skin file!", 500));
+                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
             }
         } catch (IOException e) {
-            return JsonUtil.objectToJson(new StatusResponseObject("Invalid skin file!", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
         }
 
         try {
@@ -564,7 +564,7 @@ public class Rest {
             return JsonUtil.objectToJson(changeResult);
         } catch (Exception e) {
             e.printStackTrace();
-            StatusResponseObject statusResponseObject = new StatusResponseObject("Error while changing displayname", 500);
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_skin_error", 500);
             return JsonUtil.objectToJson(statusResponseObject);
         }
     }

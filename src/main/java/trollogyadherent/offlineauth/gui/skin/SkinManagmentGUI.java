@@ -48,15 +48,15 @@ public class SkinManagmentGUI extends GuiScreen {
 
     public void initGui()
     {
-        this.buttonList.add(new GuiOptionButton(2, this.width / 2 - /*154*/234, this.height - 48, I18n.format("Open skin folder")));
+        this.buttonList.add(new GuiOptionButton(2, this.width / 2 - /*154*/234, this.height - 48, I18n.format("offlineauth.skingui.open_skin_folder")));
         if (ClientUtil.isSinglePlayer()) {
-            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("Set")));
+            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("offlineauth.skingui.set")));
         } else {
-            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("Upload")));
+            this.buttonList.add(new GuiOptionButton(1, this.width / 2 - 76/* + 4*/, this.height - 48, I18n.format("offlineauth.skingui.upload")));
         }
-        this.buttonList.add(new GuiOptionButton(3, this.width / 2 + 84, this.height - 48, I18n.format("Done")));
+        this.buttonList.add(new GuiOptionButton(3, this.width / 2 + 84, this.height - 48, I18n.format("offlineauth.skingui.done")));
         this.availableSkins = new ArrayList();
-        this.status = "Select Skin";
+        this.status = I18n.format("offlineauth.skingui.select_skin");
         //this.field_146969_h = new ArrayList();
         //ResourcePackRepository resourcepackrepository = this.mc.getResourcePackRepository();
         //resourcepackrepository.updateRepositoryEntriesAll();
@@ -222,19 +222,19 @@ public class SkinManagmentGUI extends GuiScreen {
                     }
                 }
                 try {
-                    status = "Uploading...";
+                    status =I18n.format("offlineauth.skingui.uploading");
                     /*byte [] fakeBytes = new byte[skinBytes.length];
                     new Random().nextBytes(fakeBytes);*/
                     StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes /*fakeBytes*/, clientPubKey, clientPriv);
                     if (stat.getStatusCode() == 200) {
-                        status = (char) 167 + "a" + stat.getStatus();
+                        status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format(stat.getStatus());
                     } else {
-                        status = (char) 167 + "4" + stat.getStatus();
+                        status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format(stat.getStatus());
                     }
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                          InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
                          BadPaddingException | InvalidKeyException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
                 //this.mc.displayGuiScreen(this.previous);
                 /* Done button */

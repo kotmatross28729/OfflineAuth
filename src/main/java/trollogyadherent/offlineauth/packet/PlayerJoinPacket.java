@@ -63,7 +63,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("PlayerJoinPacket onMessage triggered, code 0 (from server)");
+            //System.out.println("PlayerJoinPacket onMessage triggered, code 0 (from server)");
 
             /*message.identifier = oasd.getIdentifier();
             message.displayname = oasd.getDisplayName();
@@ -141,7 +141,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                     PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
                 }
 
-                System.out.println("PlayerJoinPacket onMessage triggered, code 1 (from client)");
+                //System.out.println("PlayerJoinPacket onMessage triggered, code 1 (from client)");
                 if (message.encryptedData.equals("-")) {
                     entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                 }
@@ -192,7 +192,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                         /* Setting our own UUID */
                         DBPlayerData dbpd = Database.getPlayerDataByDisplayName(ctx.getServerHandler().playerEntity.getDisplayName());
                         if (dbpd == null) {
-                            System.out.println("dbpd null");
+                            //System.out.println("dbpd null");
                             entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                             return null;
                         }
@@ -219,8 +219,8 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                         }
 
                         /* Adding player to registry */
-                        System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
-                        System.out.println(OfflineAuth.varInstanceServer.playerRegistry);
+                        //System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
+                        //System.out.println(OfflineAuth.varInstanceServer.playerRegistry);
                         OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName));
 
                     } else {

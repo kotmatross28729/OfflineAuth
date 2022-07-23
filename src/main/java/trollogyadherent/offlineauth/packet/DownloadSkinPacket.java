@@ -34,8 +34,8 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
         {
             if (ctx.side.isServer() && message.exchangeCode == 0)
             {
-                System.out.println("DownloadSkinPacket onMessage triggered, code 0 (from client)");
-                System.out.println(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of skin " + message.skinName);
+                //System.out.println("DownloadSkinPacket onMessage triggered, code 0 (from client)");
+                //System.out.println(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of skin " + message.skinName);
                 if (message.skinName == null) {
                     OfflineAuth.warn("DownloadSkinPacket: got null skinName");
                     return null;
@@ -74,8 +74,8 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 1)
             {
-                System.out.println("DownloadSkinPacket onMessage triggered, code 1 (from server)");
-                System.out.println("Received hash: " + message.skinHash);
+                //System.out.println("DownloadSkinPacket onMessage triggered, code 1 (from server)");
+                //System.out.println("Received hash: " + message.skinHash);
 
                 if (message.skinHash.equals("-1")) {
                     OfflineAuth.warn("Skin " + message.skinName + " not found on server");
@@ -114,7 +114,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isServer() && message.exchangeCode == 2)
             {
-                System.out.println("DownloadSkinPacket onMessage triggered, code 2 (from client)");
+                //System.out.println("DownloadSkinPacket onMessage triggered, code 2 (from client)");
                 OfflineAuth.info("Player " + ctx.getServerHandler().playerEntity.getDisplayName() + " requests the skinbytes of " + message.skinName);
 
                 try {
@@ -130,7 +130,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 3)
             {
-                System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
+                //System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
                 try {
                     OfflineAuth.info("Writing received skin to file: " + message.skinName);
                     ClientSkinUtil.bytesToClientSkin(message.skinBytes, message.skinName);

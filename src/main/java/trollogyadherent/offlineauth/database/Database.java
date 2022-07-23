@@ -58,46 +58,46 @@ public class Database {
     public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
         if (!Util.validUsername(displayname)) {
-            return new StatusResponseObject("Invalid Display Name!", 500);
+            return new StatusResponseObject("offlineauth.db.invalid_displayname", 500);
         }
 
         if (!(uuid.equals("")) && !Util.uuidValid(uuid)) {
-            return new StatusResponseObject("Invalid UUID!", 500);
+            return new StatusResponseObject("offlineauth.db.invalid_uuid", 500);
         }
 
         boolean passwordNull = password == null || password.length() < 1;
         boolean publicKeyNull = publicKey == null || publicKey.length() < 10;
 
         if  (passwordNull && publicKeyNull) {
-            return new StatusResponseObject("Invalid password or public key!", 500);
+            return new StatusResponseObject("offlineauth.db.invalid_password_or_pubkey", 500);
         }
 
         if  (!passwordNull && !publicKeyNull) {
-            return new StatusResponseObject("You can only either register using password or public key!", 500);
+            return new StatusResponseObject("offlineauth.db.either_password_key", 500);
         }
 
         if (!passwordNull && password.contains(",")) {
-            return new StatusResponseObject("Password cannot contain commas!", 500);
+            return new StatusResponseObject("offlineauth.db.password_commas", 500);
         }
 
         if (identifier.contains(",")) {
-            return new StatusResponseObject("Identifier cannot contain commas!", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_commas", 500);
         }
 
         if (isUserRegisteredByIdentifier(identifier) && !overrideUser) {
-            return new StatusResponseObject("Identifier already registered!", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_taken", 500);
         }
 
         if (isUserRegisteredByDisplayname(displayname) && !overrideUser) {
-            return new StatusResponseObject("Displayname already registered!", 500);
+            return new StatusResponseObject("offlineauth.db.displayname_taken", 500);
         }
 
         if (!Config.allowRegistration && !Config.allowTokenRegistration && !isCommand) {
-            return new StatusResponseObject("Registration and token registration is disabled!", 500);
+            return new StatusResponseObject("offlineauth.rest.registration_disabled", 500);
         }
 
         if (!Config.allowRegistration && Config.allowTokenRegistration && !tokenIsValid(token) && !isCommand) {
-            return new StatusResponseObject("Token registration enabled but token invalid!", 500);
+            return new StatusResponseObject("offlineauth.rest.registration_invalid_token", 500);
         }
 
         if (token == null) {
@@ -125,82 +125,82 @@ public class Database {
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
-            return new StatusResponseObject("Successfully registered user!", 200);
+            return new StatusResponseObject("offlineauth.db.success_register", 200);
         } else {
             OfflineAuth.error("Registration error");
-            return new StatusResponseObject("Error while registering user!", 500);
+            return new StatusResponseObject("offlineauth.rest.registration_error", 500);
         }
     }
 
     public static StatusResponseObject deletePlayer(String identifier, String password) {
         if (identifier == null || password == null) {
-            return new StatusResponseObject("Failed, identifier or password null", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_pw_null", 500);
         }
 
         try {
             if (playerValidIgnoreDisplayName(identifier, password)) {
                 return deleteUserData(identifier);
             } else {
-                return new StatusResponseObject("Identfier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while deleting user", 500);
+            return new StatusResponseObject("offlineauth.error_deleting", 500);
             //e.printStackTrace();
         }
     }
 
     public static StatusResponseObject changePlayerPassword(String identifier, String password, String newPassword) {
         if (identifier == null || password == null || newPassword == null) {
-            return new StatusResponseObject("Failed, identifier or password, or new password null", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_pw_newpw_null", 500);
         }
 
         if (newPassword.contains(",")) {
-            return new StatusResponseObject("Password cannot contain commas!", 500);
+            return new StatusResponseObject("offlineauth.db.password_commas", 500);
         }
 
         try {
             if (playerValidIgnoreDisplayName(identifier, password)) {
                 DBPlayerData pd = getPlayerDataByIdentifier(identifier);
                 if (pd == null) {
-                    return new StatusResponseObject("User not found", 500);
+                    return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
                 StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, true, true);
                 if (registerData.getStatusCode() == 200) {
-                    return new StatusResponseObject("Successfully updated password", 200);
+                    return new StatusResponseObject("offlineauth.db.success_update_pw", 200);
                 } else {
-                    return new StatusResponseObject("Failed to change password: " + registerData.getStatus(), 500);
+                    return new StatusResponseObject("offlineauth.db.fail_update_pw", 500);
                 }
             } else {
-                return new StatusResponseObject("Identifier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while changing password", 500);
+            return new StatusResponseObject("offlineauth.db.fail_update_pw", 500);
             //e.printStackTrace();
         }
     }
 
     public static StatusResponseObject changePlayerDisplayName(String identifier, String password, String newDisplayName, boolean isCommand) {
         if (!isCommand && !Config.allowDisplayNameChange) {
-            return new StatusResponseObject("Displayname change disallowed", 500);
+            return new StatusResponseObject("offlineauth.guilogin.status.name_change_disallowed", 500);
         }
         if (identifier == null || (password == null && !isCommand) || newDisplayName == null) {
-            return new StatusResponseObject("Failed, identifier or password, or new password null", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_pw_displayname_null", 500);
         }
 
         if (!Util.validUsername(newDisplayName)) {
-            return new StatusResponseObject("Invalid displayname!", 500);
+            return new StatusResponseObject("offlineauth.db.invalid_displayname", 500);
         }
 
         if (isUserRegisteredByDisplayname(newDisplayName)) {
-            return new StatusResponseObject("Displayname already registered!", 500);
+            return new StatusResponseObject("offlineauth.db.displayname_taken", 500);
         }
 
         DBPlayerData pd = getPlayerDataByIdentifier(identifier);
 
         if (pd == null) {
-            return new StatusResponseObject("Error, user not found!", 500);
+            return new StatusResponseObject("offlineauth.db.user_not_found", 500);
         }
 
         try {
@@ -209,19 +209,19 @@ public class Database {
                 try {
                     putPlayerDataInDB(identifier, newDisplayName, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes);
 
-                    return new StatusResponseObject("Successfully changed displayname!", 200);
+                    return new StatusResponseObject("offlineauth.db.success_change_displayname", 200);
                 } catch (Error e) {
-                    OfflineAuth.error("Register error: " + e.getMessage());
-                    return new StatusResponseObject("Error while changing displayname!", 500);
+                    OfflineAuth.error("Change displayname error: " + e.getMessage());
+                    return new StatusResponseObject("offlineauth.db.fail_change_displayname", 500);
                 }
 
 
             } else {
-                return new StatusResponseObject("Identifier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while changing displayname", 500);
+            return new StatusResponseObject("offlineauth.db.fail_change_displayname", 500);
             //e.printStackTrace();
         }
     }
@@ -232,7 +232,7 @@ public class Database {
         }
 
         if (!Util.uuidValid(uuid)) {
-            return new StatusResponseObject("Failed, invalid UUID", 500);
+            return new StatusResponseObject("offlineauth.db.invalid_uuid", 500);
         }
 
         try {
@@ -248,63 +248,63 @@ public class Database {
                     return new StatusResponseObject("Failed to change UUID", 500);
                 }
             } else {
-                return new StatusResponseObject("Identifier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while setting UUID", 500);
+            return new StatusResponseObject("offlineauth.db.fail_set_uuid", 500);
         }
     }
 
     public static StatusResponseObject changePlayerSkin(String identifier, String password, byte[] skinBytes, boolean force) {
         if (force && identifier == null || (password == null && !force) || (password.equals("") && !force) || skinBytes == null || skinBytes.length == 1) {
-            return new StatusResponseObject("Failed, identifier or password, or skin null", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_pw_skin_null", 500);
         }
 
         try {
             if (force || playerValidIgnoreDisplayName(identifier, password)) {
                 DBPlayerData pd = getPlayerDataByIdentifier(identifier);
                 if (pd == null) {
-                    return new StatusResponseObject("User not found", 500);
+                    return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
                 putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, skinBytes);
-                return new StatusResponseObject("Successfully uploaded skin", 200);
+                return new StatusResponseObject("offlineauth.db.success_upload_skin", 200);
             } else {
-                return new StatusResponseObject("Identifier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while uploading skin", 500);
+            return new StatusResponseObject("offlineauth.db.fail_upload_skin", 500);
             //e.printStackTrace();
         }
     }
 
     public static StatusResponseObject deletePlayerSkin(String identifier, String password, boolean force) {
         if (identifier == null || (password == null && !force)) {
-            return new StatusResponseObject("Failed, identifier or password null", 500);
+            return new StatusResponseObject("offlineauth.db.identifier_pw_null", 500);
         }
 
         try {
             if (force || playerValidIgnoreDisplayName(identifier, password)) {
                 DBPlayerData pd = getPlayerDataByIdentifier(identifier);
                 if (pd == null) {
-                    return new StatusResponseObject("User not found", 500);
+                    return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
                 putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, new byte[1]);
-                return new StatusResponseObject("Successfully deleted skin", 200);
+                return new StatusResponseObject("offlineauth.db.success_delete_skin", 200);
             } else {
-                return new StatusResponseObject("Identifier or password invalid", 500);
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Error while deleting skin", 500);
+            return new StatusResponseObject("offlineauth.db.fail_delete_skin", 500);
             //e.printStackTrace();
         }
     }
 
     public static StatusResponseObject deleteUserData(String identifier) {
         if (!isUserRegisteredByIdentifier(identifier)) {
-            return new StatusResponseObject("User not registered!", 500);
+            return new StatusResponseObject("offlineauth.db.user_not_registered", 500);
         }
         try {
             DBPlayerData pd = getPlayerDataByIdentifier(identifier);
@@ -312,10 +312,10 @@ public class Database {
             if (pd != null) {
                 ServerUtil.kickPlayerByName(pd.identifier, Config.accountDeletionKickMessage);
             }
-            return new StatusResponseObject("Successfully deleted user!", 200);
+            return new StatusResponseObject("offlineauth.db.success_delete_user", 200);
         } catch (Error e) {
             OfflineAuth.error(e.getMessage());
-            return new StatusResponseObject("Failed to delete user!", 500);
+            return new StatusResponseObject("offlineauth.db.fail_delete_user", 500);
         }
     }
 
@@ -362,7 +362,7 @@ public class Database {
             byte[] lenPlusData = Util.concatByteArrays(dataBytesLenAsByteArray, dataBytes);
             finalData = Util.concatByteArrays(lenPlusData, skinBytes);
         } catch (IOException e) {
-            OfflineAuth.error("Error writing paler data");
+            OfflineAuth.error("Error writing player data");
             return false;
         }
 

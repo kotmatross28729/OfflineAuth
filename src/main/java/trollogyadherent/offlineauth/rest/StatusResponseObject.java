@@ -1,11 +1,8 @@
 package trollogyadherent.offlineauth.rest;
 
-import trollogyadherent.offlineauth.util.JsonUtil;
-import trollogyadherent.offlineauth.util.Util;
-
 public class StatusResponseObject {
-    private Object status;
-    private int statusCode;
+    private final Object status;
+    private final int statusCode;
 
     public StatusResponseObject(Object status, int statusCode) {
         this.status = status;
@@ -21,8 +18,10 @@ public class StatusResponseObject {
                 sb.append(s).append(",");
             }
             return "[" + sb.deleteCharAt(sb.length() - 1) + "]";
-        } else {
+        } else if (status != null) {
             return status.toString();
+        } else {
+            return null;
         }
     }
 

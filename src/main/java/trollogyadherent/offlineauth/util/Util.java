@@ -26,6 +26,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -64,7 +66,7 @@ public class Util {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = factory.generateSecret(spec).getEncoded();
         String res = "";
-        for (int i = 0; i < hash.length; i ++) {
+        for (int i = 0; i < hash.length; i++) {
             res += hash[i];
         }
         return res;
@@ -349,5 +351,33 @@ public class Util {
     /* Upper bound is exclusive */
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static enum Color {
+        GREY,
+        GREEN,
+        RED
+    }
+
+    public static String colorCode(Color color) {
+        Map<Color, String> colorMap = new HashMap<Color, String>() {{
+            put(Color.GREY, "7");
+            put(Color.GREEN, "a");
+            put(Color.RED, "4");
+        }};
+        return (char) 167 + colorMap.get(color);
+    }
+
+    /* https://www.w3resource.com/java-exercises/io/java-io-exercise-9.php */
+    public static double filesizeInMegaBytes(File file) {
+        return (double) file.length()/(1024*1024);
+    }
+
+    public static double filesizeInKiloBytes(File file) {
+        return (double) file.length()/1024;
+    }
+
+    public static double filesizeInBytes(File file) {
+        return (double) file.length();
     }
 }

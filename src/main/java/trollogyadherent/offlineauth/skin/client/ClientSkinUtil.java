@@ -193,6 +193,10 @@ public class ClientSkinUtil {
 
     public static String getLastUsedOfflineSkinName() {
         try {
+            File temp = new File(OfflineAuth.varInstanceClient.lastUsedOfflineSkinFile);
+            if (!temp.exists()) {
+                return null;
+            }
             return new BufferedReader(new FileReader(OfflineAuth.varInstanceClient.lastUsedOfflineSkinFile)).readLine();
         } catch (IOException e) {
             OfflineAuth.error("Failed to load last used offline skin from file!");

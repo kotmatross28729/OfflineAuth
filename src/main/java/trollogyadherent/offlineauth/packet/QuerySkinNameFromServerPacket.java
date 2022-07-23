@@ -17,29 +17,29 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
     {
         if (ctx.side.isServer() && message.exchangecode == 0)
         {
-            System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 0 (from client)");
+            /*System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 0 (from client)");
             System.out.println("Requesting player: " + ctx.getServerHandler().playerEntity.getDisplayName());
             System.out.println("Requested displayName: " + message.displayName);
-            System.out.println("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.playerRegistry);
+            System.out.println("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.playerRegistry);*/
             ServerPlayerData sd = OfflineAuth.varInstanceServer.playerRegistry.getPlayerDataByDisplayName(message.displayName);
             if (sd == null) {
-                System.out.println("Player not found in server registry!");
+                //System.out.println("Player not found in server registry!");
             } else {
-                System.out.println("Player found in server registry, skin is " + sd.skinName);
+                //System.out.println("Player found in server registry, skin is " + sd.skinName);
                 message.skinName = sd.skinName;
-                System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
+                //System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
             }
 
             message.exchangecode = 1;
 
-            System.out.println("Returning message to client. Skinname: " + message.skinName);
+            //System.out.println("Returning message to client. Skinname: " + message.skinName);
             return message;
         }
 
         if (ctx.side.isClient() && message.exchangecode == 1)
         {
-            System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 1 (from server)");
-            System.out.println("Got skin name: " + message.skinName);
+            //System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 1 (from server)");
+            //System.out.println("Got skin name: " + message.skinName);
 
             if (message.skinName.equals("-")) {
                 OfflineAuth.error("Player " + message.displayName + " not found on server, it seems");

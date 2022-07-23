@@ -209,7 +209,7 @@ public class CommandTest implements ICommand {
             if (argString.length == 0) {
 
             }   else {
-                System.out.println("sending delete caches packets");
+                //System.out.println("sending delete caches packets");
                 for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                     IMessage msg = new ResetCachesPacket.SimpleMessage();
                     PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);

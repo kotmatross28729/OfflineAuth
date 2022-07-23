@@ -50,7 +50,7 @@ public class ClientData {
 
     /* Used to write the json file to disk */
     public static boolean saveData() {
-        System.out.println("Saving data...");
+        OfflineAuth.info("Saving data...");
         OAServerData[] oaServerDataArray = OfflineAuth.varInstanceClient.OAserverDataCache.toArray(new OAServerData[0]);
         return writeFile(OfflineAuth.varInstanceClient.datafile, JsonUtil.objectToJsonList(oaServerDataArray));
     }
@@ -68,8 +68,8 @@ public class ClientData {
             try {
                 // Basically parses the content of offlineauth.json to an ArrayList of OAServerData objects
                 OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
-                System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
-                System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
+                //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
+                //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
             } catch (IOException e) {
                 OfflineAuth.error(e.getMessage());
                 return false;

@@ -51,7 +51,6 @@ public class CommandRegisterPlayerServer implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
-        System.out.println("Issued registerplayer command");
         if (sender instanceof EntityPlayerMP && !Util.isOp((EntityPlayerMP) sender)) {
             sender.addChatMessage(new ChatComponentText((char) 167 + "cYou do not have permission to use this command"));
             return;

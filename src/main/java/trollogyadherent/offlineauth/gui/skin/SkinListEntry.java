@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.client.LegacyConversion;
+import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,15 +28,24 @@ public class SkinListEntry {
     ClientSkinUtil.OfflineTextureObject offlineTextureObject;
     //private static final ResourceLocation temp = new ResourceLocation("textures/gui/resource_packs.png");
     private /*static*/ ResourceLocation temp  = new ResourceLocation("textures/gui/resource_packs.png");
+    private String skinSize;
     public SkinListEntry(SkinManagmentGUI skinManagmentGUI, String skinName) {
         this.previous = skinManagmentGUI;
         this.skinName = skinName;
         this.mc = Minecraft.getMinecraft();
+        skinSize = "null";
 
         File imageFile = ClientSkinUtil.getSkinFile(skinName);
         if (imageFile == null || !imageFile.exists()) {
             OfflineAuth.error("Error skin image does not exist: " + skinName);
             return;
+        }
+        if (Util.filesizeInMegaBytes(imageFile) >= 1) {
+            skinSize = Math.floor(Util.filesizeInMegaBytes(imageFile) * 100) / 100 + " mb";
+        } else if (Util.filesizeInKiloBytes(imageFile) >= 1) {
+            skinSize = Math.floor(Util.filesizeInKiloBytes(imageFile) * 100) / 100 + " kb";
+        } else {
+            skinSize = Math.floor(Util.filesizeInBytes(imageFile) * 100) / 100 + " b";
         }
         BufferedImage bufferedImage;
         try {
@@ -44,11 +54,8 @@ public class SkinListEntry {
             OfflineAuth.error("Error loading skin image " + skinName);
             return;
         }
-        /*if (bufferedImage.getHeight() == 64) {
-            bufferedImage = new LegacyConversion().convert(bufferedImage);
-        }*/
         if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
-            System.out.println("texture is not square, " + skinName);
+            //System.out.println("texture is not square, " + skinName);
             BufferedImage bufferedImageNew = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight() * 2, bufferedImage.getType());
             Graphics g = bufferedImageNew.getGraphics();
             g.drawImage(bufferedImage, 0, 0, null);
@@ -68,7 +75,6 @@ public class SkinListEntry {
         int i3 = 8;
 
         Gui.func_152125_a(p_148279_2_, p_148279_3_, 8.0F, (float) l2, 8, i3, 32/*8*/, /*8*/32, 64.0F, 64.0F);
-        //Gui.func_146110_a(p_148279_2_, p_148279_3_, 0.0F, 0.0F, 32, 32, 32.0F, 32.0F);
         int i2;
 
         if ((this.mc.gameSettings.touchscreen || p_148279_9_) && this.func_148310_d())
@@ -148,7 +154,7 @@ public class SkinListEntry {
     }
 
     protected String getSkinDescription() {
-        return "[insert filesize here or something]";
+        return skinSize;
     }
 
     protected String getSkinName() {
@@ -195,7 +201,6 @@ public class SkinListEntry {
     {
         if (this.func_148310_d() /*&& p_148278_5_ <= 32 */)
         {
-            System.out.println(this.skinName + " 1");
             return true;
         }
 

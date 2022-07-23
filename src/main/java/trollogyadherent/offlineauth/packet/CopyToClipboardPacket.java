@@ -19,7 +19,7 @@ public class CopyToClipboardPacket implements IMessageHandler<CopyToClipboardPac
     {
         if (ctx.side.isClient() && message.exchangecode == 0)
         {
-            System.out.println("CopyToClipboardPacket onMessage triggered, code 0 (from server)");
+            //System.out.println("CopyToClipboardPacket onMessage triggered, code 0 (from server)");
 
             StringSelection stringselection = new StringSelection(message.content);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringselection, null);
