@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
@@ -47,6 +48,7 @@ public class VarInstanceClient {
     public String lastUsedOfflineCapeFile = Paths.get(OfflineAuth.rootPath, "lastcape").toString();
     public boolean offlineSkinAndCapeLoaded = false;
     public CapeObject singlePlayerCapeObject = null;
+    public ResourceLocation singlePlayerSkinResourceLocation = null;
 
     public VarInstanceClient() {
         skinLocationField.setAccessible(true);

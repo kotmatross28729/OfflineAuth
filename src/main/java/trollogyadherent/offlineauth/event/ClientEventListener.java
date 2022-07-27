@@ -160,6 +160,8 @@ public class ClientEventListener {
                 OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded = true;
                 loadSingleplayerSkin();
                 loadSingleplayerCape();
+            } else {
+                OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation);
             }
             return;
         }
@@ -195,7 +197,7 @@ public class ClientEventListener {
             return;
         }
 
-        OfflineAuth.varInstanceClient.skinLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+        OfflineAuth.varInstanceClient.skinLocationField.set(mc.thePlayer, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
     }
 
     @SubscribeEvent
@@ -271,11 +273,11 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName) != null) {
-            OfflineAuth.varInstanceClient.skinLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+            OfflineAuth.varInstanceClient.skinLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
-            OfflineAuth.varInstanceClient.capeLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
+            OfflineAuth.varInstanceClient.capeLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
         } else {
             OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
         }
@@ -306,6 +308,7 @@ public class ClientEventListener {
                 bufferedImage = new LegacyConversion().convert(bufferedImage);
             }
             ClientSkinUtil.loadTexture(bufferedImage, rl);
+            OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = rl;
             try {
                 OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, rl);
                 /*if (Loader.isModLoaded("etfuturum")) {
