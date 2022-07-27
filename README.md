@@ -2,12 +2,11 @@
 Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
 It is advised to delete the `offlineauth` folder each time you update for now.
 
-## Warning! To update to version 0.2.46 you have to delete the following folder serverside: `offlineauth/OfflineAuthDatabase`
-## This will erase all accounts. This should not occure further in the development anymore
+## Warning! To update to version 0.2.46 you have to delete the following folder serverside: `offlineauth/OfflineAuthDatabase`<br>This will erase all accounts. This should not occure further in the development anymore
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
-# Showcase
+### Showcase
 [youtube.com/watch?v=mB4DD_z5lvQ](https://www.youtube.com/watch?v=mB4DD_z5lvQ)
 
 ### Motivation
@@ -67,4 +66,7 @@ If you are a player:
 ### License
 LGPLv3+SNEED
 
-## Feel free to help translate the mod, open PR's or send lang files directly to me
+### Feel free to help translate the mod, open PR's or send lang files directly to me
+
+### Coming soon (with Et Futurum update):
+![elytra_capes](https://user-images.githubusercontent.com/19153947/181366604-53025903-521f-498c-a2ee-f61b596e15f4.gif)
