@@ -19,6 +19,7 @@ public class VarInstanceServer {
     public String tokenListPath = new File(OfflineAuth.rootPath, "tokens.txt").getPath();
     public String defaultServerSkinsPath = new File(OfflineAuth.rootPath, "DefaultServerSkins").getPath();
     public String serverSkinCachePath = Paths.get(OfflineAuth.rootPath, "ServerCache", "Skins").toString();
+    public String serverCapeCachePath = Paths.get(OfflineAuth.rootPath, "ServerCache", "Capes").toString();
     public Field uuidIdField = ReflectionHelper.findField(com.mojang.authlib.GameProfile.class, "id", "field_111170_d");
     public Field uuidIdField2 = ReflectionHelper.findField(net.minecraft.entity.Entity.class, "entityUniqueID", "field_96093_i");
     public String keyPairPath = new File(OfflineAuth.rootPath, "ServerKeys").getPath();
@@ -41,6 +42,10 @@ public class VarInstanceServer {
         File serverSkinCacheFile = new File(serverSkinCachePath);
         if (!serverSkinCacheFile.exists()) {
             serverSkinCacheFile.mkdirs();
+        }
+        File serverCapeCacheFile = new File(serverCapeCachePath);
+        if (!serverCapeCacheFile.exists()) {
+            serverCapeCacheFile.mkdirs();
         }
     }
 }

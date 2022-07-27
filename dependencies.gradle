@@ -4,6 +4,8 @@ dependencies {
     shadowImplementation("com.sparkjava:spark-core:2.9.3")
     //shadowImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
     shadowImplementation("org.iq80.leveldb:leveldb:0.12")
+    //shadowImplementation("jmagick:jmagick:6.6.9")
+    shadowImplementation("org.l33tlabs.twl:pngdecoder:1.0")
     //shadowImplementation("com.google.code.gson:gson:2.9.0")
 
     //shadowImplementation("com.fasterxml.jackson.core:jackson-databind:2.13.2")

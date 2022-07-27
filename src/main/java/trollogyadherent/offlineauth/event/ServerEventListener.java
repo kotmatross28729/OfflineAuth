@@ -13,6 +13,7 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.PlayerJoinPacket;
 import trollogyadherent.offlineauth.packet.ResetCachesPacket;
+import trollogyadherent.offlineauth.packet.SendAuthPortPacket;
 import trollogyadherent.offlineauth.util.ServerUtil;
 
 import java.util.UUID;
@@ -24,10 +25,14 @@ public class ServerEventListener {
         OfflineAuth.info("Player joined server: " + e.player.getDisplayName());
         EntityPlayer player = e.player;
 
-        IMessage msg = new PlayerJoinPacket.SimpleMessage();
+        /* Sending auth port to the player, just in case */
+        IMessage msg = new SendAuthPortPacket.SimpleMessage(Config.port);
         PacketHandler.net.sendTo(msg, (EntityPlayerMP)player);
 
-        DBPlayerData dbp = Database.getPlayerDataByDisplayName(e.player.getDisplayName());
+        /*IMessage msg2 = new PlayerJoinPacket.SimpleMessage();
+        PacketHandler.net.sendTo(msg2, (EntityPlayerMP)player);*/
+
+        /*DBPlayerData dbp = Database.getPlayerDataByDisplayName(e.player.getDisplayName());
 
         if (dbp == null) {
             ServerUtil.kickPlayerByName(e.player.getDisplayName(), Config.kickMessage);
@@ -40,7 +45,7 @@ public class ServerEventListener {
 
             OfflineAuth.varInstanceServer.uuidIdField.set(e.player.field_146106_i, uuid);
             OfflineAuth.varInstanceServer.uuidIdField2.set(e.player, uuid);
-        }
+        }*/
 
         //OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbp.getIdentifier()));
     }

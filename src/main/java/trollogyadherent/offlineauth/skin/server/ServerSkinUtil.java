@@ -7,6 +7,7 @@ import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,10 @@ import java.io.InputStream;
 public class ServerSkinUtil {
     public static boolean skinCachedOnServer(String name) {
         return (Util.fileExists(new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png")) || Util.fileExists(new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath, name + ".png")));
+    }
+
+    public static boolean capeCachedOnServer(String name) {
+        return (Util.fileExists(new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".png")) || Util.fileExists(new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".gif")));
     }
 
     public static File getSkinFile(String name) {
@@ -27,10 +32,24 @@ public class ServerSkinUtil {
         }
     }
 
+    public static File getCapeFile(String name) {
+        File temp1 = new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".png");
+        File temp2 = new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".gif");
+        if (temp1.exists()) {
+            return temp1;
+        } else {
+            return temp2;
+        }
+    }
+
     public static void transferDefaultSkins() throws IOException {
         InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png");
         if (is == null) {
             OfflineAuth.error("Default skin resource not found!");
+            return;
+        }
+        if (!Util.pngIsSane(ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png"))) {
+            OfflineAuth.error("Default skin resoruce not sane!");
             return;
         }
         BufferedImage img = ImageIO.read(is);
@@ -58,9 +77,25 @@ public class ServerSkinUtil {
         }
     }
 
-    public static void clearSkinCache() {
+    public static void saveBytesToCapeCache(byte[] capeBytes, String displayname) {
+        try {
+            if (!Util.imageIsSane(new ByteArrayInputStream(capeBytes))) {
+                return;
+            }
+            if (Util.imageIsPng(new ByteArrayInputStream(capeBytes))) {
+                Util.bytesSaveToFile(capeBytes, new File(OfflineAuth.varInstanceServer.serverCapeCachePath + File.separator + displayname + ".png"));
+            } else {
+                Util.bytesSaveToFile(capeBytes, new File(OfflineAuth.varInstanceServer.serverCapeCachePath + File.separator + displayname + ".gif"));
+            }
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to save cape to cache for player " + displayname);
+        }
+    }
+
+    public static void clearSkinAndCapeCache() {
         try {
             FileUtils.cleanDirectory(new File(OfflineAuth.varInstanceServer.serverSkinCachePath));
+            FileUtils.cleanDirectory(new File(OfflineAuth.varInstanceServer.serverCapeCachePath));
         } catch (IOException e) {
             OfflineAuth.error("Failed to clear client skin cache");
         }
@@ -71,6 +106,17 @@ public class ServerSkinUtil {
         File skin = new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png");
         if (skin.exists()) {
             skin.delete();
+        }
+    }
+
+    public static void removeCapeFromCache(String name) {
+        File cape1 = new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".png");
+        File cape2 = new File(OfflineAuth.varInstanceServer.serverCapeCachePath, name + ".gif");
+        if (cape1.exists()) {
+            cape1.delete();
+        }
+        if (cape2.exists()) {
+            cape2.delete();
         }
     }
 

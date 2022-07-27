@@ -2,7 +2,13 @@
 Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
 It is advised to delete the `offlineauth` folder each time you update for now.
 
+## Warning! To update to version 0.2.46 you have to delete the following folder serverside: `offlineauth/OfflineAuthDatabase`
+## This will erase all accounts. This should not occure further in the development anymore
+
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
+
+# Showcase
+[youtube.com/watch?v=mB4DD_z5lvQ](https://www.youtube.com/watch?v=mB4DD_z5lvQ)
 
 ### Motivation
 Microsoft forcing people to migrate from Mojang to Microsoft. Oh, and now chat reports.
@@ -24,12 +30,13 @@ If you are a player:
 
 ### Features
 * Registration and deletion of accounts, changing account password and displayname
-* Working skin implementation, you can even change your skin ingame. Also, singleplayer skin support
+* Working skins and capes implementation, you can even change your skin and cape ingame. Also, singleplayer support
 * Allowing registration only to those who have one time tokens (generate those with the `/gentoken` command)
 * Config options can be changed via file or server console
 * End-to-end encryption of credentials
 * Possibility of logging in with a keypair, rather than with a password
 * Backport of player faces in the multiplayer tab menu
+* Integration with [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) elytras (you will have to wait for its next release, for now Et Futurum breaks OfflineAuth's skin preview)
 
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
@@ -39,6 +46,7 @@ If you are a player:
 * `/gentoken` - Generates a one time use account creation token
 * `/fingerprint` - Displays the fingerprint of the public key of the server (if users know it in advance, this can tell them if someone is performing a man in the middle attack on them)
 * `/deleteskin <identifier> (alias: delskin)` - Deletes the skin of a user
+* `/deletecape <identifier> (alias: delcape)` - Deletes the cape of a user
 * `/oaconfig <list|help|get|set> [config_string] [value]` - Changes given config option, only usable in the server console (more granular permissions might be added)
 
 ### Credits
@@ -46,6 +54,8 @@ If you are a player:
 * [SinTh0r4s](https://github.com/SinTh0r4s), [basdxz](https://github.com/basdxz), and [TheElan](https://github.com/TheElan) for their [ExampleMod 1.7.10](https://github.com/SinTh0r4s/ExampleMod1.7.10) and the included gradle buildscript.
 * [Greg](https://github.com/GregoriusT) and all the people on his IRC who sometimes get my dumb ass unstuck :D
 * The player 3D render code was taken from [bspkrsCore](https://github.com/bspkrs-mods/bspkrsCore) ([CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)), by [bspkrs](https://github.com/bspkrs-mods).
+* [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) devs
+* Translations: Johan
 
 ### Building
 `gradlew build` should do the trick.
@@ -56,3 +66,5 @@ If you are a player:
 
 ### License
 LGPLv3+SNEED
+
+## Feel free to help translate the mod, open PR's or send lang files directly to me

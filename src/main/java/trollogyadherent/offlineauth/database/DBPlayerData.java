@@ -7,9 +7,10 @@ public class DBPlayerData {
     String passwordHash;
     String salt;
     byte[] skinBytes;
+    byte[] capeBytes;
     String publicKey;
 
-    public DBPlayerData(String identifier, String displayname, String passwordHash, String salt, String uuid, String publicKey, byte[] skinBytes) {
+    public DBPlayerData(String identifier, String displayname, String passwordHash, String salt, String uuid, String publicKey, byte[] skinBytes, byte[] capeBytes) {
         this.identifier = identifier;
         this.displayname = displayname;
         this.passwordHash = passwordHash;
@@ -17,6 +18,7 @@ public class DBPlayerData {
         this.uuid = uuid;
         this.publicKey = publicKey;
         this.skinBytes = skinBytes;
+        this.capeBytes = capeBytes;
     }
 
     public String getIdentifier() {
@@ -33,6 +35,9 @@ public class DBPlayerData {
 
     public byte[] getSkinBytes() {
         return skinBytes;
+    }
+    public byte[] getCapeBytes() {
+        return capeBytes;
     }
 
     public String getDisplayname() { return displayname; }

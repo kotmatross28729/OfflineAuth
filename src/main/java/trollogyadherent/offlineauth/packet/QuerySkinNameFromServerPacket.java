@@ -17,17 +17,17 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
     {
         if (ctx.side.isServer() && message.exchangecode == 0)
         {
-            /*System.out.println("QuerySkinNameFromServerPacket onMessage triggered, code 0 (from client)");
-            System.out.println("Requesting player: " + ctx.getServerHandler().playerEntity.getDisplayName());
-            System.out.println("Requested displayName: " + message.displayName);
-            System.out.println("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.playerRegistry);*/
+            OfflineAuth.debug("QuerySkinNameFromServerPacket onMessage triggered, code 0 (from client)");
+            OfflineAuth.debug("Requesting player: " + ctx.getServerHandler().playerEntity.getDisplayName());
+            OfflineAuth.debug("Requested displayName: " + message.displayName);
+            OfflineAuth.debug("ServerSkinReg before any changes: " + OfflineAuth.varInstanceServer.playerRegistry);
             ServerPlayerData sd = OfflineAuth.varInstanceServer.playerRegistry.getPlayerDataByDisplayName(message.displayName);
             if (sd == null) {
-                //System.out.println("Player not found in server registry!");
+                OfflineAuth.debug("Player not found in server registry!");
             } else {
-                //System.out.println("Player found in server registry, skin is " + sd.skinName);
+                OfflineAuth.debug("Player found in server registry, skin is " + sd.skinName);
                 message.skinName = sd.skinName;
-                //System.out.println("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
+                OfflineAuth.debug("ServerSkinReg: " + OfflineAuth.varInstanceServer.playerRegistry);
             }
 
             message.exchangecode = 1;
@@ -47,6 +47,8 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
                 //OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, message.skinname);
                 IMessage msg = new DownloadSkinPacket.SimpleMessage(message.skinName, message.displayName);
                 PacketHandler.net.sendToServer(msg);
+                IMessage msg2 = new DownloadCapePacket.SimpleMessage(message.displayName, message.displayName);
+                PacketHandler.net.sendToServer(msg2);
             }
             OfflineAuth.varInstanceClient.clientRegistry.setSkinName(message.displayName, message.skinName);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);

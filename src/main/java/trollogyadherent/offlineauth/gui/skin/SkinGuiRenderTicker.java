@@ -1,30 +1,21 @@
 package trollogyadherent.offlineauth.gui.skin;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.util.UUIDTypeAdapter;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInputFromOptions;
@@ -32,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.gui.skin.util.EntityUtil;
 import trollogyadherent.offlineauth.gui.skin.util.FakeWorld;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
@@ -39,7 +31,6 @@ import trollogyadherent.offlineauth.skin.client.LegacyConversion;
 import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -64,8 +55,23 @@ public class SkinGuiRenderTicker
 
     private static boolean erroredOut = false;
 
-    private static ResourceLocation skinResourceLocation = null;
-    private static EntityClientPlayerMP clientPlayerMP = null;
+    public static ResourceLocation skinResourceLocation = null;
+    public static ResourceLocation capeResourceLocation = null;
+    public static CapeObject capeObject = null;
+    public static EntityClientPlayerMP clientPlayerMP = null;
+    public static float yaw = 0;
+    public static float pitch = 1;
+
+    public static float angle = 180;
+    public static float x = 0;
+    public static float y = 1;
+    public static float z = 0.03F;
+    //public static float yawOffset = 0;
+    public static int textureWidth = 5;
+    public static int textureHeight = 5;
+    public static int xVelocity = 0;
+    private static int previousMouseX = -1;
+    private static boolean wasMousePressed = false;
 
     public SkinGuiRenderTicker()
     {
@@ -88,20 +94,84 @@ public class SkinGuiRenderTicker
                 {
                     ScaledResolution sr = new ScaledResolution(mcClient, mcClient.displayWidth, mcClient.displayHeight);
                     final int mouseX = (Mouse.getX() * sr.getScaledWidth()) / mcClient.displayWidth;
+
                     final int mouseY = sr.getScaledHeight() - ((Mouse.getY() * sr.getScaledHeight()) / mcClient.displayHeight) - 1;
                     int distanceToSide = ((mcClient.currentScreen.width / 2) /*98*/) / 2 + 35;
                     float targetHeight = (float) (sr.getScaledHeight_double() / 3.0F) / 1.8F;
 
                     if (skinResourceLocation != null) {
-                        OfflineAuth.varInstanceClient.skinLocationfield.set(clientPlayerMP, skinResourceLocation);
+                        OfflineAuth.varInstanceClient.skinLocationField.set(clientPlayerMP, skinResourceLocation);
                     }
 
-                    EntityUtil.drawEntityOnScreen(
+                    if (Mouse.isButtonDown(0)) {
+                        if (!wasMousePressed) {
+                            wasMousePressed = true;
+                            xVelocity = 0;
+                        }
+                        if (previousMouseX == -1) {
+                            previousMouseX = mouseX;
+                        } else if (mouseX != previousMouseX) {
+                            int movementDelta = Math.abs(previousMouseX - mouseX);
+                            if (previousMouseX >= mouseX) {
+
+                                xVelocity += Math.min(10, movementDelta);
+                                //System.out.println("1Adding " + Math.min(10, movementDelta));
+                            } else {
+                                xVelocity -= Math.min(10, movementDelta);
+                                //System.out.println("2Adding " + Math.min(10, movementDelta));
+
+                            }
+                            previousMouseX = mouseX;
+                        }
+                    } else {
+                        previousMouseX = -1;
+                        wasMousePressed = false;
+                    }
+
+                    if (xVelocity > 10) {
+                        xVelocity = 10;
+                    }
+                    if (xVelocity < -10) {
+                        xVelocity = -10;
+                    }
+
+                    /*if (capeResourceLocation != null) {
+                        OfflineAuth.varInstanceClient.capeLocationfield.set(clientPlayerMP, capeResourceLocation);
+                    }*/
+
+                    /*EntityUtil.drawEntityOnScreenFollowMouse(
                             sr.getScaledWidth() - distanceToSide,
                             (int) ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - 40,
                             targetHeight,
                             sr.getScaledWidth() - distanceToSide - mouseX,
                             ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - (clientPlayerMP.height * targetHeight * (clientPlayerMP.getEyeHeight() / clientPlayerMP.height)) - mouseY, clientPlayerMP);
+                     */
+
+                    /*clientPlayerMP.motionX = 0;
+                    clientPlayerMP.motionY = 0;
+                    clientPlayerMP.motionZ = 0;
+                    clientPlayerMP.moveForward = 0;
+                    clientPlayerMP.moveStrafing = 0;
+                    clientPlayerMP.setVelocity(0, 0, 0);*/
+
+                    //clientPlayerMP.mod
+
+                    yaw += xVelocity;
+
+                    EntityUtil.drawEntityOnScreen(
+                            sr.getScaledWidth() - distanceToSide,
+                            (int) ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - 40,
+                            targetHeight,
+                            yaw,
+                            yaw,
+                            pitch,
+                            clientPlayerMP);
+                }
+
+                if (xVelocity > 0) {
+                    xVelocity -= event.renderTickTime;
+                } else {
+                    xVelocity += event.renderTickTime;
                 }
             }
             catch (Throwable e)
@@ -136,6 +206,8 @@ public class SkinGuiRenderTicker
                 clientPlayerMP.movementInput = new MovementInputFromOptions(mcClient.gameSettings);
                 clientPlayerMP.eyeHeight = 1.82F;
                 setRandomMobItem(clientPlayerMP);
+
+                //playerMP = new EntityPlayerMP(MinecraftServer.getServer(), world, mcClient.getSession(), null);
             }
 
             RenderManager.instance.cacheActiveRenderInfo(world, mcClient.renderEngine, mcClient.fontRenderer, clientPlayerMP, clientPlayerMP, mcClient.gameSettings, 0.0F);
@@ -230,6 +302,10 @@ public class SkinGuiRenderTicker
             OfflineAuth.error("Error skin image does not exist: " + skinName);
             return;
         }
+        if (!Util.pngIsSane(imageFile)) {
+            OfflineAuth.error("Error loading skin image, not sane" + skinName);
+            return;
+        }
         BufferedImage bufferedImage;
         try {
             bufferedImage = ImageIO.read(imageFile);
@@ -240,20 +316,53 @@ public class SkinGuiRenderTicker
         if (bufferedImage.getHeight() == 64) {
             bufferedImage = new LegacyConversion().convert(bufferedImage);
         }
-        ClientSkinUtil.OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
-        ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation, offlineTextureObject);
+        ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation);
 
         if (mcClient != null && clientPlayerMP != null) {
             setRandomMobItem(clientPlayerMP);
         }
     }
 
-    public boolean isSkinResourceLocationNull() {
-        return skinResourceLocation == null;
+    public void setCape(String capeName) {
+        File imageFile = ClientSkinUtil.getCapeFile(capeName);
+        if (imageFile == null || !imageFile.exists()) {
+            OfflineAuth.error("Error cape image does not exist: " + capeName);
+            return;
+        }
+        BufferedImage bufferedImage;
+        if (imageFile.getName().endsWith(".png")) {
+            if (!Util.pngIsSane(imageFile)) {
+                OfflineAuth.error("Error loading cape image, not sane: " + capeName);
+                return;
+            }
+            try {
+                bufferedImage = ImageIO.read(imageFile);
+            } catch (IOException e) {
+                OfflineAuth.error("Error loading cape image " + capeName);
+                return;
+            }
+        } else {
+            if (ClientSkinUtil.getGifFrames(imageFile) == null) {
+                OfflineAuth.error("Error loading cape image " + capeName);
+                return;
+            }
+        }
+        /*if (bufferedImage.getHeight() == 64) {
+            bufferedImage = new LegacyConversion().convert(bufferedImage);
+        }*/
+        //capeResourceLocation = new ResourceLocation("offlineauth", "tickercapes/" + capeName);
+        //ClientSkinUtil.loadTexture(bufferedImage, capeResourceLocation);
+        capeObject = ClientSkinUtil.getCapeObject(capeName);
     }
 
     public ResourceLocation getSkinResourceLocation() {
         return skinResourceLocation;
     }
+
+    public ResourceLocation getCapeResourceLocation() {
+        return capeResourceLocation;
+    }
+
+    public CapeObject getCapeObject() {return capeObject;}
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
+import de.matthiasmann.twl.utils.PNGDecoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,9 +13,11 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -166,6 +169,10 @@ public class Util {
 
     public static void bytesSaveToFile(byte[] bytes, File file) throws IOException {
         FileUtils.writeByteArrayToFile(file, bytes);
+    }
+
+    public static void inputStreamSaveToFile(InputStream is, File file) throws IOException {
+        FileUtils.copyInputStreamToFile(is, file);
     }
 
     public static boolean fileExists(File file) {
@@ -379,5 +386,112 @@ public class Util {
 
     public static double filesizeInBytes(File file) {
         return (double) file.length();
+    }
+
+    /* Actually doesn't clone lol */
+    public static InputStream cloneInputStream(InputStream is) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while (true) {
+            try {
+                if (!((len = is.read(buffer)) > -1)) break;
+            } catch (IOException e) {
+                return null;
+            }
+            baos.write(buffer, 0, len);
+        }
+        try {
+            baos.flush();
+        } catch (IOException e) {
+            return null;
+        }
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
+
+    public static boolean pngIsSane(File imageFile) {
+        try {
+            PNGDecoder pngDecoder = new PNGDecoder(Files.newInputStream(imageFile.toPath()));
+            if (pngDecoder.getWidth() > OfflineAuth.maxPngDimension || pngDecoder.getHeight() > OfflineAuth.maxPngDimension) {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean pngIsSane(byte[] bytes) {
+        try {
+            PNGDecoder pngDecoder = new PNGDecoder(new ByteArrayInputStream(bytes));
+            if (pngDecoder.getWidth() > OfflineAuth.maxPngDimension || pngDecoder.getHeight() > OfflineAuth.maxPngDimension) {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean pngIsSane(InputStream is) {
+        try {
+            PNGDecoder pngDecoder = new PNGDecoder(is);
+            if (pngDecoder.getWidth() > OfflineAuth.maxPngDimension || pngDecoder.getHeight() > OfflineAuth.maxPngDimension) {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean imageIsSane(InputStream is) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while (true) {
+            try {
+                if (!((len = is.read(buffer)) > -1)) break;
+            } catch (IOException e) {
+                return false;
+            }
+            baos.write(buffer, 0, len);
+        }
+        try {
+            baos.flush();
+        } catch (IOException e) {
+            return false;
+        }
+
+        int sanityFlag = 0;
+        BufferedImage bi = getFirstGifFrame(new ByteArrayInputStream(baos.toByteArray()));
+        if (bi == null) {
+            sanityFlag = 1;
+        }
+        return pngIsSane(new ByteArrayInputStream(baos.toByteArray())) || sanityFlag == 0;
+    }
+
+    public static boolean imageIsPng(InputStream is) {
+        try {
+            new PNGDecoder(is);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static BufferedImage getFirstGifFrame(InputStream is) {
+        GifDecoder gifDecoder = new GifDecoder();
+        try {
+            gifDecoder.read(is);
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to read gif (possibly not sane)");
+            return null;
+        }
+        int n = gifDecoder.getFrameCount();
+        if (n == 0) {
+            return null;
+        }
+        return gifDecoder.getFrame(0);
     }
 }

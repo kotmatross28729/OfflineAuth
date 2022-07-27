@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.command;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,7 +37,7 @@ public class CommandDeletePlayer implements ICommand {
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "/deleteplayer <identifier> (alias: delplayer)";
+        return "/deleteuser <identifier> (alias: delplayer)";
     }
 
     @Override
@@ -55,8 +56,12 @@ public class CommandDeletePlayer implements ICommand {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
         } else {
             StatusResponseObject responseObject = Database.deleteUserData(argString[0]);
-            sender.addChatMessage(new ChatComponentText(responseObject.getStatus()));
-            OfflineAuth.info(sender.getCommandSenderName() + " issued deleteplayer command for player " + argString[0] + " with status " + responseObject.getStatus());
+            if (responseObject.getStatusCode() == 200) {
+                sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.GREEN) + "Success"));
+            } else {
+                sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) + "Command failed"));
+            }
+            OfflineAuth.info(sender.getCommandSenderName() + " issued deleteuser command for player " + argString[0] + " with status " + responseObject.getStatus());
         }
     }
 

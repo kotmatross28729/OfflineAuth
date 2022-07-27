@@ -2,17 +2,17 @@ package trollogyadherent.offlineauth.request.objects;
 
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 
-public class UploadSkinRequestBodyObject {
+public class UploadSkinOrCapeRequestBodyObject {
     private String identifier;
     private String password;
-    private byte[] skinBytes;
+    private byte[] imageBytes;
     private String clientKeyToken;
     private ServerKeyTokenRegistry.TokenType type;
 
-    public UploadSkinRequestBodyObject(String identifier, String password, byte[] skinBytes, String clientKeyToken) {
+    public UploadSkinOrCapeRequestBodyObject(String identifier, String password, byte[] imageBytes, String clientKeyToken) {
         this.identifier = identifier;
         this.password = password;
-        this.skinBytes = skinBytes;
+        this.imageBytes = imageBytes;
         this.clientKeyToken = clientKeyToken;
         this.type = ServerKeyTokenRegistry.TokenType.UPLOADSKIN;
     }
@@ -25,8 +25,8 @@ public class UploadSkinRequestBodyObject {
         return password;
     }
 
-    public byte[] getSkinBytes() {
-        return skinBytes;
+    public byte[] getImageBytes() {
+        return imageBytes;
     }
 
     public String getClientKeyToken() {

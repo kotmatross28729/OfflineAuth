@@ -58,10 +58,17 @@ public class RequestUtil {
         return new ByteArrayEntity(Base64.getEncoder().encode(encryptedData.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static ByteArrayEntity getUploadSkinRequestBody(AesKeyUtil.AesKeyPlusIv aesKeyPlusIv, String identifier, String password, byte[] skinBytes, String clientKeyToken) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        UploadSkinRequestBodyObject rbo = new UploadSkinRequestBodyObject(identifier, password, skinBytes, clientKeyToken);
+    public static ByteArrayEntity getUploadSkinOrCapeRequestBody(AesKeyUtil.AesKeyPlusIv aesKeyPlusIv, String identifier, String password, byte[] imageBytes, String clientKeyToken) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        UploadSkinOrCapeRequestBodyObject rbo = new UploadSkinOrCapeRequestBodyObject(identifier, password, imageBytes, clientKeyToken);
         String rboJson = JsonUtil.objectToJson(rbo);
         byte[] encryptedData = AesKeyUtil.encryptToBytes(rboJson.getBytes(StandardCharsets.UTF_8), aesKeyPlusIv.key, aesKeyPlusIv.iv);
         return new ByteArrayEntity(encryptedData);
+    }
+
+    public static ByteArrayEntity getRemoveSkinOrCapeRequestBody(AesKeyUtil.AesKeyPlusIv aesKeyPlusIv, String identifier, String password, String clientKeyToken) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        RemoveSkinOrCapeRequestBodyObject rbo = new RemoveSkinOrCapeRequestBodyObject(identifier, password, clientKeyToken);
+        String rboJson = JsonUtil.objectToJson(rbo);
+        String encryptedData = AesKeyUtil.encryptToStr(rboJson, aesKeyPlusIv.key, aesKeyPlusIv.iv);
+        return new ByteArrayEntity(Base64.getEncoder().encode(encryptedData.getBytes(StandardCharsets.UTF_8)));
     }
 }

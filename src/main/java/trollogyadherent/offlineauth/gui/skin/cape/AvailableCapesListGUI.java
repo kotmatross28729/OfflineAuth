@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.gui.skin;
+package trollogyadherent.offlineauth.gui.skin.cape;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -9,43 +9,42 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.ClientUtil;
 
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class AvailableSkinsListGUI extends GuiListExtended {
+public class AvailableCapesListGUI extends GuiListExtended {
     protected final Minecraft mc;
-    protected final List skinEntries;
+    public final List capeEntries;
 
-    int selectedIndex;
+    public int selectedIndex;
 
-    public AvailableSkinsListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List skinEntries) {
+    public AvailableCapesListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List capeEntries) {
         super(mc, listWidth, listHeight, 32, listHeight - 55 + 4 , entryHeight);
         this.mc = mc;
-        this.skinEntries = skinEntries;
+        this.capeEntries = capeEntries;
         this.field_148163_i = false;
         this.setHasListHeader(true, (int)((float)mc.fontRenderer.FONT_HEIGHT * 1.5F));
         selectedIndex = -1;
-        if (skinEntries.size() > 0 && ClientUtil.isSinglePlayer()) {
-            String skinName = ClientSkinUtil.getLastUsedOfflineSkinName();
-            if (skinName != null) {
-                for (int i = 0; i < skinEntries.size(); i++) {
-                    if (((SkinListEntry) skinEntries.get(i)).skinName.equals(skinName)) {
-                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(((SkinListEntry) skinEntries.get(i)).skinName);
+        if (capeEntries.size() > 0 && ClientUtil.isSinglePlayer()) {
+            String capeName = ClientSkinUtil.getLastUsedOfflineCapeName();
+            if (capeName != null) {
+                for (int i = 0; i < capeEntries.size(); i++) {
+                    if (((CapeListEntry) capeEntries.get(i)).capeName.equals(capeName)) {
+                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setCape(((CapeListEntry) capeEntries.get(i)).capeName);
                         selectedIndex = i;
                     }
                 }
             }
         }
-        if (!ClientUtil.isSinglePlayer() /*&& SkinGuiRenderTicker.skinResourceLocation == null*/) {
+        if (!ClientUtil.isSinglePlayer()) {
             if (Minecraft.getMinecraft().thePlayer != null && SkinGuiRenderTicker.clientPlayerMP != null) {
                 try {
-                    /*ResourceLocation rl*/ SkinGuiRenderTicker.skinResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.skinLocationField.get(Minecraft.getMinecraft().thePlayer);
-                    /*OfflineAuth.debug("1, " + OfflineAuth.varInstanceClient.skinLocationfield.get(SkinGuiRenderTicker.clientPlayerMP));
-                    OfflineAuth.varInstanceClient.skinLocationfield.set(SkinGuiRenderTicker.clientPlayerMP, rl);
-                    OfflineAuth.debug("2, " + OfflineAuth.varInstanceClient.skinLocationfield.get(SkinGuiRenderTicker.clientPlayerMP));*/
+                    SkinGuiRenderTicker.capeResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.capeLocationField.get(Minecraft.getMinecraft().thePlayer);
+                    SkinGuiRenderTicker.capeObject = OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(Minecraft.getMinecraft().thePlayer.getDisplayName());
                 } catch (IllegalAccessException e) {
                     OfflineAuth.error("Failed to get ingame skin");
                 }
@@ -59,11 +58,11 @@ public class AvailableSkinsListGUI extends GuiListExtended {
     }
 
     protected String getListHeader() {
-        return I18n.format("offlineauth.skingui.available_skins");
+        return I18n.format("offlineauth.skingui.available_capes");
     }
     public List func_148201_l()
     {
-        return this.skinEntries;
+        return this.capeEntries;
     }
 
     protected int getSize()
@@ -71,8 +70,8 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         return this.func_148201_l().size();
     }
 
-    public SkinListEntry getListEntry_(int index) {
-        return (SkinListEntry) this.func_148201_l().get(index);
+    public CapeListEntry getListEntry_(int index) {
+        return (CapeListEntry) this.func_148201_l().get(index);
     }
 
     public int getListWidth()
@@ -116,10 +115,9 @@ public class AvailableSkinsListGUI extends GuiListExtended {
 
                 if (this.getListEntry_(l).mousePressed(l, p_148179_1_, p_148179_2_, p_148179_3_, k1, l1))
                 {
-                    //System.out.println("hmm: " + this.getListEntry_(l).skinName);
                     this.selectedIndex = l;
-                    //this.func_148143_b(false);  //this thing blocks the ability to drag the scrollbar with the mouse
-                    OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(this.getListEntry_(l).skinName);
+                    OfflineAuth.varInstanceClient.skinGuiRenderTicker.setCape(this.getListEntry_(l).capeName);
+                    OfflineAuth.varInstanceClient.singlePlayerCapeObject = ClientSkinUtil.getCapeObject(this.getListEntry_(l).capeName);
                     return true;
                 }
             }

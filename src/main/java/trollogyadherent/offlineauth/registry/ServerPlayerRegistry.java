@@ -23,7 +23,9 @@ public class ServerPlayerRegistry {
     }
 
     public ServerPlayerData getPlayerDataByDisplayName(String displayname) {
-        return getPlayerDataByIdentifier(getIdentifierFromDisplayName(displayname));
+        String ident = getIdentifierFromDisplayName(displayname);
+        OfflineAuth.debug("Ident by displayname: " + ident);
+        return getPlayerDataByIdentifier(ident);
     }
 
     public void clear() {

@@ -17,6 +17,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
@@ -25,7 +26,6 @@ import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ClientEventListener {
 
         //System.out.println("Detected player join event, we joined");
 
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null);
 
         /* Asking server for data about us, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
@@ -81,7 +81,7 @@ public class ClientEventListener {
         String displayName = ((AbstractClientPlayer) e.entity).getDisplayName();
 
         //System.out.println("Detected player join event: " + displayName);
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null);
         /* Asking server for data about this guy, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
         PacketHandler.net.sendToServer(msg);
@@ -118,7 +118,7 @@ public class ClientEventListener {
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onPlayerLeaveFMLEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        OfflineAuth.varInstanceClient.offlineSkinLoaded = false;
+        OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded = false;
         /* If singleplayer, we don't do that */
         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isSinglePlayer()) {
             return;
@@ -156,9 +156,10 @@ public class ClientEventListener {
         }
 
         if (ClientUtil.isSinglePlayer()) {
-            if (!OfflineAuth.varInstanceClient.offlineSkinLoaded) {
-                OfflineAuth.varInstanceClient.offlineSkinLoaded = true;
-                loadOfflineSkin();
+            if (!OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded) {
+                OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded = true;
+                loadSingleplayerSkin();
+                loadSingleplayerCape();
             }
             return;
         }
@@ -175,7 +176,7 @@ public class ClientEventListener {
 
         String displayName = player.getDisplayName();
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -184,7 +185,7 @@ public class ClientEventListener {
 
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -194,16 +195,39 @@ public class ClientEventListener {
             return;
         }
 
-        OfflineAuth.varInstanceClient.skinLocationfield.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+        OfflineAuth.varInstanceClient.skinLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+    }
+
+    @SubscribeEvent
+    public void renderPlayer(RenderPlayerEvent.Specials.Pre e) throws IllegalAccessException {
+        if (Minecraft.getMinecraft().currentScreen instanceof SkinManagmentGUI) {
+            return;
+        }
+        if (!e.entityPlayer.worldObj.isRemote) {
+            return;
+        }
+
+        if (e.isCanceled() || e.entityPlayer == null) {
+            return;
+        }
+
+        if (e.entityPlayer instanceof FakePlayer) {
+            return;
+        }
+        if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() == null) {
+            return;
+        }
+        if (ClientUtil.isSinglePlayer()) {
+            if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
+                OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+            }
+            return;
+        }
     }
 
     @SuppressWarnings("unused")
     @SubscribeEvent()
     public void render(RenderPlayerEvent.Pre e) throws IllegalAccessException, IOException {
-        if (ClientUtil.isSinglePlayer()) {
-            return;
-        }
-
         if (!e.entityPlayer.worldObj.isRemote) {
             return;
         }
@@ -216,6 +240,13 @@ public class ClientEventListener {
             return;
         }
 
+        if (ClientUtil.isSinglePlayer()) {
+            if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
+                OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+            }
+            return;
+        }
+
         if (OfflineAuth.varInstanceClient.textureManager == null) {
             OfflineAuth.varInstanceClient.textureManager = Minecraft.getMinecraft().getTextureManager();
         }
@@ -224,7 +255,7 @@ public class ClientEventListener {
         String displayName = entityPlayerMP.getDisplayName();
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -232,27 +263,35 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
             return;
         }
 
-        if (OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName) == null) {
-            return;
+        if (OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName) != null) {
+            OfflineAuth.varInstanceClient.skinLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
         }
 
-        OfflineAuth.varInstanceClient.skinLocationfield.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+        if (OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
+            OfflineAuth.varInstanceClient.capeLocationField.set(OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName), OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
+        } else {
+            OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
+        }
     }
 
-    public static void loadOfflineSkin() {
+    public static void loadSingleplayerSkin() {
         String skinName = ClientSkinUtil.getLastUsedOfflineSkinName();
         if (skinName != null) {
             ResourceLocation rl = new ResourceLocation("offlineauth", "offlineskin/" + skinName);
             File imageFile = ClientSkinUtil.getSkinFile(skinName);
             if (imageFile == null || !imageFile.exists()) {
                 OfflineAuth.error("Error skin image does not exist: " + skinName);
+                return;
+            }
+            if (!Util.pngIsSane(imageFile)) {
+                OfflineAuth.error("Error loading skin image, not sane" + skinName);
                 return;
             }
             BufferedImage bufferedImage;
@@ -266,14 +305,24 @@ public class ClientEventListener {
             if (bufferedImage.getHeight() == 64) {
                 bufferedImage = new LegacyConversion().convert(bufferedImage);
             }
-            ClientSkinUtil.OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
-            ClientSkinUtil.loadTexture(bufferedImage, rl, offlineTextureObject);
+            ClientSkinUtil.loadTexture(bufferedImage, rl);
             try {
-                OfflineAuth.varInstanceClient.skinLocationfield.set(Minecraft.getMinecraft().thePlayer, rl);
+                OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, rl);
+                /*if (Loader.isModLoaded("etfuturum")) {
+                    ResourceLocation rlFuturum = new ResourceLocation("etfuturum", "offlineskin/" + skinName);
+                    ClientSkinUtil.loadTexture(bufferedImage, rlFuturum);
+                }*/
             } catch (IllegalAccessException e_) {
                 OfflineAuth.error("Fatal error while applying skin");
                 e_.printStackTrace();
             }
+        }
+    }
+
+    public static void loadSingleplayerCape() {
+        String capeName = ClientSkinUtil.getLastUsedOfflineCapeName();
+        if (capeName != null) {
+            OfflineAuth.varInstanceClient.singlePlayerCapeObject = ClientSkinUtil.getCapeObject(capeName);
         }
     }
 }

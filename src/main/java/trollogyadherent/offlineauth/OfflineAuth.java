@@ -3,7 +3,6 @@ package trollogyadherent.offlineauth;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
@@ -28,7 +27,8 @@ import java.security.cert.CertificateException;
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]")
 public class OfflineAuth {
 
-    private static Logger LOG = LogManager.getLogger(Tags.MODID);
+    private static Logger LOG;// = LogManager.getLogger(Tags.MODID);
+
     public static File confFile;
 
     @SidedProxy(clientSide= Tags.GROUPNAME + ".ClientProxy", serverSide=Tags.GROUPNAME + ".CommonProxy")
@@ -38,12 +38,18 @@ public class OfflineAuth {
 
     public static VarInstanceClient varInstanceClient;
     public static VarInstanceServer varInstanceServer;
+    private static boolean DEBUG_MODE;
+    public final static int maxPngDimension = 2500;
 
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+        LOG = event.getModLog();
+        String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
+        DEBUG_MODE = debugVar != null;
+        OfflineAuth.info("Debugmode: " + DEBUG_MODE);
         proxy.preInit(event);
     }
 
@@ -86,7 +92,9 @@ public class OfflineAuth {
     }
 
     public static void debug(String message) {
-        LOG.debug(message);
+        if (DEBUG_MODE) {
+            LOG.info("DEBUG: " + message);
+        }
     }
 
     public static void info(String message) {

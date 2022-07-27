@@ -55,7 +55,7 @@ public class Database {
 
     /* Registers a player. isCommand serves as an override for most checks (except things like null/invalid values) */
     /* overrideUser re-registers the user (used during password change) */
-    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, byte[] capeBytes, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
         if (!Util.validUsername(displayname)) {
             return new StatusResponseObject("offlineauth.db.invalid_displayname", 500);
@@ -121,7 +121,7 @@ public class Database {
         }
 
 
-        if (putPlayerDataInDB(identifier, displayname, passwordHash, salt, uuid, publicKey, skinBytes)) {
+        if (putPlayerDataInDB(identifier, displayname, passwordHash, salt, uuid, publicKey, skinBytes, capeBytes)) {
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
@@ -165,7 +165,7 @@ public class Database {
                 if (pd == null) {
                     return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
-                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, true, true);
+                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, pd.capeBytes ,true, true);
                 if (registerData.getStatusCode() == 200) {
                     return new StatusResponseObject("offlineauth.db.success_update_pw", 200);
                 } else {
@@ -207,7 +207,7 @@ public class Database {
             if (isCommand || playerValidIgnoreDisplayName(identifier, password)) {
 
                 try {
-                    putPlayerDataInDB(identifier, newDisplayName, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes);
+                    putPlayerDataInDB(identifier, newDisplayName, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes, pd.capeBytes);
 
                     return new StatusResponseObject("offlineauth.db.success_change_displayname", 200);
                 } catch (Error e) {
@@ -242,7 +242,7 @@ public class Database {
                     return new StatusResponseObject("Error! Player Data not found!", 500);
                 }
 
-                if (putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, uuid, pd.publicKey, pd.skinBytes)) {
+                if (putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, uuid, pd.publicKey, pd.skinBytes, pd.capeBytes)) {
                     return new StatusResponseObject("Successfully updated UUID", 200);
                 } else {
                     return new StatusResponseObject("Failed to change UUID", 500);
@@ -267,15 +267,38 @@ public class Database {
                 if (pd == null) {
                     return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
-                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, skinBytes);
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, skinBytes, pd.capeBytes);
                 return new StatusResponseObject("offlineauth.db.success_upload_skin", 200);
             } else {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_upload_skin", 500);
-            //e.printStackTrace();
+        }
+    }
+
+    public static StatusResponseObject changePlayerCape(String identifier, String password, byte[] capeBytes, boolean force) {
+        if (force && identifier == null || (password == null && !force) || (password.equals("") && !force) || capeBytes == null || capeBytes.length == 1) {
+            return new StatusResponseObject("offlineauth.db.identifier_pw_skin_null", 500);
+        }
+
+        try {
+            if (force || playerValidIgnoreDisplayName(identifier, password)) {
+                DBPlayerData pd = getPlayerDataByIdentifier(identifier);
+                if (pd == null) {
+                    return new StatusResponseObject("offlineauth.db.user_not_found", 500);
+                }
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes, capeBytes);
+                return new StatusResponseObject("offlineauth.db.success_upload_cape", 200);
+            } else {
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            OfflineAuth.error(e.getMessage());
+            e.printStackTrace();
+            return new StatusResponseObject("offlineauth.db.fail_upload_cape", 500);
         }
     }
 
@@ -290,7 +313,7 @@ public class Database {
                 if (pd == null) {
                     return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
-                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, new byte[1]);
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, new byte[1], pd.capeBytes);
                 return new StatusResponseObject("offlineauth.db.success_delete_skin", 200);
             } else {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
@@ -298,6 +321,29 @@ public class Database {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             OfflineAuth.error(e.getMessage());
             return new StatusResponseObject("offlineauth.db.fail_delete_skin", 500);
+            //e.printStackTrace();
+        }
+    }
+
+    public static StatusResponseObject deletePlayerCape(String identifier, String password, boolean force) {
+        if (identifier == null || (password == null && !force)) {
+            return new StatusResponseObject("offlineauth.db.identifier_pw_null", 500);
+        }
+
+        try {
+            if (force || playerValidIgnoreDisplayName(identifier, password)) {
+                DBPlayerData pd = getPlayerDataByIdentifier(identifier);
+                if (pd == null) {
+                    return new StatusResponseObject("offlineauth.db.user_not_found", 500);
+                }
+                putPlayerDataInDB(pd.identifier, pd.displayname, pd.passwordHash, pd.salt, pd.uuid, pd.publicKey, pd.skinBytes, new byte[1]);
+                return new StatusResponseObject("offlineauth.db.success_delete_cape", 200);
+            } else {
+                return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("offlineauth.db.fail_delete_cape", 500);
             //e.printStackTrace();
         }
     }
@@ -352,25 +398,30 @@ public class Database {
         }
     }
 
-    public static boolean putPlayerDataInDB(String identifier, String displayname, String passwordHash, String passwordSalt, String uuid, String publicKey, byte[] skinBytes) {
+    public static boolean putPlayerDataInDB(String identifier, String displayname, String passwordHash, String passwordSalt, String uuid, String publicKey, byte[] skinBytes, byte[] capeBytes) {
         String sep = ",";
-        String dataStr = identifier + sep + displayname + sep + passwordHash + sep + passwordSalt + sep + uuid + sep + publicKey + sep;
+        String lenSep = ":";
+        String dataStr = identifier + sep + displayname + sep + passwordHash + sep + passwordSalt + sep + uuid + sep + publicKey + sep + skinBytes.length + lenSep + capeBytes.length + sep;
         byte[] dataBytes = dataStr.getBytes(StandardCharsets.UTF_8);
         byte[] dataBytesLenAsByteArray = Util.intToByteArray(dataBytes.length);
-        byte[] finalData;
+        byte[] lenPlusDataPlusSkin;
+        byte[] lenPlusDataPlusSkinPlusCape;
         try {
             byte[] lenPlusData = Util.concatByteArrays(dataBytesLenAsByteArray, dataBytes);
-            finalData = Util.concatByteArrays(lenPlusData, skinBytes);
+            lenPlusDataPlusSkin = Util.concatByteArrays(lenPlusData, skinBytes);
+            lenPlusDataPlusSkinPlusCape = Util.concatByteArrays(lenPlusDataPlusSkin, capeBytes);
         } catch (IOException e) {
             OfflineAuth.error("Error writing player data");
             return false;
         }
 
-        OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), finalData);
+        OfflineAuth.varInstanceServer.levelDBStore.put(bytes("ID:" + identifier), lenPlusDataPlusSkinPlusCape);
         return true;
     }
 
     public static DBPlayerData getPlayerDataByIdentifier(String identifier){
+        String sep = ",";
+        String lenSep = ":";
         try {
             if(isUserRegisteredByIdentifier(identifier)){  // Gets data from db and removes "data:" prefix from it
                 // entry structure: 4 bytes telling how much data there is, the general data (entry1,entry2,entry3) in base64, and the skin image in bytes
@@ -380,14 +431,26 @@ public class Database {
                 for (int i = 0; i < dataLen; i ++) {
                     data[i] = allBytes[i + 4];
                 }
-                byte[] skinBytes = new byte[allBytes.length - (dataLen + 4)];
-                for (int i = dataLen + 4; i < allBytes.length; i ++) {
-                    skinBytes[i - (dataLen + 4)] = allBytes[i];
+                String dataStr = new String(data);
+                String[] dataSplit = dataStr.split(sep, -1); /* https://stackoverflow.com/a/14602089 */
+
+                String[] lenSplit = dataSplit[6].split(lenSep, -1);
+                int skinBytesLen = Integer.parseInt(lenSplit[0]);
+                int capeBytesLen = Integer.parseInt(lenSplit[1]);
+
+                int skinBytesStart = dataLen + 4;
+                int capeBytesStart = skinBytesStart + skinBytesLen;
+
+                byte[] skinBytes = new byte[skinBytesLen];
+                for (int i = skinBytesStart; i < skinBytesStart + skinBytesLen; i ++) {
+                    skinBytes[i - skinBytesStart] = allBytes[i];
+                }
+                byte[] capeBytes = new byte[capeBytesLen];
+                for (int i = capeBytesStart; i < capeBytesStart + capeBytesLen; i ++) {
+                    capeBytes[i - capeBytesStart] = allBytes[i];
                 }
 
-                String dataStr = new String(data);
-                String[] dataSplit = dataStr.split(",", -1); /* https://stackoverflow.com/a/14602089 */
-                return new DBPlayerData(dataSplit[0], dataSplit[1], dataSplit[2], dataSplit[3], dataSplit[4], dataSplit[5], skinBytes);
+                return new DBPlayerData(dataSplit[0], dataSplit[1], dataSplit[2], dataSplit[3], dataSplit[4], dataSplit[5], skinBytes, capeBytes);
             }
         } catch (Error e) {
             OfflineAuth.error("Error getting data: " + e.getMessage());

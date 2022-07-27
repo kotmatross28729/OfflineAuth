@@ -4,31 +4,16 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import org.lwjgl.opengl.GL11;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.gui.GuiLogin;
-import trollogyadherent.offlineauth.gui.ServerKeyAddGUI;
-import trollogyadherent.offlineauth.request.Request;
-import trollogyadherent.offlineauth.rest.OAServerData;
-import trollogyadherent.offlineauth.rest.ResponseObject;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.ClientUtil;
-import trollogyadherent.offlineauth.util.RsaKeyUtil;
-import trollogyadherent.offlineauth.util.Util;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.awt.*;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 public class SkinGuiHandler {
@@ -89,5 +74,37 @@ public class SkinGuiHandler {
         if (e.gui instanceof GuiOptions && e.button.id == 69) {
             Minecraft.getMinecraft().displayGuiScreen(new SkinManagmentGUI(Minecraft.getMinecraft().currentScreen));
         }
+    }
+
+    @SubscribeEvent
+    public void renderPlayer(RenderPlayerEvent.Specials.Pre e) {
+        if (!(Minecraft.getMinecraft().currentScreen instanceof SkinManagmentGUI)) {
+            return;
+        }
+        // some voodoo that happens in the minecraft setHideCape function
+        byte b0 = SkinGuiRenderTicker.clientPlayerMP.dataWatcher.getWatchableObjectByte(16);
+        SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 1 << /*p_82239_1_*/ 1)));
+        if (!((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).capeCheckbox.isChecked()) {
+            return;
+        }
+        if (((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).elytraCheckbox != null && ((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).elytraCheckbox.isChecked() && OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() != null) {
+            OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject().getCurrentFrame(e.partialRenderTick);
+
+            // some voodoo that happens in the minecraft setHideCape function
+            //byte b0 = SkinGuiRenderTicker.clientPlayerMP.dataWatcher.getWatchableObjectByte(16);
+            //SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 1 << /*p_82239_1_*/ 1)));
+
+
+            return;
+        }
+        if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() == null) {
+            return;
+        }
+        Minecraft.getMinecraft().getTextureManager().bindTexture(OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject().getCurrentFrame(e.partialRenderTick));
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, 0.0F, 0.125F);
+        GL11.glRotatef(SkinGuiRenderTicker.angle, SkinGuiRenderTicker.x, SkinGuiRenderTicker.y, SkinGuiRenderTicker.z);
+        e.renderer.modelBipedMain.renderCloak(0.0625F);
+        GL11.glPopMatrix();
     }
 }

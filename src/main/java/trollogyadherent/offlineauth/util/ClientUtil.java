@@ -30,7 +30,7 @@ public class ClientUtil {
     public static String getServerKeyPath(String ip, String port) {
         return OfflineAuth.varInstanceClient.keyCachePath + File.separator + ip + "_" + port + ".key";
     }
-    public static PublicKey getServerPublicKey(String ip, String port) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PublicKey getServerPublicKeyFromCache(String ip, String port) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         File keyFile = new File(getServerKeyPath(ip, port));
         if (!keyFile.exists()) {
             return null;

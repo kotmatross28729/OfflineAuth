@@ -3,8 +3,6 @@ package trollogyadherent.offlineauth.rest;
 import com.google.common.net.MediaType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import spark.Request;
@@ -16,7 +14,6 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.packet.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.request.objects.*;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
@@ -27,7 +24,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -57,6 +53,9 @@ public class Rest {
         get("/temppubkey", (request, response) -> handleTempPubKey(request, response));
         post("/tokenchallenge", (request, response) -> handleTokenChallenge(request, response));
         post("/uploadskin", (request, response) -> handleSkinUpload(request, response));
+        post("/uploadcape", (request, response) -> handleCapeUpload(request, response));
+        post("/removeskin", (request, response) -> handleSkinRemoval(request, response));
+        post("/removecape", (request, response) -> handleCapeRemoval(request, response));
     }
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException {
@@ -139,9 +138,9 @@ public class Rest {
             } else if (request.queryParams("restpassword") != null && !Database.restPasswordValid(request.queryParams("restpassword"))){
                 regResult = new StatusResponseObject("Rest password invalid or not set!", 500);
             } else */if (Config.allowRegistration) {
-                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(),"", rbo.getPubKey(), new byte[1],false, false);
+                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(),"", rbo.getPubKey(), new byte[1], new byte[1],false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && Database.tokenIsValid(rbo.getToken())) {
-                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), new byte[1], false, false);
+                regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), new byte[1], new byte[1], false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && !Database.tokenIsValid(rbo.getToken())) {
                 regResult = new StatusResponseObject("offlineauth.rest.registration_invalid_token", 500);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration) {
@@ -497,14 +496,14 @@ public class Rest {
         OfflineAuth.info("Someone tries to upload a skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
         OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
 
-        UploadSkinRequestBodyObject rbo =  RestUtil.getUploadSkinRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
+        UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
             ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
-        byte[] skinBytes = rbo.getSkinBytes();
+        byte[] skinBytes = rbo.getImageBytes();
         String password = rbo.getPassword();
         String token = rbo.getClientKeyToken();
         ServerKeyTokenRegistry.TokenType type = rbo.getType();
@@ -525,6 +524,9 @@ public class Rest {
 
         /* Checking if the bytes are a legit png */
         try {
+            if (!Util.pngIsSane(skinBytes)) {
+                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
+            }
             BufferedImage test = ImageIO.read(new ByteArrayInputStream(skinBytes));
             if (test == null) {
                 return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
@@ -566,6 +568,192 @@ public class Rest {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_skin_error", 500);
             return JsonUtil.objectToJson(statusResponseObject);
+        }
+    }
+
+    public static String handleCapeUpload(Request request, Response response) throws NoSuchAlgorithmException {
+        OfflineAuth.info("Someone tries to upload a cape, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
+
+        UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
+        if (rbo == null) {
+            OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            return JsonUtil.objectToJson(responseObject);
+        }
+        String identifier = rbo.getIdentifier();
+        byte[] capeBytes = rbo.getImageBytes();
+        String password = rbo.getPassword();
+        String token = rbo.getClientKeyToken();
+        ServerKeyTokenRegistry.TokenType type = rbo.getType();
+
+        boolean validToken = false;
+        if (token.length() > 0) {
+            validToken = OfflineAuth.varInstanceServer.keyTokenRegistry.grantIdentifierAccess(identifier, token, type);
+        }
+
+        /* The verification token MUST be consumed, that's why these two simple checks are not at the top of the function */
+        if (!Config.allowCapeUpload) {
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.cape_upload_disabled", 500));
+        }
+
+        if (request.bodyAsBytes().length > Config.maxCapeBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.cape_too_large", 500));
+        }
+
+        /* Checking if the bytes are a legit cape */
+        if (!Util.imageIsSane(new ByteArrayInputStream(capeBytes))) {
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_cape_file", 500));
+        }
+
+        try {
+            StatusResponseObject changeResult;
+            if (validToken) {
+                changeResult = Database.changePlayerCape(identifier, "", capeBytes, true);
+            } else {
+                changeResult = Database.changePlayerCape(identifier, password, capeBytes, false);
+            }
+
+            if (changeResult.getStatusCode() == 200) {
+                /* Checking if player is ingame and if yes, deleting some caches */
+                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
+                if (dbpd != null) {
+                    String displayname = dbpd.getDisplayname();
+                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                            OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
+                            ServerSkinUtil.removeCapeFromCache(dbpd.getDisplayname());
+
+                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                                IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return JsonUtil.objectToJson(changeResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_cape_error", 500);
+            return JsonUtil.objectToJson(statusResponseObject);
+        }
+    }
+
+    public static String handleSkinRemoval(Request request, Response response) throws NoSuchAlgorithmException {
+        OfflineAuth.info("Someone tries to remove the skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+        }
+
+        RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);
+        if (rbo == null) {
+            OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            return JsonUtil.objectToJson(responseObject);
+        }
+        String identifier = rbo.getIdentifier();
+        String password = rbo.getPassword();
+        String token = rbo.getClientKeyToken();
+        ServerKeyTokenRegistry.TokenType type = rbo.getType();
+
+        boolean validToken = false;
+        if (token.length() > 0) {
+            validToken = OfflineAuth.varInstanceServer.keyTokenRegistry.grantIdentifierAccess(identifier, token, type);
+        }
+
+        try {
+            StatusResponseObject changeResult;
+            if (validToken) {
+                changeResult = Database.deletePlayerSkin(identifier, "", true);
+            } else {
+                changeResult = Database.deletePlayerSkin(identifier, password, false);
+            }
+            if (changeResult.getStatusCode() == 200) {
+                /* Checking if player is ingame and if yes, deleting some caches */
+                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
+                if (dbpd != null) {
+                    String displayname = dbpd.getDisplayname();
+                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                            OfflineAuth.varInstanceServer.playerRegistry.setSkin(dbpd.getDisplayname(), ServerSkinUtil.getRandomDefaultSkinName());
+                            ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
+
+                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                                IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return JsonUtil.objectToJson(changeResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.remove_skin_error", 500);
+            String res = JsonUtil.objectToJson(statusResponseObject);
+            return res;
+        }
+    }
+
+    public static String handleCapeRemoval(Request request, Response response) throws NoSuchAlgorithmException {
+        OfflineAuth.info("Someone tries to remove the skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+
+        if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+        }
+
+        RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);
+        if (rbo == null) {
+            OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            return JsonUtil.objectToJson(responseObject);
+        }
+        String identifier = rbo.getIdentifier();
+        String password = rbo.getPassword();
+        String token = rbo.getClientKeyToken();
+        ServerKeyTokenRegistry.TokenType type = rbo.getType();
+
+        boolean validToken = false;
+        if (token.length() > 0) {
+            validToken = OfflineAuth.varInstanceServer.keyTokenRegistry.grantIdentifierAccess(identifier, token, type);
+        }
+
+        try {
+            StatusResponseObject changeResult;
+            if (validToken) {
+                changeResult = Database.deletePlayerCape(identifier, "", true);
+            } else {
+                changeResult = Database.deletePlayerCape(identifier, password, false);
+            }
+            if (changeResult.getStatusCode() == 200) {
+                /* Checking if player is ingame and if yes, deleting some caches */
+                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
+                if (dbpd != null) {
+                    String displayname = dbpd.getDisplayname();
+                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                            //OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
+                            ServerSkinUtil.removeCapeFromCache(dbpd.getDisplayname());
+
+                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                                IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return JsonUtil.objectToJson(changeResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.remove_cape_error", 500);
+            String res = JsonUtil.objectToJson(statusResponseObject);
+            return res;
         }
     }
 }

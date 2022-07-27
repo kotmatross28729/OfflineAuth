@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.command;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,8 +61,12 @@ public class CommandRegisterPlayerServer implements ICommand {
             return;
         }
         try {
-            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", new byte[1],true, false);
-            sender.addChatMessage(new ChatComponentText(responseObject.getStatus()));
+            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", new byte[1], new byte[1],true, false);
+            if (responseObject.getStatusCode() == 200) {
+                sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.GREEN) + "Success"));
+            } else {
+                sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) + "Command failed"));
+            }
             OfflineAuth.info(sender.getCommandSenderName() + " issued registerplayer command with status " + responseObject.getStatus());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
             e.printStackTrace();

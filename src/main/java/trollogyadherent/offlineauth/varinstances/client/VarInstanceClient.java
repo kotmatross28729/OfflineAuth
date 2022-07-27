@@ -6,11 +6,13 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
+import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.registry.newreg.ClientRegistry;
 import trollogyadherent.offlineauth.rest.OAServerData;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -19,7 +21,10 @@ public class VarInstanceClient {
     public File datafile;
     public ArrayList<OAServerData> OAserverDataCache;
     public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-    public Field skinLocationfield = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");//public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
+    public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
+    public Field capeLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationCape", "field_110313_e");
+
+    //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
     //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
     //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
     public ClientRegistry clientRegistry = new ClientRegistry();
@@ -29,7 +34,9 @@ public class VarInstanceClient {
 
     public String serverDataJSONpath = new File(OfflineAuth.rootPath, "serverdata.json").getPath();
     public String clientSkinsPath = new File(OfflineAuth.rootPath, "ClientSkins").getPath();
+    public String clientCapesPath = new File(OfflineAuth.rootPath, "ClientCapes").getPath();
     public String clientSkinCachePath = Paths.get(OfflineAuth.rootPath, "ClientCache", "Skins").toString();
+    public String clientCapeCachePath = Paths.get(OfflineAuth.rootPath, "ClientCache", "Capes").toString();
     public String keyPairPath = new File(OfflineAuth.rootPath, "ClientKeys").getPath();
     public String keyCachePath = new File(OfflineAuth.rootPath, "ClientKeyCache").getPath();
     public int selectedServerIndex = -1;
@@ -37,10 +44,13 @@ public class VarInstanceClient {
     /* Initialized in post init, client proxy, because it needs mods to load their items first (3d player model holding items) */
     public SkinGuiRenderTicker skinGuiRenderTicker;
     public String lastUsedOfflineSkinFile = Paths.get(OfflineAuth.rootPath, "lastskin").toString();
-    public boolean offlineSkinLoaded = false;
+    public String lastUsedOfflineCapeFile = Paths.get(OfflineAuth.rootPath, "lastcape").toString();
+    public boolean offlineSkinAndCapeLoaded = false;
+    public CapeObject singlePlayerCapeObject = null;
 
     public VarInstanceClient() {
-        skinLocationfield.setAccessible(true);
+        skinLocationField.setAccessible(true);
+        capeLocationField.setAccessible(true);
 
         /* Creating dirs */
         File clientSkinsFile = new File(clientSkinsPath);
@@ -50,6 +60,15 @@ public class VarInstanceClient {
         File clientSkinCacheFile = new File(clientSkinCachePath);
         if (!clientSkinCacheFile.exists()) {
             clientSkinCacheFile.mkdirs();
+        }
+
+        File clientCapesFile = new File(clientCapesPath);
+        if (!clientCapesFile.exists()) {
+            clientCapesFile.mkdirs();
+        }
+        File clientCapeCacheFile = new File(clientCapeCachePath);
+        if (!clientCapeCacheFile.exists()) {
+            clientCapeCacheFile.mkdirs();
         }
 
         File keyPairFile = new File(keyPairPath);

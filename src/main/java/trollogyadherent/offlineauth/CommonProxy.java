@@ -8,7 +8,6 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.Rest;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.List;
 
 
 public class CommonProxy {
@@ -74,7 +72,7 @@ public class CommonProxy {
 
         /* Clearing skin cache */
         if (Util.isServer()) {
-            ServerSkinUtil.clearSkinCache();
+            ServerSkinUtil.clearSkinAndCapeCache();
         }
 
         /* Packets */
@@ -122,6 +120,7 @@ public class CommonProxy {
             event.registerServerCommand(new CommandConfig());
             event.registerServerCommand(new CommandDeleteSkin());
             event.registerServerCommand(new CommandGetServerFingerprint());
+            event.registerServerCommand(new CommandDeleteCape());
         }
 
     }

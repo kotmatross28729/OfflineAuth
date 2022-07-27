@@ -67,11 +67,23 @@ public class ClientProxy extends CommonProxy {
         String[] fileList = defaultSkinDir.list();
         if (fileList == null) {
             OfflineAuth.error("Could not get default server skin directory!");
-            return;
+        } else {
+            if (fileList.length == 0) {
+                OfflineAuth.info("No skins present in the default skin directory, populating it with default ones");
+                ClientSkinUtil.transferDefaultSkins();
+            }
         }
-        if (fileList.length == 0) {
-            OfflineAuth.info("No skins present in the default skin directory, populating it with default ones");
-            ClientSkinUtil.transferDefaultSkins();
+
+        /* If there are no default skins in the default cape directory, unpacks its own capes */
+        File defaultCapeDir = new File(OfflineAuth.varInstanceClient.clientCapesPath);
+        fileList = defaultCapeDir.list();
+        if (fileList == null) {
+            OfflineAuth.error("Could not get default server capes directory!");
+        } else {
+            if (fileList.length == 0) {
+                OfflineAuth.info("No capes present in the default cape directory, populating it with default ones");
+                ClientSkinUtil.transferDefaultCapes();
+            }
         }
     }
 

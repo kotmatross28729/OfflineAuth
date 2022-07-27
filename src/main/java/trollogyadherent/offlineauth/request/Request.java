@@ -1,14 +1,12 @@
 package trollogyadherent.offlineauth.request;
 
 import net.minecraft.client.Minecraft;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import net.minecraft.client.multiplayer.ServerAddress;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.ServerKeyAddGUI;
@@ -27,14 +25,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 
 public class Request {
     public static ResponseObject vibeCheck(String ip, String port, String identifier, String displayname, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchProviderException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
             if (pubKey == null) {
                 return new ResponseObject(false, false, false, "-", "", "", false, 500);
@@ -53,7 +49,8 @@ public class Request {
             clientKeyToken = tempToken;
         }
 
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "vibecheck";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -68,7 +65,6 @@ public class Request {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
-
             String responseString = EntityUtils.toString(response.getEntity());
             return (ResponseObject) JsonUtil.jsonToObject(responseString, ResponseObject.class);
         } catch (Exception e) {
@@ -79,7 +75,7 @@ public class Request {
     }
 
     public static StatusResponseObject register(String ip, String port, String identifier, String displayname, String password, String uuid, String token, String clientPubKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
             if (pubKey == null) {
                 return new StatusResponseObject("Couldn't obtain server public key", 500);
@@ -88,7 +84,8 @@ public class Request {
             return new StatusResponseObject("Please try again, if key fingerprint is correct", 500);
         }
 
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "register";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -96,7 +93,7 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
         }
         post.setEntity(RequestUtil.getRegisterRequestBody(aesKeyPlusIv, identifier, displayname, password, uuid, token, clientPubKey));
 
@@ -114,10 +111,12 @@ public class Request {
 
     /* POST request to delete an account */
     public static StatusResponseObject delete(String ip, String port, String identifier, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-        String baseUrl = "http://" + ip + ":" + port + "/";
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "delete";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -135,7 +134,7 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
         }
         post.setEntity(RequestUtil.getDeleteAccountRequestBody(aesKeyPlusIv, identifier, password, clientKeyToken));
 
@@ -151,11 +150,12 @@ public class Request {
 
     /* POST request to change an account password */
     public static StatusResponseObject changePW(String ip, String port, String identifier, String password, String newPassword) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
 
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "change";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -163,7 +163,7 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
         }
         post.setEntity(RequestUtil.getChangePasswordRequestBody(aesKeyPlusIv, identifier, password, newPassword));
 
@@ -179,10 +179,12 @@ public class Request {
 
     /* POST request to change an account displayname */
     public static StatusResponseObject changeDisplayName(String ip, String port, String identifier, String password, String newDisplayName, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-        String baseUrl = "http://" + ip + ":" + port + "/";
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "changedisplay";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -200,7 +202,7 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
         }
 
         post.setEntity(RequestUtil.getChangeDisplaynameRequestBody(aesKeyPlusIv, identifier, password, newDisplayName, clientKeyToken));
@@ -216,7 +218,8 @@ public class Request {
     }
 
     public static PublicKey getServerPubKey(String ip, String port) {
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "pubkey";
 
         HttpGet get = new HttpGet(baseUrl + requestPath);
@@ -236,11 +239,12 @@ public class Request {
     }
 
     public static AesKeyUtil.AesKeyPlusIv getServerTempKeyPlusIv(String ip, String port) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return null;
         }
 
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "temppubkey";
 
         HttpGet get = new HttpGet(baseUrl + requestPath);
@@ -253,7 +257,7 @@ public class Request {
             byte[] encryptedKeyPlusIvBytes64 = EntityUtils.toByteArray(response.getEntity());
 
             String encryptedAesKeyPlusIvStr = new String(Base64.getDecoder().decode(encryptedKeyPlusIvBytes64));
-            String aesKeyPlusIvStr = RsaKeyUtil.decryptWithPublicKey(encryptedAesKeyPlusIvStr, ClientUtil.getServerPublicKey(ip, port));
+            String aesKeyPlusIvStr = RsaKeyUtil.decryptWithPublicKey(encryptedAesKeyPlusIvStr, ClientUtil.getServerPublicKeyFromCache(ip, port));
             byte[] aesKeyPlusIvBytes = Base64.getDecoder().decode(aesKeyPlusIvStr);
             byte[] keyBytes = new byte[16];
             byte[] ivBytes = new byte[16];
@@ -274,11 +278,12 @@ public class Request {
     }
 
     public static String getChallengeToken(String ip, String port, String identifier, PublicKey clientPubKey, PrivateKey clientPrivKey, ServerKeyTokenRegistry.TokenType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return null;
         }
 
-        String baseUrl = "http://" + ip + ":" + port + "/";
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "tokenchallenge";
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
@@ -310,10 +315,12 @@ public class Request {
     }
 
     public static StatusResponseObject uploadSkin(String ip, String port, String identifier, String password, byte[] skinBytes, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if (ClientUtil.getServerPublicKey(ip, port) == null) {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-        String baseUrl = "http://" + ip + ":" + port + "/";
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "uploadskin";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -331,16 +338,134 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new StatusResponseObject("aesKeyPlusIv is null!", 500);
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
         }
 
-        post.setEntity(RequestUtil.getUploadSkinRequestBody(aesKeyPlusIv, identifier, password, skinBytes, clientKeyToken));
+        post.setEntity(RequestUtil.getUploadSkinOrCapeRequestBody(aesKeyPlusIv, identifier, password, skinBytes, clientKeyToken));
 
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
             String responseString = EntityUtils.toString(response.getEntity());
             return(StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
+        } catch (Exception e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
+        }
+    }
+
+    public static StatusResponseObject uploadCape(String ip, String port, String identifier, String password, byte[] capeBytes, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
+            return new StatusResponseObject("Could not find server public key in cache", 500);
+        }
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        String requestPath = "uploadcape";
+
+        HttpPost post = new HttpPost(baseUrl + requestPath);
+
+        String clientKeyToken = "";
+        if (clientPubKey != null && clientPrivKey != null) {
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADCAPE);
+            if (tempToken == null) {
+                OfflineAuth.error("clientToken is null!");
+                return new StatusResponseObject("clientToken is null!", 500);
+            }
+            clientKeyToken = tempToken;
+        }
+
+        AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
+        if (aesKeyPlusIv == null) {
+            OfflineAuth.error("aesKeyPlusIv is null!");
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
+        }
+
+        post.setEntity(RequestUtil.getUploadSkinOrCapeRequestBody(aesKeyPlusIv, identifier, password, capeBytes, clientKeyToken));
+
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+            String responseString = EntityUtils.toString(response.getEntity());
+            return(StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
+        } catch (Exception e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
+        }
+    }
+
+    public static StatusResponseObject requestSkinRemoval(String ip, String port, String identifier, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
+            return new StatusResponseObject("Could not find server public key in cache", 500);
+        }
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        String requestPath = "removeskin";
+
+        HttpPost post = new HttpPost(baseUrl + requestPath);
+
+        String clientKeyToken = "";
+        if (clientPubKey != null && clientPrivKey != null) {
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.REMOVESKINORCAPE);
+            if (tempToken == null) {
+                OfflineAuth.error("clientToken is null!");
+                return new StatusResponseObject("clientToken is null!", 500);
+            }
+            clientKeyToken = tempToken;
+        }
+
+        AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
+        if (aesKeyPlusIv == null) {
+            OfflineAuth.error("aesKeyPlusIv is null!");
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
+        }
+
+        post.setEntity(RequestUtil.getRemoveSkinOrCapeRequestBody(aesKeyPlusIv, identifier, password, clientKeyToken));
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+            String responseString = EntityUtils.toString(response.getEntity());
+            return (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
+        } catch (Exception e) {
+            OfflineAuth.error(e.getMessage());
+            return new StatusResponseObject("Connection failed! Check if the port is correct", 500);
+        }
+    }
+
+    public static StatusResponseObject requestCapeRemoval(String ip, String port, String identifier, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
+            return new StatusResponseObject("Could not find server public key in cache", 500);
+        }
+
+        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
+        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        String requestPath = "removecape";
+
+        HttpPost post = new HttpPost(baseUrl + requestPath);
+
+        String clientKeyToken = "";
+        if (clientPubKey != null && clientPrivKey != null) {
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.REMOVESKINORCAPE);
+            if (tempToken == null) {
+                OfflineAuth.error("clientToken is null!");
+                return new StatusResponseObject("clientToken is null!", 500);
+            }
+            clientKeyToken = tempToken;
+        }
+
+        AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
+        if (aesKeyPlusIv == null) {
+            OfflineAuth.error("aesKeyPlusIv is null!");
+            return new StatusResponseObject("offlineauth.key_or_connection_invalid", 500);
+        }
+
+        post.setEntity(RequestUtil.getRemoveSkinOrCapeRequestBody(aesKeyPlusIv, identifier, password, clientKeyToken));
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
+            String responseString = EntityUtils.toString(response.getEntity());
+            return (StatusResponseObject) JsonUtil.jsonToObject(responseString, StatusResponseObject.class);
         } catch (Exception e) {
             OfflineAuth.error(e.getMessage());
             return new StatusResponseObject("Connection failed! Check if the port is correct", 500);

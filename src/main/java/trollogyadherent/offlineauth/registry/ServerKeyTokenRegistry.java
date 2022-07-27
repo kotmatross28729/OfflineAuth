@@ -1,18 +1,7 @@
 package trollogyadherent.offlineauth.registry;
 
-import trollogyadherent.offlineauth.database.DBPlayerData;
-import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.Util;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 
 public class ServerKeyTokenRegistry {
@@ -70,7 +59,9 @@ public class ServerKeyTokenRegistry {
         CHANGEDISPLAYNAME,
         DELETEACCOUNT,
         TOKEN,
-        UPLOADSKIN
+        UPLOADSKIN,
+        UPLOADCAPE,
+        REMOVESKINORCAPE
     }
 
     public class TokenAndType {

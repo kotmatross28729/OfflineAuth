@@ -24,6 +24,7 @@ public class Config {
         public static final boolean allowRegistration = true;
         public static final boolean allowTokenRegistration = true;
         public static final boolean allowSkinUpload = true;
+        public static final boolean allowCapeUpload = true;
         public static final String motd = "Hello World"; //unused
         public static final String other = "Sneed's Feed & Seed"; //unused
         public static final String kickMessage = "You are not registered on this server!";
@@ -34,6 +35,7 @@ public class Config {
         public static final boolean allowDisplayNameChange = true;
         public static final boolean allowOpsDisplayNameChange = true;
         public static final int maxSkinBytes = 500000;
+        public static final int maxCapeBytes = 500000;
     }
 
     /* Basically an enum for different config categories */
@@ -52,6 +54,7 @@ public class Config {
     public static boolean allowRegistration = Defaults.allowRegistration;
     public static boolean allowTokenRegistration = Defaults.allowTokenRegistration;
     public static boolean allowSkinUpload = Defaults.allowSkinUpload;
+    public static boolean allowCapeUpload = Defaults.allowCapeUpload;
     public static String motd = Defaults.motd;
     public static String other = Defaults.other;
     public static String kickMessage = Defaults.kickMessage;
@@ -62,6 +65,7 @@ public class Config {
     public static boolean allowOpsDisplayNameChange = Defaults.allowOpsDisplayNameChange;
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
+    public static int maxCapeBytes = Defaults.maxSkinBytes;
 
     /* Sync for when config has changed, client */
     public static void synchronizeConfigurationClient(File configFile, boolean force) {
@@ -97,6 +101,9 @@ public class Config {
             Property allowSkinUploadProperty = config.get(Categories.generalServer, "allowSkinUpload", Defaults.allowSkinUpload, "Allow or disallow uploading of skins");
             allowSkinUpload = allowSkinUploadProperty.getBoolean();
 
+            Property allowCapeUploadProperty = config.get(Categories.generalServer, "allowCapeUpload", Defaults.allowSkinUpload, "Allow or disallow uploading of capes");
+            allowCapeUpload = allowCapeUploadProperty.getBoolean();
+
             Property motdProperty = config.get(Categories.generalServer, "motd", Defaults.motd, "Optional MOTD");
             motd = motdProperty.getString();
 
@@ -126,6 +133,9 @@ public class Config {
 
             Property maxSkinBytesProperty = config.get(Categories.generalServer, "maxSkinBytes", Defaults.maxSkinBytes, "Maximum amount of bytes allowed in incoming skin upload request");
             maxSkinBytes = maxSkinBytesProperty.getInt();
+
+            Property maxCapeBytesProperty = config.get(Categories.generalServer, "maxCapeBytes", Defaults.maxSkinBytes, "Maximum amount of bytes allowed in incoming cape upload request");
+            maxCapeBytes = maxCapeBytesProperty.getInt();
         }
 
         if(config.hasChanged()) {

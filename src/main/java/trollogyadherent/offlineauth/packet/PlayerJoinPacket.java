@@ -56,7 +56,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
 
 
             try {
-                if (ClientUtil.getServerPublicKey(oasd.getIp(), oasd.getRestPort()) == null) {
+                if (ClientUtil.getServerPublicKeyFromCache(oasd.getIp(), oasd.getRestPort()) == null) {
                     OfflineAuth.error("Public server key not in cache!");
                     return message;
                 }
@@ -133,13 +133,13 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
         try {
             if (ctx.side.isServer() && message.exchangecode == 1)
             {
-                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                     if (((EntityPlayerMP)o).getDisplayName().equals(entityPlayerMP.getDisplayName())) {
                         continue;
                     }
                     IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(entityPlayerMP.getDisplayName());
                     PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
-                }
+                }*/
 
                 //System.out.println("PlayerJoinPacket onMessage triggered, code 1 (from client)");
                 if (message.encryptedData.equals("-")) {
@@ -187,7 +187,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                         }
 
-                        OfflineAuth.info("User " + entityPlayerMP.getDisplayName() + " successfully logged in");
+
 
                         /* Setting our own UUID */
                         DBPlayerData dbpd = Database.getPlayerDataByDisplayName(ctx.getServerHandler().playerEntity.getDisplayName());
@@ -218,11 +218,20 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             skinName = dbpd.getDisplayname();
                         }
 
-                        /* Adding player to registry */
-                        //System.out.println("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
-                        //System.out.println(OfflineAuth.varInstanceServer.playerRegistry);
-                        OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName));
+                        /* getting if palyer has a cape */
+                        boolean hasCape = dbpd.getCapeBytes().length > 1;
 
+                        /* Adding player to registry */
+                        OfflineAuth.debug("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
+                        OfflineAuth.debug(OfflineAuth.varInstanceServer.playerRegistry.toString());
+                        OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName, hasCape));
+
+                        OfflineAuth.info("User " + entityPlayerMP.getDisplayName() + " successfully logged in");
+
+                        for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                            IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                            PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                        }
                     } else {
                         entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                     }
@@ -231,11 +240,6 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                     OfflineAuth.error(e.getMessage());
                     e.printStackTrace();
                 }
-
-                /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    IMessage msg = new ResetCachesPacket.SimpleMessage();
-                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
-                }*/
                 return null;
             } else {
                 entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);

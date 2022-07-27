@@ -2,6 +2,7 @@ package trollogyadherent.offlineauth.gui.skin;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import de.matthiasmann.twl.utils.PNGDecoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
@@ -9,14 +10,15 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
-import trollogyadherent.offlineauth.skin.client.LegacyConversion;
 import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -25,9 +27,8 @@ public class SkinListEntry {
     protected final Minecraft mc;
 
     protected final SkinManagmentGUI previous;
-    ClientSkinUtil.OfflineTextureObject offlineTextureObject;
     //private static final ResourceLocation temp = new ResourceLocation("textures/gui/resource_packs.png");
-    private /*static*/ ResourceLocation temp  = new ResourceLocation("textures/gui/resource_packs.png");
+    private /*static*/ ResourceLocation skinResourceLocation = new ResourceLocation("textures/gui/resource_packs.png");
     private String skinSize;
     public SkinListEntry(SkinManagmentGUI skinManagmentGUI, String skinName) {
         this.previous = skinManagmentGUI;
@@ -47,11 +48,16 @@ public class SkinListEntry {
         } else {
             skinSize = Math.floor(Util.filesizeInBytes(imageFile) * 100) / 100 + " b";
         }
+        if (!Util.pngIsSane(imageFile)) {
+            OfflineAuth.error("Sussy error loading skin image, not sane: " + skinName);
+            return;
+        }
         BufferedImage bufferedImage;
         try {
             bufferedImage = ImageIO.read(imageFile);
         } catch (IOException e) {
-            OfflineAuth.error("Error loading skin image " + skinName);
+            OfflineAuth.error("Error loading skin image: " + skinName);
+            e.printStackTrace();
             return;
         }
         if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
@@ -62,9 +68,8 @@ public class SkinListEntry {
             g.dispose();
             bufferedImage = bufferedImageNew;
         }
-        this.offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
-        temp = new ResourceLocation("offlineauth", "skinlistentryskins/" + skinName);
-        ClientSkinUtil.loadTexture(bufferedImage, temp, this.offlineTextureObject);
+        skinResourceLocation = new ResourceLocation("offlineauth", "skinlistentryskins/" + skinName);
+        ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation);
     }
 
     public void drawEntry(int p_148279_1_, int p_148279_2_, int p_148279_3_, int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_)
@@ -162,7 +167,7 @@ public class SkinListEntry {
     }
 
     protected void bindIcon() {
-        this.mc.getTextureManager().bindTexture(temp); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
+        this.mc.getTextureManager().bindTexture(skinResourceLocation); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
     }
 
     protected boolean func_148310_d()

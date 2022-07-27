@@ -20,6 +20,7 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -108,7 +109,7 @@ public class GameOverlayGuiHandler extends GuiIngame{
                         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
                         PacketHandler.net.sendToServer(msg);
                         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName));
+                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null);
                     } else {
                         ResourceLocation rl;
                         File imageFile = ClientSkinUtil.getSkinFile(OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName));
@@ -119,6 +120,10 @@ public class GameOverlayGuiHandler extends GuiIngame{
                             if (OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName) == null) {
                                 BufferedImage bufferedImage;
                                 try {
+                                    if (!Util.pngIsSane(imageFile)) {
+                                        OfflineAuth.error("Sussy error loading skin image, not sane: " + displayName);
+                                        return;
+                                    }
                                     bufferedImage = ImageIO.read(imageFile);
                                     if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
                                         BufferedImage bufferedImageNew = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight() * 2, bufferedImage.getType());
@@ -127,9 +132,8 @@ public class GameOverlayGuiHandler extends GuiIngame{
                                         g.dispose();
                                         bufferedImage = bufferedImageNew;
                                     }
-                                    ClientSkinUtil.OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
                                     rl = new ResourceLocation("offlineauth", "tabmenuskins/" + displayName);
-                                    ClientSkinUtil.loadTexture(bufferedImage, rl, offlineTextureObject);
+                                    ClientSkinUtil.loadTexture(bufferedImage, rl);
                                     OfflineAuth.varInstanceClient.clientRegistry.setTabMenuResourceLocation(displayName, rl);
                                 } catch (IOException e_) {
                                     OfflineAuth.error("Error loading skin image " + displayName);

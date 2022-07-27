@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
@@ -21,6 +22,8 @@ public class DeletePlayerFromClientRegPacket implements IMessageHandler<DeletePl
             //System.out.println("DeletePlayerFromClientRegPacket onMessage triggered (from server), displayName: " + message.displayName);
             OfflineAuth.varInstanceClient.clientRegistry.removeByDisplayName(message.displayName);
             ClientSkinUtil.removeSkinFromCache(message.displayName);
+            ClientSkinUtil.removeCapeFromCache(message.displayName);
+            //OfflineAuth.varInstanceClient.capeLocationfield.set(Minecraft.getMinecraft);
 
             //OfflineAuth.varInstanceClient.entityPlayerRegistry = new ClientEntityPlayerRegistry();
             //ClientSkinUtil.clearSkinCache();

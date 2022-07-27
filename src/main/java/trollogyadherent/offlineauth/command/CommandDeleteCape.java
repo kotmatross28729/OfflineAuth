@@ -12,7 +12,6 @@ import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -20,13 +19,13 @@ import trollogyadherent.offlineauth.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandDeleteSkin implements ICommand {
+public class CommandDeleteCape implements ICommand {
     private final List aliases;
 
-    public CommandDeleteSkin()
+    public CommandDeleteCape()
     {
         aliases = new ArrayList();
-        aliases.add("delskin");
+        aliases.add("delcape");
     }
 
     @Override
@@ -38,13 +37,13 @@ public class CommandDeleteSkin implements ICommand {
     @Override
     public String getCommandName()
     {
-        return "deleteskin";
+        return "deletecape";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "/deleteskin <identifier> (alias: delskin)";
+        return "/deletecape <identifier> (alias: delcape)";
     }
 
     @Override
@@ -56,25 +55,25 @@ public class CommandDeleteSkin implements ICommand {
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
         if (sender instanceof EntityPlayerMP && !Util.isOp((EntityPlayerMP) sender)) {
-            sender.addChatMessage(new ChatComponentText((char) 167 + "cYou do not have permission to use this command"));
+            sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) +  "You do not have permission to use this command"));
             return;
         }
         if (argString.length != 1) {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
         } else {
-            StatusResponseObject responseObject = Database.deletePlayerSkin(argString[0], "", true);
+            StatusResponseObject responseObject = Database.deletePlayerCape(argString[0], "", true);
             DBPlayerData dbpd = Database.getPlayerDataByIdentifier(argString[0]);
             if (dbpd == null) {
-                sender.addChatMessage(new ChatComponentText((char) 167 + "cPlayer not found in database"));
+                sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) +  "Player not found in database"));
                 return;
             }
             String displayname = dbpd.getDisplayname();
-            OfflineAuth.varInstanceServer.playerRegistry.setSkin(dbpd.getDisplayname(), ServerSkinUtil.getRandomDefaultSkinName());
-            ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
+            //OfflineAuth.varInstanceServer.playerRegistry.setSkin(dbpd.getDisplayname(), ServerSkinUtil.getRandomDefaultSkinName());
+            ServerSkinUtil.removeCapeFromCache(dbpd.getDisplayname());
 
             for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                 if (displayname != null &&  ((EntityPlayerMP)o).getDisplayName().equals(displayname)) {
-                    ((EntityPlayerMP)o).addChatMessage(new ChatComponentText((char) 167 + "cYour skin was deleted by a moderator"));
+                    ((EntityPlayerMP)o).addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) +  "Your cape was deleted by a moderator"));
                 }
                 IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
                 PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
@@ -84,7 +83,7 @@ public class CommandDeleteSkin implements ICommand {
             } else {
                 sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) + "Command failed"));
             }
-            OfflineAuth.info(sender.getCommandSenderName() + " issued deleteskin command for player " + argString[0] + " with status " + responseObject.getStatus());
+            OfflineAuth.info(sender.getCommandSenderName() + " issued deletecape command for player " + argString[0] + " with status " + responseObject.getStatus());
         }
     }
 

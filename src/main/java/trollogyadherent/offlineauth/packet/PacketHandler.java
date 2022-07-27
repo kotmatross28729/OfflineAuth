@@ -12,10 +12,12 @@ public class PacketHandler {
         net = NetworkRegistry.INSTANCE.newSimpleChannel("OfflineAuth".toUpperCase());
         registerMessage(PlayerJoinPacket.class, PlayerJoinPacket.SimpleMessage.class);
         registerMessage(DownloadSkinPacket.class, DownloadSkinPacket.SimpleMessage.class);
+        registerMessage(DownloadCapePacket.class, DownloadCapePacket.SimpleMessage.class);
         registerMessage(QuerySkinNameFromServerPacket.class, QuerySkinNameFromServerPacket.SimpleMessage.class);
         registerMessage(ResetCachesPacket.class, ResetCachesPacket.SimpleMessage.class);
         registerMessage(CopyToClipboardPacket.class, CopyToClipboardPacket.SimpleMessage.class);
         registerMessage(DeletePlayerFromClientRegPacket.class, DeletePlayerFromClientRegPacket.SimpleMessage.class);
+        registerMessage(SendAuthPortPacket.class, SendAuthPortPacket.SimpleMessage.class);
     }
 
     private static int nextPacketId = 0;
