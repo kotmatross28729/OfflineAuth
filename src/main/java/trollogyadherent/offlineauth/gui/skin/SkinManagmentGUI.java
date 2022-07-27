@@ -289,6 +289,7 @@ public class SkinManagmentGUI extends GuiScreen {
                         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation() != null) {
                             try {
                                 OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation());
+                                OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation();
                             } catch (IllegalAccessException e) {
                                 OfflineAuth.error("Fatal error while applying skin");
                                 e.printStackTrace();
