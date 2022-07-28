@@ -405,8 +405,10 @@ public class SkinManagmentGUI extends GuiScreen {
                             if (stat.getStatusCode() == 200) {
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format(stat.getStatus());
                             } else {
-                                if (stat == null) {
+                                if (stat.getStatus() == null) {
                                     OfflineAuth.error("Status from cape upload is null!");
+                                    status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + "Error";
+                                    return;
                                 }
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format(stat.getStatus());
                             }
