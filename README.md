@@ -1,5 +1,5 @@
 # OfflineAuth 1.7.10 (Forge)
-Early alpha Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
+Beta Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
 It is advised to delete the `offlineauth` folder each time you update for now.
 
 ## Warning! To update to version 0.2.46 you have to delete the following folder serverside: `offlineauth/OfflineAuthDatabase`<br>This will erase all accounts. This should not occure further in the development anymore
