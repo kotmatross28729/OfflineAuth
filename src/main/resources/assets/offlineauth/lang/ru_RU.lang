@@ -1,4 +1,4 @@
-offlineauth.manage_auth=Manage Auth
+offlineauth.manage_auth=Аутентификация
 offlineauth.registered=Registered:
 offlineauth.guilogin.identifier=Identifier:
 offlineauth.guilogin.displayname=Display Name:

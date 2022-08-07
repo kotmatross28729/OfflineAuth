@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.ClientData;
@@ -65,9 +66,9 @@ public class KeyManagementGUI extends GuiScreen {
     public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
         this.drawDefaultBackground();
 
-        this.drawString(this.fontRendererObj, "Public Key Path:", this.basex, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "Private Key Path:", this.basex, this.basey + 70, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, "DO NOT SHARE THIS FILE UNDER ANY CIRCUMSTANCES", this.basex, this.basey + 85, Color.RED.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.keygui.public_key_path"), this.basex, this.basey, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.keygui.private_key_path"), this.basex, this.basey + 70, Color.WHITE.getRGB());
+        this.drawString(this.fontRendererObj, I18n.format("offlineauth.keygui.do_not_share"), this.basex, this.basey + 85, Color.RED.getRGB());
 
         this.privateKeyPath.drawTextBox();
         this.publicKeyPath.drawTextBox();

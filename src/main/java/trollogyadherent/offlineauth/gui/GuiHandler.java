@@ -185,7 +185,8 @@ public class GuiHandler {
     public void draw(DrawScreenEvent.Post e) {
         if (e.gui instanceof GuiMultiplayer && OfflineAuth.varInstanceClient.selectedServerIndex != -1) {
             String registeredText = I18n.format("offlineauth.registered");
-            int registeredTextWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(registeredText.replaceAll("\\P{InBasic_Latin}", "")) + 5;
+            //int registeredTextWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(registeredText.replaceAll("\\P{InBasic_Latin}", "")) + 5;
+            int registeredTextWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(registeredText) + 5;
             String validTextFinal = (bold ? EnumChatFormatting.BOLD : "") + validText;
             int validTextFinalWidth = 15;
             e.gui.drawString(e.gui.mc.fontRenderer, validTextFinal, e.gui.width - validTextFinalWidth, 10, validColor);
@@ -198,7 +199,8 @@ public class GuiHandler {
                     }
                 }
                 String manage_authText = I18n.format("offlineauth.manage_auth");
-                int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText.replaceAll("\\P{InBasic_Latin}", "")) + 10;
+                //int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText.replaceAll("\\P{InBasic_Latin}", "")) + 10;
+                int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText) + 10;
                 ((java.util.List) reflectedBtnLst).add(new GuiButton(manageAuthButtonId, e.gui.width - validTextFinalWidth - registeredTextWidth - manage_authButtonWidth - 5, 5, /*80*/ manage_authButtonWidth, 20, manage_authText));
             }
         }
