@@ -102,13 +102,13 @@ public class KeyManagementGUI extends GuiScreen {
         this.privateKeyPath.setText("");
 
 
-        this.browsePublicKey = new GuiButton(0, this.basex, this.basey + 10, 170, 20, "Browse For Public Server Key");
+        this.browsePublicKey = new GuiButton(0, this.basex, this.basey + 10, 170, 20, I18n.format("offlineauth.keygui.browse_public_key"));
         this.buttonList.add(this.browsePublicKey);
-        this.browsePrivateKey = new GuiButton(1, this.basex, this.basey + 100, 170, 20, "Browse For Private Key");
+        this.browsePrivateKey = new GuiButton(1, this.basex, this.basey + 100, 170, 20, I18n.format("offlineauth.keygui.browse_private_key"));
         this.buttonList.add(this.browsePrivateKey);
-        this.generateNewKeyPair = new GuiButton(2, this.basex, this.basey + 160, 170, 20, "Generate New KeyPair");
+        this.generateNewKeyPair = new GuiButton(2, this.basex, this.basey + 160, 170, 20, I18n.format("offlineauth.keygui.generate_new_keypair"));
         this.buttonList.add(this.generateNewKeyPair);
-        this.back = new GuiButton(3, this.basex + 300, this.basey + 180, 50, 20, "Back");
+        this.back = new GuiButton(3, this.basex + 300, this.basey + 180, 50, 20, I18n.format("offlineauth.keygui.back"));
         this.buttonList.add(this.back);
 
         OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
