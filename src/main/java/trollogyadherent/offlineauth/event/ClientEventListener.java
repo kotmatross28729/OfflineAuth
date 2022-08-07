@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -17,11 +16,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import org.lwjgl.opengl.GL11;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
+import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.client.LegacyConversion;
 import trollogyadherent.offlineauth.util.ClientUtil;
@@ -55,7 +53,7 @@ public class ClientEventListener {
 
         //System.out.println("Detected player join event, we joined");
 
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
 
         /* Asking server for data about us, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
@@ -83,7 +81,7 @@ public class ClientEventListener {
         String displayName = ((AbstractClientPlayer) e.entity).getDisplayName();
 
         //System.out.println("Detected player join event: " + displayName);
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
         /* Asking server for data about this guy, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
         PacketHandler.net.sendToServer(msg);
@@ -180,7 +178,7 @@ public class ClientEventListener {
 
         String displayName = player.getDisplayName();
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -189,7 +187,7 @@ public class ClientEventListener {
 
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -272,8 +270,12 @@ public class ClientEventListener {
          */
         //////////////////////////////
 
+        if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) != null && OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
+            OfflineAuth.varInstanceClient.clientRegistry.setEntityPlayer(displayName, entityPlayerMP);
+        }
+
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -281,7 +283,7 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);

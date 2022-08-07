@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.packet;
+package trollogyadherent.offlineauth.packet.packets;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

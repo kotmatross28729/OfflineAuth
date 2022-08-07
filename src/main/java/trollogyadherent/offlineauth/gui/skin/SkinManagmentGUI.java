@@ -291,10 +291,13 @@ public class SkinManagmentGUI extends GuiScreen {
                                 OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation());
                                 OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation();
                             } catch (IllegalAccessException e) {
+                                status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format("offlineauth.rest.apply_skin_error");
                                 OfflineAuth.error("Fatal error while applying skin");
                                 e.printStackTrace();
+                                return;
                             }
                         }
+                        status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_skin_set");
                         ClientSkinUtil.setLastUsedOfflineSkinName(((SkinListEntry) this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName);
                         //this.mc.displayGuiScreen(this.previous);
                     } else {
@@ -302,10 +305,13 @@ public class SkinManagmentGUI extends GuiScreen {
                             try {
                                 OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeResourceLocation());
                             } catch (IllegalAccessException e) {
+                                status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format("offlineauth.rest.apply_cape_error");
                                 OfflineAuth.error("Fatal error while applying cape");
                                 e.printStackTrace();
+                                return;
                             }
                         }
+                        status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_cape_set");
                         ClientSkinUtil.setLastUsedOfflineCapeName(((CapeListEntry) this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex)).capeName);
                     }
                 } else {
@@ -349,8 +355,10 @@ public class SkinManagmentGUI extends GuiScreen {
                             if (stat.getStatusCode() == 200) {
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format(stat.getStatus());
                             } else {
-                                if (stat == null) {
-                                    OfflineAuth.error("Status from cape upload is null!");
+                                if (stat.getStatus() == null) {
+                                    status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + "Error";
+                                            OfflineAuth.error("Status from skin upload is null!");
+                                    return;
                                 }
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format(stat.getStatus());
                             }
@@ -474,9 +482,12 @@ public class SkinManagmentGUI extends GuiScreen {
                     if (isShowingSkins) {
                         ClientSkinUtil.removeLastUsedOfflineSkinName();
                         SkinGuiRenderTicker.skinResourceLocation = null;
+                        OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = null;
                         try {
+                            status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_skin_remove");
                             OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, null);
                         } catch (IllegalAccessException e) {
+                            status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format("offlineauth.rest.remove_skin_error");
                             OfflineAuth.error("Fatal error while removing skin");
                             e.printStackTrace();
                         }
@@ -487,8 +498,10 @@ public class SkinManagmentGUI extends GuiScreen {
                         try {
                             OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, null);
                             ClientSkinUtil.removeLastUsedOfflineSkinName();
+                            status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_cape_remove");
                         } catch (IllegalAccessException e) {
-                            OfflineAuth.error("Fatal error while removing skin");
+                            status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + I18n.format("offlineauth.rest.remove_cape_error");
+                            OfflineAuth.error("Fatal error while removing cape");
                             e.printStackTrace();
                         }
                     }

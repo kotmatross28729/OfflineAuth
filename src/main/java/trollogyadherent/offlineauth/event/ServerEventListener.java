@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.event;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -8,15 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.database.DBPlayerData;
-import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.PlayerJoinPacket;
-import trollogyadherent.offlineauth.packet.ResetCachesPacket;
-import trollogyadherent.offlineauth.packet.SendAuthPortPacket;
-import trollogyadherent.offlineauth.util.ServerUtil;
-
-import java.util.UUID;
+import trollogyadherent.offlineauth.packet.packets.SendAuthPortPacket;
 
 
 public class ServerEventListener {

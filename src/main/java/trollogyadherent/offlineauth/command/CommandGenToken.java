@@ -8,7 +8,7 @@ import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.packet.CopyToClipboardPacket;
+import trollogyadherent.offlineauth.packet.packets.CopyToClipboardPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.util.Util;
 

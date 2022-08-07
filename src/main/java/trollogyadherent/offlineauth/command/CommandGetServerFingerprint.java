@@ -5,14 +5,11 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
-import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.packet.CopyToClipboardPacket;
+import trollogyadherent.offlineauth.packet.packets.CopyToClipboardPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
-import trollogyadherent.offlineauth.util.Util;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

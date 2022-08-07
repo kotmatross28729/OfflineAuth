@@ -15,34 +15,42 @@ public class ClientRegistry {
 
     public EntityPlayer getPlayerEntityByDisplayName(String displayName) {
         for (Data data : this.playerEntities) {
-            if (data.entityPlayer.getDisplayName().equals(displayName)) {
+            if (data.displayName.equals(displayName)) {
                 return data.entityPlayer;
             }
         }
         return null;
     }
 
+    public void setEntityPlayer(String displayName, EntityPlayer entityPlayer) {
+        Data data = getDataByDisplayName(displayName);
+        if (data == null) {
+            return;
+        }
+        data.entityPlayer = entityPlayer;
+    }
+
     public String getSkinNameByDisplayName(String displayName) {
         for (Data data : this.playerEntities) {
-            if (data.entityPlayer.getDisplayName().equals(displayName)) {
+            if (data.displayName.equals(displayName)) {
                 return data.skinName;
             }
         }
         return null;
     }
 
-    public void insert(String skinName, ResourceLocation skinResourceLocation, EntityPlayer epmp, CapeObject capeObject) {
+    public void insert(String skinName, ResourceLocation skinResourceLocation, EntityPlayer epmp, CapeObject capeObject, String displayName) {
         if (epmp == null) {
-            return;
+            //return;
         }
-        if (getPlayerEntityByDisplayName(epmp.getDisplayName()) == null) {
-            this.playerEntities.add(new Data(skinName, skinResourceLocation, epmp, capeObject));
+        if (getPlayerEntityByDisplayName(displayName) == null) {
+            this.playerEntities.add(new Data(skinName, skinResourceLocation, epmp, capeObject, displayName));
         }
     }
 
     Data getDataByDisplayName(String displayName) {
         for (Data data : this.playerEntities) {
-            if (data.entityPlayer.getDisplayName().equals(displayName)) {
+            if (data.displayName.equals(displayName)) {
                 return data;
             }
         }
@@ -134,18 +142,20 @@ public class ClientRegistry {
 
     private class Data {
         String skinName;
+        String displayName;
         ResourceLocation skinResourceLocation;
         EntityPlayer entityPlayer;
         boolean skinNameIsBeingQueried;
         ResourceLocation tabMenuResourceLocation;
         CapeObject capeObject;
 
-        Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer, CapeObject capeObject) {
+        Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer, CapeObject capeObject, String displayName) {
             this.skinName = skinName;
             this.skinResourceLocation = skinResourceLocation;
             this.entityPlayer = entityPlayer;
             this.skinNameIsBeingQueried = false;
             this.capeObject = capeObject;
+            this.displayName = displayName;
         }
     }
 }

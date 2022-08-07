@@ -5,7 +5,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -16,9 +15,10 @@ import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.QuerySkinNameFromServerPacket;
+import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -28,8 +28,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.PLAYER_LIST;
 
 public class GameOverlayGuiHandler extends GuiIngame{
 
@@ -47,6 +45,9 @@ public class GameOverlayGuiHandler extends GuiIngame{
 
     @SubscribeEvent
     public void open(RenderGameOverlayEvent.Pre e) {
+        if (!Config.facesInTabMenu) {
+            return;
+        }
         if(e.type == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
             e.setCanceled(true);
         }
@@ -109,7 +110,7 @@ public class GameOverlayGuiHandler extends GuiIngame{
                         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
                         PacketHandler.net.sendToServer(msg);
                         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null);
+                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName);
                     } else {
                         ResourceLocation rl;
                         File imageFile = ClientSkinUtil.getSkinFile(OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName));

@@ -36,6 +36,7 @@ public class Config {
         public static final boolean allowOpsDisplayNameChange = true;
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 500000;
+        public static final boolean facesInTabMenu = true;
     }
 
     /* Basically an enum for different config categories */
@@ -65,7 +66,8 @@ public class Config {
     public static boolean allowOpsDisplayNameChange = Defaults.allowOpsDisplayNameChange;
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
-    public static int maxCapeBytes = Defaults.maxSkinBytes;
+    public static int maxCapeBytes = Defaults.maxCapeBytes;
+    public static boolean facesInTabMenu = Defaults.facesInTabMenu;
 
     /* Sync for when config has changed, client */
     public static void synchronizeConfigurationClient(File configFile, boolean force) {
@@ -75,6 +77,9 @@ public class Config {
 
             Property saveButtonExitsProperty = config.get(Categories.generalClient, "saveButtonExits", Defaults.saveButtonExits, "Save button in server auth menu exits to the previous screen");
             savebuttonExit = saveButtonExitsProperty.getBoolean();
+
+            Property facesInTabMenuProperty = config.get(Categories.generalClient, "facesInTabMenu", Defaults.facesInTabMenu, "Show player faces in tab menu (disable if causes incompatibility)");
+            facesInTabMenu = facesInTabMenuProperty.getBoolean();
         }
 
         if(config.hasChanged()) {

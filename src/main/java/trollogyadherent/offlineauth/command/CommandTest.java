@@ -8,20 +8,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.ResetCachesPacket;
+import trollogyadherent.offlineauth.packet.packets.ResetCachesPacket;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
-import trollogyadherent.offlineauth.util.RsaKeyUtil;
-import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.*;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class CommandTest implements ICommand {

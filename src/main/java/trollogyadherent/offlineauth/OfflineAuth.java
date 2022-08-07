@@ -15,12 +15,11 @@ import java.security.cert.CertificateException;
 
 /* TODO: admin command that changes player uuid */
 /* TODO: players should be assigned uuids made up randomly by the server and kept in the db like skins */
-/* TODO: uploading and using skins */
 /* TODO: password reset tokens */
 /* TODO: spam prevention, lock registration if mass registration detected*/
 /* TODO: configurable custom default skin (serverside) */
-/* TODO: setting a global skin (client) */
 /* TODO: selectable uuid */
+/* TODO: button to delete the server pubkey from the cache, in case somehow the server configs get yeeten */
 
 // Disregard That, I ...
 
@@ -38,7 +37,7 @@ public class OfflineAuth {
 
     public static VarInstanceClient varInstanceClient;
     public static VarInstanceServer varInstanceServer;
-    private static boolean DEBUG_MODE;
+    public static boolean DEBUG_MODE;
     public final static int maxPngDimension = 2500;
 
 

@@ -1,16 +1,15 @@
-package trollogyadherent.offlineauth.packet;
+package trollogyadherent.offlineauth.packet.packets;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.ClientData;
+import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.rest.OAServerData;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 

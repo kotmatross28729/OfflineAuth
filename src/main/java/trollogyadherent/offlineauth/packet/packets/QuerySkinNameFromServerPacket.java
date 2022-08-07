@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.packet;
+package trollogyadherent.offlineauth.packet.packets;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -6,6 +6,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 
 public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinNameFromServerPacket.SimpleMessage, IMessage>

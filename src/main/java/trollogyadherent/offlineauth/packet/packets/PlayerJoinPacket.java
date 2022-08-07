@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.packet;
+package trollogyadherent.offlineauth.packet.packets;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -12,6 +12,7 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
+import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 import trollogyadherent.offlineauth.request.Request;

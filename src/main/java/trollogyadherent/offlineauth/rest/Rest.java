@@ -4,7 +4,6 @@ import com.google.common.net.MediaType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import spark.Request;
 import spark.Response;
 import spark.utils.IOUtils;
@@ -12,7 +11,7 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
-import trollogyadherent.offlineauth.packet.DeletePlayerFromClientRegPacket;
+import trollogyadherent.offlineauth.packet.packets.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.request.objects.*;
@@ -499,8 +498,7 @@ public class Rest {
         UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
-            return JsonUtil.objectToJson(responseObject);
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.change_skin_error", 500));
         }
         String identifier = rbo.getIdentifier();
         byte[] skinBytes = rbo.getImageBytes();

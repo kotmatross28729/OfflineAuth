@@ -2,7 +2,6 @@ package trollogyadherent.offlineauth.command;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,9 +9,8 @@ import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.packet.DeletePlayerFromClientRegPacket;
+import trollogyadherent.offlineauth.packet.packets.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.packet.PacketHandler;
-import trollogyadherent.offlineauth.packet.ResetCachesPacket;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
