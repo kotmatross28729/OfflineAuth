@@ -17,7 +17,7 @@ public class ServerEventListener {
         OfflineAuth.info("Player joined server: " + e.player.getDisplayName());
         EntityPlayer player = e.player;
 
-        /* Sending auth port to the player, just in case */
+        /* Sending auth port to the player, and the auth packet too */
         IMessage msg = new SendAuthPortPacket.SimpleMessage(Config.port);
         PacketHandler.net.sendTo(msg, (EntityPlayerMP)player);
 

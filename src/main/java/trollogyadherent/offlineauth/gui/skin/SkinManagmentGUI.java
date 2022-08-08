@@ -344,7 +344,11 @@ public class SkinManagmentGUI extends GuiScreen {
                                 clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
                                 clientPriv = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                                throw new RuntimeException(e);
+                                OfflineAuth.error("Couldn't load account keys!");
+                                e.printStackTrace();
+                                status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + "Error";
+                                return;
+                                //throw new RuntimeException(e);
                             }
                         }
                         try {
