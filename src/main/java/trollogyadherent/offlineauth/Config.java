@@ -37,6 +37,7 @@ public class Config {
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
         public static final boolean facesInTabMenu = true;
+        public static final boolean debugEnabled = true;
     }
 
     /* Basically an enum for different config categories */
@@ -68,6 +69,7 @@ public class Config {
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
     public static boolean facesInTabMenu = Defaults.facesInTabMenu;
+    public static boolean debugEnabled = Defaults.debugEnabled;
 
     /* Sync for when config has changed, client */
     public static void synchronizeConfigurationClient(File configFile, boolean force) {
@@ -80,6 +82,9 @@ public class Config {
 
             Property facesInTabMenuProperty = config.get(Categories.generalClient, "facesInTabMenu", Defaults.facesInTabMenu, "Show player faces in tab menu (disable if causes incompatibility)");
             facesInTabMenu = facesInTabMenuProperty.getBoolean();
+
+            Property debugEnabledProperty = config.get(Categories.generalClient, "debugEnabled", Defaults.debugEnabled, "Show debug info");
+            debugEnabled = debugEnabledProperty.getBoolean();
         }
 
         if(config.hasChanged()) {

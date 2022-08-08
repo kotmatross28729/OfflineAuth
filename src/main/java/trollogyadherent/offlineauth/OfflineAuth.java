@@ -91,7 +91,7 @@ public class OfflineAuth {
     }
 
     public static void debug(String message) {
-        if (DEBUG_MODE) {
+        if (DEBUG_MODE || Config.debugEnabled) {
             LOG.info("DEBUG: " + message);
         }
     }
