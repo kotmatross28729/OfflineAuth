@@ -37,7 +37,7 @@ public class Config {
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
         public static final boolean facesInTabMenu = true;
-        public static final boolean debugEnabled = true;
+        public static final boolean debugEnabled = false;
     }
 
     /* Basically an enum for different config categories */
