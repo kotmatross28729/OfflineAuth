@@ -54,7 +54,7 @@ If you are a player:
 * [Greg](https://github.com/GregoriusT) and all the people on his IRC who sometimes get my dumb ass unstuck :D
 * The player 3D render code was taken from [bspkrsCore](https://github.com/bspkrs-mods/bspkrsCore) ([CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)), by [bspkrs](https://github.com/bspkrs-mods).
 * [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) devs
-* Translations: nocturni
+* Translations: nocturni, kotmatross28729
 
 ### Building
 `gradlew build` should do the trick.
