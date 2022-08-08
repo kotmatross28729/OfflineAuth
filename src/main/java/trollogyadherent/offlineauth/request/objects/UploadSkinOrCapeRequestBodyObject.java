@@ -14,7 +14,7 @@ public class UploadSkinOrCapeRequestBodyObject {
         this.password = password;
         this.imageBytes = imageBytes;
         this.clientKeyToken = clientKeyToken;
-        this.type = ServerKeyTokenRegistry.TokenType.UPLOADSKIN;
+        this.type = ServerKeyTokenRegistry.TokenType.UPLOADSKINORCAPE;
     }
 
     public String getIdentifier() {

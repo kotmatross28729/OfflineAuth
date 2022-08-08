@@ -14,7 +14,7 @@ public class UploadCapeRequestBodyObject {
         this.password = password;
         this.capeBytes = capeBytes;
         this.clientKeyToken = clientKeyToken;
-        this.type = ServerKeyTokenRegistry.TokenType.UPLOADCAPE;
+        this.type = ServerKeyTokenRegistry.TokenType.UPLOADSKINORCAPE;
     }
 
     public String getIdentifier() {

@@ -327,7 +327,7 @@ public class Request {
 
         String clientKeyToken = "";
         if (clientPubKey != null && clientPrivKey != null) {
-            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADSKIN);
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADSKINORCAPE);
             if (tempToken == null) {
                 OfflineAuth.error("clientToken is null!");
                 return new StatusResponseObject("clientToken is null!", 500);
@@ -367,7 +367,7 @@ public class Request {
 
         String clientKeyToken = "";
         if (clientPubKey != null && clientPrivKey != null) {
-            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADCAPE);
+            String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.UPLOADSKINORCAPE);
             if (tempToken == null) {
                 OfflineAuth.error("clientToken is null!");
                 return new StatusResponseObject("clientToken is null!", 500);

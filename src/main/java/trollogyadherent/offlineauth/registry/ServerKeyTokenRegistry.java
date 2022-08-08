@@ -59,8 +59,7 @@ public class ServerKeyTokenRegistry {
         CHANGEDISPLAYNAME,
         DELETEACCOUNT,
         TOKEN,
-        UPLOADSKIN,
-        UPLOADCAPE,
+        UPLOADSKINORCAPE,
         REMOVESKINORCAPE
     }
 

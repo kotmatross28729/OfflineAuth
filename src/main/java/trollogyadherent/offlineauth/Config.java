@@ -35,7 +35,7 @@ public class Config {
         public static final boolean allowDisplayNameChange = true;
         public static final boolean allowOpsDisplayNameChange = true;
         public static final int maxSkinBytes = 500000;
-        public static final int maxCapeBytes = 500000;
+        public static final int maxCapeBytes = 1300000;
         public static final boolean facesInTabMenu = true;
     }
 
