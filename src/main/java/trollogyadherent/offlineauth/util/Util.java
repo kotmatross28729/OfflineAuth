@@ -138,6 +138,9 @@ public class Util {
     }
 
     public static String getPort(ServerData serverData) {
+        if (serverData == null) {
+            return "";
+        }
         String[] spl = serverData.serverIP.split(":");
         if (spl.length > 1) {
             return spl[1];
