@@ -106,6 +106,15 @@ public class GuiLogin extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (!Config.showUseKey) {
+            this.useKey.visible = false;
+            this.manageKey.visible = false;
+        }
+
+        if (!Config.showConfigInAuth) {
+            this.config.visible = false;
+        }
+
         this.drawDefaultBackground();
 
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.identifier"), this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
@@ -113,7 +122,9 @@ public class GuiLogin extends GuiScreen {
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.port"), this.width / 2 - 55, this.basey + 45, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.password"), this.width / 2 - 55, this.basey, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.new_password"), this.width / 2 + 55, this.basey, Color.WHITE.getRGB());
-        this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.use_key"), this.width / 2 - 155,  this.basey + 90, Color.WHITE.getRGB());
+        if (Config.showUseKey) {
+            this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.use_key"), this.width / 2 - 155, this.basey + 90, Color.WHITE.getRGB());
+        }
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.registration_token"), this.width / 2 + 5, this.basey + 45, Color.WHITE.getRGB());
         if (!(this.message == null || this.message.isEmpty())) {
             this.drawCenteredString(this.fontRendererObj, this.message, this.width / 2, this.basey - 15, 0xFFFFFF);

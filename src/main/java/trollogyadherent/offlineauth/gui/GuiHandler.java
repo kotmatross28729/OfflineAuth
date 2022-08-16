@@ -52,10 +52,10 @@ public class GuiHandler {
     Object reflectedCMMlabelList = null;
 
     public GuiHandler() {
-        if (Loader.isModLoaded("CustomMainMenu")) {
-            btnlstField = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
-            btnlstField.setAccessible(true);
+        btnlstField = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
+        btnlstField.setAccessible(true);
 
+        if (Loader.isModLoaded("CustomMainMenu")) {
             labelListField = ReflectionHelper.findField(lumien.custommainmenu.gui.GuiCustom.class, "textLabels");
             labelListField.setAccessible(true);
 
@@ -256,7 +256,9 @@ public class GuiHandler {
             validText = "?";
             validColor = Color.GRAY.getRGB();
 
-            reflectedBtnLst = btnlstField.get(e.gui);
+            if (btnlstField != null) {
+                reflectedBtnLst = btnlstField.get(e.gui);
+            }
 
             /* Backing up the displayname the user chose while launching minecraft */
             OfflineAuth.debug("Backed up displayname: " + Minecraft.getMinecraft().getSession().getUsername());

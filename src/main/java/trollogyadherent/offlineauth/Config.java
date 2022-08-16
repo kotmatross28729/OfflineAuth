@@ -20,6 +20,8 @@ public class Config {
         public static final boolean saveButtonExits = true; // In auth management, if the "Save" button exits to previous menu, or not
         public static final int manageAuthButtonId = 420;
         public static final boolean facesInTabMenu = true;
+        public static final boolean showUseKey = true;
+        public static final boolean showConfigInAuth = true;
 
         /* Client - Custom Main Menu integration */
         public static final String cmmDefaultServerIp = "localhost";
@@ -62,6 +64,8 @@ public class Config {
     public static boolean savebuttonExit = Defaults.saveButtonExits;
     public static  int manageAuthButtonId = Defaults.manageAuthButtonId;
     public static boolean facesInTabMenu = Defaults.facesInTabMenu;
+    public static boolean showUseKey = Defaults.showUseKey;
+    public static boolean showConfigInAuth = Defaults.showConfigInAuth;
 
     /* Client - Custom Main Menu defaults */
     public static String cmmDefaultServerIp = Defaults.cmmDefaultServerIp;
@@ -109,6 +113,13 @@ public class Config {
             Property manageAuthButtonIdProperty = config.get(Categories.generalClient, "manageAuthButtonId", Defaults.manageAuthButtonId, "Id of the Manage Auth button");
             manageAuthButtonId = manageAuthButtonIdProperty.getInt();
 
+            Property showUseKeyProperty = config.get(Categories.generalClient, "showUseKey", Defaults.showUseKey, "Show or hide creation of accounts using keypair instead of password");
+            showUseKey = showUseKeyProperty.getBoolean();
+
+            Property showConfigInAuthProperty = config.get(Categories.generalClient, "showConfigInAuth", Defaults.showConfigInAuth, "Show or hide the config button in auth menu");
+            showConfigInAuth = showConfigInAuthProperty.getBoolean();
+
+            /* CMM compat */
             Property cmmDefaultServerIpProperty = config.get(Categories.customMainMenuClient, "cmmDefaultServerIp", Defaults.cmmDefaultServerIp, "Ip address of the Custom Main Menu default server");
             cmmDefaultServerIp = cmmDefaultServerIpProperty.getString();
 
