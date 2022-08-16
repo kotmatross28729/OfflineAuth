@@ -44,13 +44,24 @@ public class GuiHandler {
     static boolean bold = true;
 
     // Access transformers don't work on stuff already touched by forge, so reflection is needed
-    Field btnlst;
+    Field btnlstField;
+    Field labelListField;
+    Field textField;
     Object reflectedBtnLst = null;
     Object reflectedCMMbuttonList = null;
+    Object reflectedCMMlabelList = null;
 
     public GuiHandler() {
-        btnlst = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
-        btnlst.setAccessible(true);
+        if (Loader.isModLoaded("CustomMainMenu")) {
+            btnlstField = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
+            btnlstField.setAccessible(true);
+
+            labelListField = ReflectionHelper.findField(lumien.custommainmenu.gui.GuiCustom.class, "textLabels");
+            labelListField.setAccessible(true);
+
+            textField = ReflectionHelper.findField(lumien.custommainmenu.gui.GuiCustomLabel.class, "text");
+            textField.setAccessible(true);
+        }
     }
 
     @SubscribeEvent
@@ -69,14 +80,16 @@ public class GuiHandler {
         }
 
         /* Injecting functions to appropriately named custom main menu buttons, if the mod is loaded */
-        if (Loader.isModLoaded("CustomMainMenu") && reflectedCMMbuttonList == null && (e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain || e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
+        if (Loader.isModLoaded("CustomMainMenu") && (reflectedCMMbuttonList == null && reflectedCMMlabelList == null) && (/*e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain ||*/ e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
             try {
-                reflectedCMMbuttonList = btnlst.get(e.gui);
+                reflectedCMMbuttonList = btnlstField.get(e.gui);
                 if (reflectedCMMbuttonList == null || ((java.util.List) reflectedCMMbuttonList).size() == 0) {
                     reflectedCMMbuttonList = null;
                 }
+
+                reflectedCMMlabelList = labelListField.get(e.gui);
             } catch (IllegalAccessException ex) {
-                OfflineAuth.error("Failed to reflect button list");
+                OfflineAuth.error("Failed to reflect button or label list");
                 ex.printStackTrace();
                 return;
             }
@@ -85,11 +98,33 @@ public class GuiHandler {
                     if (((GuiButton) gb).id >= 6000) {
                         lumien.custommainmenu.gui.GuiCustomButton gb_ = (lumien.custommainmenu.gui.GuiCustomButton) gb;
 
-                        if (gb_.displayString.equals(Config.cmmGuiLoginButtonName)) {
+                        if (gb_.b.name.equals(Config.cmmGuiLoginButtonName)) {
                             gb_.b.action = (lumien.custommainmenu.lib.actions.IAction) IActionObjectGuiLoginWrapper.getActionOpenGuiLogin();
-                        } else if (gb_.displayString.equals(Config.cmmServerJoinButtonName)) {
+                        } else if (gb_.b.name.equals(Config.cmmServerJoinButtonName)) {
                             gb_.b.action = (lumien.custommainmenu.lib.actions.IAction) IActionJoinServerWrapper.getActionJoinServer();
                         }
+                    }
+                }
+            }
+            if (reflectedCMMlabelList != null) {
+                for (Object label : ((java.util.List) reflectedCMMlabelList)) {
+                    lumien.custommainmenu.gui.GuiCustomLabel label_ = (lumien.custommainmenu.gui.GuiCustomLabel) label;
+
+                    lumien.custommainmenu.configuration.elements.Text text = null;
+                    try {
+                        text = (lumien.custommainmenu.configuration.elements.Text) textField.get(label_);
+                    } catch (IllegalAccessException ex) {
+                        OfflineAuth.error("Failed to reflect label text");
+                        ex.printStackTrace();
+                        return;
+                    }
+                    if (text == null) {
+                        continue;
+                    }
+                    if (text.name.equals(Config.cmmGuiLoginButtonName)) {
+                        text.action = (lumien.custommainmenu.lib.actions.IAction) IActionObjectGuiLoginWrapper.getActionOpenGuiLogin();
+                    } else if (text.name.equals(Config.cmmServerJoinButtonName)) {
+                        text.action = (lumien.custommainmenu.lib.actions.IAction) IActionJoinServerWrapper.getActionJoinServer();
                     }
                 }
             }
@@ -209,6 +244,7 @@ public class GuiHandler {
     @SubscribeEvent
     public void open(InitGuiEvent.Post e) throws IllegalAccessException {
         reflectedCMMbuttonList = null;
+        reflectedCMMlabelList = null;
         if (e.gui instanceof GuiMultiplayer) {
             //e.buttonList.add(new GuiButton(17325, 270/*5*/, 5, 100, 20, "Server Re-Login"));
 
@@ -220,7 +256,7 @@ public class GuiHandler {
             validText = "?";
             validColor = Color.GRAY.getRGB();
 
-            reflectedBtnLst = btnlst.get(e.gui);
+            reflectedBtnLst = btnlstField.get(e.gui);
 
             /* Backing up the displayname the user chose while launching minecraft */
             OfflineAuth.debug("Backed up displayname: " + Minecraft.getMinecraft().getSession().getUsername());

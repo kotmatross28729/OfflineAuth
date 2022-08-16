@@ -7,18 +7,36 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 
-@SideOnly(Side.CLIENT)
-class ConfigGUI extends GuiConfig {
+public class ConfigGUI extends GuiConfig {
 
     private static IConfigElement ce = new ConfigElement(Config.config.getCategory(Config.Categories.generalClient));
     private static IConfigElement ceCMM = new ConfigElement(Config.config.getCategory(Config.Categories.customMainMenuClient));
 
-    ConfigGUI(GuiScreen parent) {
-        super(parent, ImmutableList.of(ce, ceCMM), "offlineauth", "offlineauth", false, false, "Config for OfflineAuth", OfflineAuth.confFile.getAbsolutePath());
+    public ConfigGUI(GuiScreen parent) {
+        //this.parentScreen = parent;
+        super(parent, ImmutableList.of(ce, ceCMM), "offlineauth", "offlineauth", false, false, I18n.format("offlineauth.configgui.title"), OfflineAuth.confFile.getAbsolutePath());
+        OfflineAuth.debug("Instantiating config gui");
+    }
+
+    @Override
+    public void initGui()
+    {
+        // You can add buttons and initialize fields here
+        super.initGui();
+        OfflineAuth.debug("Initializing config gui");
+    }
+
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        // You can do things like create animations, draw additional elements, etc. here
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -27,10 +45,8 @@ class ConfigGUI extends GuiConfig {
         super.actionPerformed(b);
         /* "Done" button */
         if (b.id == 2000) {
-            //Config.config.save();
             Config.synchronizeConfigurationClient(OfflineAuth.confFile, true, false);
-            //Config.config.save();
-            //Config.config.load();
         }
     }
+
 }

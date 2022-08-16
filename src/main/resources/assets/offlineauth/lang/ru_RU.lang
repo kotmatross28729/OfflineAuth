@@ -115,3 +115,4 @@ offlineauth.keygui.browse_public_key=Найти ключ публичного с
 offlineauth.keygui.browse_private_key=Найти ключ частного сервера
 offlineauth.keygui.generate_new_keypair=Создать новую пару ключей
 offlineauth.keygui.back=Назад
+offlineauth.configgui.title=Config for OfflineAuth

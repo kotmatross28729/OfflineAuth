@@ -24,5 +24,6 @@ dependencies {
     //shadowImplementation("org.mindrot:jbcrypt:0.4")
 
     compileOnly(deobfCurse("custom-main-menu-226406:2264779"))
+    //compileOnly(deobfCurse("custom-main-menu-226406:2264779"))
     compileOnly(deobfCurse("et-futurum-requiem-441392:3863343"))
 }

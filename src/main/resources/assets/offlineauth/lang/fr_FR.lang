@@ -114,3 +114,4 @@ offlineauth.keygui.browse_public_key=Indiquer fichier de clé publique
 offlineauth.keygui.browse_private_key=Indiquer fichier de clé privée
 offlineauth.keygui.generate_new_keypair=Générer nouvelle paire de clés
 offlineauth.keygui.back=Retour
+offlineauth.configgui.title=Configuration pour OfflineAuth

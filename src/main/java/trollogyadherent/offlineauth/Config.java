@@ -25,8 +25,8 @@ public class Config {
         public static final String cmmDefaultServerIp = "localhost";
         public static final int cmmDefaultServerPort = 25565;
         public static final int cmmDefaultAuthPort = 4567;
-        public static final String cmmGuiLoginButtonName = "Auth";
-        public static final String cmmServerJoinButtonName = "Join Server";
+        public static final String cmmGuiLoginButtonName = "auth";
+        public static final String cmmServerJoinButtonName = "join_server";
 
 
         /* Server category defaults */

@@ -2,14 +2,14 @@
     {
       "modid": "${modId}",
       "name": "${modName}",
-      "description": "A Minecraft authentification system contained in a Forge mod.",
+      "description": "A Minecraft authentication system contained in a Forge mod.",
       "version": "${modVersion}",
       "mcversion": "${minecraftVersion}",
       "url": "https://github.com/trollogyadherent/OfflineAuth",
       "updateUrl": "",
       "authorList": ["trollogyadherent"],
       "credits": "TechnicianLP, SinTh0r4s, bspkrs, Gregorius Techneticies",
-      "logoFile": "",
+      "logoFile": "assets/${modId}/logo.png",
       "screenshots": [],
       "dependencies": []
     }

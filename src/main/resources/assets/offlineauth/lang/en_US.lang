@@ -115,3 +115,4 @@ offlineauth.keygui.browse_public_key=Browse For Public Server Key
 offlineauth.keygui.browse_private_key=Browse For Private Server Key
 offlineauth.keygui.generate_new_keypair=Generate New KeyPair
 offlineauth.keygui.back=Back
+offlineauth.configgui.title=Config for OfflineAuth
