@@ -22,15 +22,11 @@ public class VarInstanceClient {
     public File datafile;
     public ArrayList<OAServerData> OAserverDataCache;
     public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-    public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
-    public Field capeLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationCape", "field_110313_e");
 
     //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
     //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
     //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
     public ClientRegistry clientRegistry = new ClientRegistry();
-    public boolean queriedForPlayerData = false;
-    public boolean queriedForSkinFile = false;
     public Thread serverStatusVibecheckThread = null;
 
     public String serverDataJSONpath = new File(OfflineAuth.rootPath, "serverdata.json").getPath();
@@ -49,6 +45,11 @@ public class VarInstanceClient {
     public boolean offlineSkinAndCapeLoaded = false;
     public CapeObject singlePlayerCapeObject = null;
     public ResourceLocation singlePlayerSkinResourceLocation = null;
+    public String displayNameBeforeServerJoin = null;
+
+    /* Reflection fields */
+    public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
+    public Field capeLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationCape", "field_110313_e");
 
     public VarInstanceClient() {
         skinLocationField.setAccessible(true);

@@ -1,5 +1,14 @@
 // Add your dependencies here
 
+static def curse(curseDep) {
+    return "curse.maven:" + curseDep
+}
+
+def deobfCurse(curseDep) {
+    String curseMaven = "https://cursemaven.com/" //Use https://cursemaven.falsepattern.com/ if this is down
+    return deobfMaven(curseMaven, curse(curseDep))
+}
+
 dependencies {
     shadowImplementation("com.sparkjava:spark-core:2.9.3")
     //shadowImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
@@ -13,4 +22,7 @@ dependencies {
     //shadowImplementation("org.projectlombok:lombok:1.18.22")
     //shadowImplementation("com.sparkjava:spark-template-velocity:2.7.1")
     //shadowImplementation("org.mindrot:jbcrypt:0.4")
+
+    compile(deobfCurse("custom-main-menu-226406:2264779"))
+    compile(deobfCurse("et-futurum-requiem-441392:3863343"))
 }

@@ -5,6 +5,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -30,6 +32,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+@SideOnly(Side.CLIENT)
 public class ClientEventListener {
     /* Clears OfflineAuth.playerRegistry List. Otherwise, the SkinData would persist, but so, when changing worlds, the old textures are unloaded */
     /* Triggers when we join */
@@ -128,10 +131,9 @@ public class ClientEventListener {
             return;
         }
 
-        OfflineAuth.info("Left server, clearing skin query status 2");
-        OfflineAuth.varInstanceClient.queriedForPlayerData = false;
+        OfflineAuth.debug("Left server, clearing skin query status 2");
 
-        OfflineAuth.info("Clearing memory skin cache 5");
+        OfflineAuth.debug("Clearing memory skin cache 5");
         //ClientSkinUtil.clearSkinCache();
         OfflineAuth.varInstanceClient.clientRegistry.clear();
         //System.out.println("Exited MP world");

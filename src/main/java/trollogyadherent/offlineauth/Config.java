@@ -18,6 +18,16 @@ public class Config {
     private static class Defaults {
         /* Client category defaults */
         public static final boolean saveButtonExits = true; // In auth management, if the "Save" button exits to previous menu, or not
+        public static final int manageAuthButtonId = 420;
+        public static final boolean facesInTabMenu = true;
+
+        /* Client - Custom Main Menu integration */
+        public static final String cmmDefaultServerIp = "localhost";
+        public static final int cmmDefaultServerPort = 25565;
+        public static final int cmmDefaultAuthPort = 4567;
+        public static final String cmmGuiLoginButtonName = "Auth";
+        public static final String cmmServerJoinButtonName = "Join Server";
+
 
         /* Server category defaults */
         public static final int port = 4567; // port on which the rest api server listens on. can't be the same as mc port
@@ -36,7 +46,6 @@ public class Config {
         public static final boolean allowOpsDisplayNameChange = true;
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
-        public static final boolean facesInTabMenu = true;
         public static final boolean debugEnabled = false;
     }
 
@@ -44,12 +53,22 @@ public class Config {
     /* Here it's used to separate what goes into client, and what into client config file */
     public static class Categories {
         public static final String generalClient = "general_client";
+        public static final String customMainMenuClient = "custommainmenu_client";
         public static final String generalServer = "general_server";
     }
 
     /* Applying defaults */
     /* Client defaults */
     public static boolean savebuttonExit = Defaults.saveButtonExits;
+    public static  int manageAuthButtonId = Defaults.manageAuthButtonId;
+    public static boolean facesInTabMenu = Defaults.facesInTabMenu;
+
+    /* Client - Custom Main Menu defaults */
+    public static String cmmDefaultServerIp = Defaults.cmmDefaultServerIp;
+    public static int cmmDefaultServerPort = Defaults.cmmDefaultServerPort;
+    public static int cmmDefaultAuthPort = Defaults.cmmDefaultAuthPort;
+    public static String cmmGuiLoginButtonName = Defaults.cmmGuiLoginButtonName;
+    public static String cmmServerJoinButtonName = Defaults.cmmServerJoinButtonName;
 
     /* Server defaults*/
     public static int port = Defaults.port;
@@ -68,13 +87,14 @@ public class Config {
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
-    public static boolean facesInTabMenu = Defaults.facesInTabMenu;
     public static boolean debugEnabled = Defaults.debugEnabled;
 
     /* Sync for when config has changed, client */
-    public static void synchronizeConfigurationClient(File configFile, boolean force) {
+    public static void synchronizeConfigurationClient(File configFile, boolean force, boolean load) {
         if (!loaded || force) {
-            config.load();
+            if (load) {
+                config.load();
+            }
             loaded = true;
 
             Property saveButtonExitsProperty = config.get(Categories.generalClient, "saveButtonExits", Defaults.saveButtonExits, "Save button in server auth menu exits to the previous screen");
@@ -85,6 +105,24 @@ public class Config {
 
             Property debugEnabledProperty = config.get(Categories.generalClient, "debugEnabled", Defaults.debugEnabled, "Show debug info");
             debugEnabled = debugEnabledProperty.getBoolean();
+
+            Property manageAuthButtonIdProperty = config.get(Categories.generalClient, "manageAuthButtonId", Defaults.manageAuthButtonId, "Id of the Manage Auth button");
+            manageAuthButtonId = manageAuthButtonIdProperty.getInt();
+
+            Property cmmDefaultServerIpProperty = config.get(Categories.customMainMenuClient, "cmmDefaultServerIp", Defaults.cmmDefaultServerIp, "Ip address of the Custom Main Menu default server");
+            cmmDefaultServerIp = cmmDefaultServerIpProperty.getString();
+
+            Property cmmDefaultServerPortProperty = config.get(Categories.customMainMenuClient, "cmmDefaultServerPort", Defaults.cmmDefaultServerPort, "Server port for Custom Main Menu default server");
+            cmmDefaultServerPort = cmmDefaultServerPortProperty.getInt();
+
+            Property cmmDefaultAuthPortProperty = config.get(Categories.customMainMenuClient, "cmmDefaultAuthPort", Defaults.cmmDefaultAuthPort, "Auth port for Custom Main Menu default server");
+            cmmDefaultAuthPort = cmmDefaultAuthPortProperty.getInt();
+
+            Property cmmGuiLoginButtonNameProperty = config.get(Categories.customMainMenuClient, "cmmGuiLoginButtonName", Defaults.cmmGuiLoginButtonName, "Name of the Custom Main Menu button that should open the login gui");
+            cmmGuiLoginButtonName = cmmGuiLoginButtonNameProperty.getString();
+
+            Property cmmServerJoinButtonNameProperty = config.get(Categories.customMainMenuClient, "cmmServerJoinButtonName", Defaults.cmmServerJoinButtonName, "Name of the Custom Main Menu button that joins the server");
+            cmmServerJoinButtonName = cmmServerJoinButtonNameProperty.getString();
         }
 
         if(config.hasChanged()) {

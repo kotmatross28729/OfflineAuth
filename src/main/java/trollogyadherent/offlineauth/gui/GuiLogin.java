@@ -1,6 +1,8 @@
 package trollogyadherent.offlineauth.gui;
 
 import cpw.mods.fml.client.config.GuiCheckBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -28,6 +30,7 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+@SideOnly(Side.CLIENT)
 public class GuiLogin extends GuiScreen {
 
     public GuiTextField identifier;
@@ -57,7 +60,7 @@ public class GuiLogin extends GuiScreen {
 
     public String message = "";
 
-    GuiLogin(GuiScreen prev) {
+    public GuiLogin(GuiScreen prev) {
         this.mc = Minecraft.getMinecraft();
         this.fontRendererObj = mc.fontRenderer;
         this.prev = prev;
@@ -349,7 +352,7 @@ public class GuiLogin extends GuiScreen {
 
         /* According to config, either we go to parent GUI, or we stay in this GUI */
         if (quitGui && Config.savebuttonExit) {
-            this.mc.displayGuiScreen(prev);
+            actionCancel();
         }
     }
 

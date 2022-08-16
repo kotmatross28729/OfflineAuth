@@ -2,8 +2,10 @@ package trollogyadherent.offlineauth;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
@@ -91,7 +93,7 @@ public class ClientProxy extends CommonProxy {
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent evt) {
         if (evt.modID.equals("offlineauth")) {
             if (OfflineAuth.confFile != null) {
-                Config.synchronizeConfigurationClient(OfflineAuth.confFile, false);
+                Config.synchronizeConfigurationClient(OfflineAuth.confFile, false, true);
             }
         }
     }

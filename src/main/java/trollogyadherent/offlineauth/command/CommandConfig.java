@@ -142,7 +142,7 @@ public class CommandConfig implements ICommand {
 
             if (succeeded) {
                 Config.config.save();
-                Config.synchronizeConfigurationClient(Config.config.getConfigFile(), true);
+                Config.synchronizeConfigurationClient(Config.config.getConfigFile(), true, true);
                 Config.synchronizeConfigurationServer(Config.config.getConfigFile(), true);
                 sender.addChatMessage(new ChatComponentText("Updated config"));
             }

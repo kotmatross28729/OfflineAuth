@@ -650,12 +650,21 @@ public class Database {
     public static String[] getRegisteredDisplaynames() {
         ArrayList<String> res = new ArrayList<>();
         DBIterator dbIterator = OfflineAuth.varInstanceServer.levelDBStore.iterator();
+        ArrayList<String> toRemove = new ArrayList<>();
         for (dbIterator.seekToFirst(); dbIterator.hasNext(); dbIterator.next()) {
             String key = new String(dbIterator.peekNext().getKey());
             if (key.startsWith("ID")) {
-                DBPlayerData dbpd = getPlayerDataByIdentifier(key.substring(3));
-                res.add(dbpd.displayname);
+                String identifier = key.substring(3);
+                DBPlayerData dbpd = getPlayerDataByIdentifier(identifier);
+                if (dbpd == null || dbpd.displayname == null) {
+                    toRemove.add(identifier);
+                } else {
+                    res.add(dbpd.displayname);
+                }
             }
+        }
+        for (String identifier : toRemove) {
+            OfflineAuth.varInstanceServer.levelDBStore.delete(bytes("ID:" + identifier));
         }
         return res.toArray(new String[res.size()]);
     }

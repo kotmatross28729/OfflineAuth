@@ -45,12 +45,6 @@ public class Util {
     }
 
     public static String offlineUUID(String username) {
-        /*String allowed = "abcdefghijklmnopqrstuvwxyz-0123456789";
-        for (int i = 0; i < username.length(); i ++) {
-            if (!allowed.contains(String.valueOf(username.charAt(i)))) {
-
-            }
-        }*/
         return String.valueOf(UUID.nameUUIDFromBytes(("OfflinePlayer:" + username.toLowerCase()).getBytes(Charsets.UTF_8)));
     }
 
@@ -110,7 +104,7 @@ public class Util {
          */
         private static Field sessionField = ReflectionHelper.findField(Minecraft.class, "session", "S", "field_71449_j");
 
-        static Session get() throws IllegalArgumentException, IllegalAccessException {
+        static Session get() throws IllegalArgumentException {
             return Minecraft.getMinecraft().getSession();
         }
 

@@ -34,7 +34,7 @@ public class CommonProxy {
         if (Util.isServer()) {
             Config.synchronizeConfigurationServer(event.getSuggestedConfigurationFile(), false);
         } else {
-            Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile(), false);
+            Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile(), false, true);
         }
 
         OfflineAuth.warn("I am " + Tags.MODNAME + " at version " + Tags.VERSION + " and group name " + Tags.GROUPNAME);

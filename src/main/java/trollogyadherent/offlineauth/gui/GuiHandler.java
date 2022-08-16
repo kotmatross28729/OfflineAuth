@@ -1,19 +1,22 @@
 package trollogyadherent.offlineauth.gui;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.ServerListEntryNormal;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+
+import trollogyadherent.offlineauth.gui.cmm_compat.IActionJoinServerWrapper;
+import trollogyadherent.offlineauth.gui.cmm_compat.IActionObjectGuiLoginWrapper;
 import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
@@ -29,25 +32,21 @@ import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class GuiHandler {
 
     private String validText;
     private int validColor;
     private Thread validator;
-    private static int manageAuthButtonId = 420;
 
     static boolean enabled = true;
     static boolean bold = true;
 
-    //public static ServerData selectedServerData;
-    public int selectedOAserverDataRegIndex = -1;
-    public String serverdataFetchStatus = "none"; // none, pending, ok
-
     // Access transformers don't work on stuff already touched by forge, so reflection is needed
     Field btnlst;
     Object reflectedBtnLst = null;
+    Object reflectedCMMbuttonList = null;
 
     public GuiHandler() {
         btnlst = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
@@ -56,6 +55,47 @@ public class GuiHandler {
 
     @SubscribeEvent
     public void attach(DrawScreenEvent.Pre e) {
+        /* If we are in the singleplayer world selection menu, set the displayname to the one ths user chose while launching minecraft */
+        if (e.gui instanceof GuiSelectWorld) {
+            if (OfflineAuth.varInstanceClient.displayNameBeforeServerJoin != null && !Minecraft.getMinecraft().getSession().getUsername().equals(OfflineAuth.varInstanceClient.displayNameBeforeServerJoin)) {
+                try {
+                    Util.offlineMode(OfflineAuth.varInstanceClient.displayNameBeforeServerJoin);
+                    OfflineAuth.debug("Restored displayname: " + OfflineAuth.varInstanceClient.displayNameBeforeServerJoin);
+                } catch (IllegalAccessException ex) {
+                    OfflineAuth.error("Failed to set back original offline username");
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        /* Injecting functions to appropriately named custom main menu buttons, if the mod is loaded */
+        if (Loader.isModLoaded("CustomMainMenu") && reflectedCMMbuttonList == null && (e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain || e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
+            try {
+                reflectedCMMbuttonList = btnlst.get(e.gui);
+                if (reflectedCMMbuttonList == null || ((java.util.List) reflectedCMMbuttonList).size() == 0) {
+                    reflectedCMMbuttonList = null;
+                }
+            } catch (IllegalAccessException ex) {
+                OfflineAuth.error("Failed to reflect button list");
+                ex.printStackTrace();
+                return;
+            }
+            if (reflectedCMMbuttonList != null) {
+                for (Object gb : ((java.util.List) reflectedCMMbuttonList)) {
+                    if (((GuiButton) gb).id >= 6000) {
+                        lumien.custommainmenu.gui.GuiCustomButton gb_ = (lumien.custommainmenu.gui.GuiCustomButton) gb;
+
+                        if (gb_.displayString.equals(Config.cmmGuiLoginButtonName)) {
+                            gb_.b.action = (lumien.custommainmenu.lib.actions.IAction) IActionObjectGuiLoginWrapper.getActionOpenGuiLogin();
+                        } else if (gb_.displayString.equals(Config.cmmServerJoinButtonName)) {
+                            gb_.b.action = (lumien.custommainmenu.lib.actions.IAction) IActionJoinServerWrapper.getActionJoinServer();
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Attaching the "Auth" button to the multiplayer menu */
         if (e.gui instanceof GuiMultiplayer) {
             GuiMultiplayer multiplayerGui = (GuiMultiplayer) e.gui;
             //System.out.println(multiplayerGui);
@@ -79,7 +119,9 @@ public class GuiHandler {
                     try {
                         Util.offlineMode(oasd.getDisplayName());
                     } catch (IllegalAccessException ex) {
+                        OfflineAuth.error("Failed to get server data");
                         ex.printStackTrace();
+                        return;
                     }
                 }
 
@@ -166,6 +208,7 @@ public class GuiHandler {
 
     @SubscribeEvent
     public void open(InitGuiEvent.Post e) throws IllegalAccessException {
+        reflectedCMMbuttonList = null;
         if (e.gui instanceof GuiMultiplayer) {
             //e.buttonList.add(new GuiButton(17325, 270/*5*/, 5, 100, 20, "Server Re-Login"));
 
@@ -178,6 +221,10 @@ public class GuiHandler {
             validColor = Color.GRAY.getRGB();
 
             reflectedBtnLst = btnlst.get(e.gui);
+
+            /* Backing up the displayname the user chose while launching minecraft */
+            OfflineAuth.debug("Backed up displayname: " + Minecraft.getMinecraft().getSession().getUsername());
+            OfflineAuth.varInstanceClient.displayNameBeforeServerJoin = Minecraft.getMinecraft().getSession().getUsername();
         }
     }
 
@@ -194,21 +241,21 @@ public class GuiHandler {
 
             if (reflectedBtnLst != null) {
                 for (Object gb : ((java.util.List) reflectedBtnLst)) {
-                    if (((GuiButton) gb).id == manageAuthButtonId) {
+                    if (((GuiButton) gb).id == Config.manageAuthButtonId) {
                         return;
                     }
                 }
                 String manage_authText = I18n.format("offlineauth.manage_auth");
                 //int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText.replaceAll("\\P{InBasic_Latin}", "")) + 10;
                 int manage_authButtonWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(manage_authText) + 10;
-                ((java.util.List) reflectedBtnLst).add(new GuiButton(manageAuthButtonId, e.gui.width - validTextFinalWidth - registeredTextWidth - manage_authButtonWidth - 5, 5, /*80*/ manage_authButtonWidth, 20, manage_authText));
+                ((java.util.List) reflectedBtnLst).add(new GuiButton(Config.manageAuthButtonId, e.gui.width - validTextFinalWidth - registeredTextWidth - manage_authButtonWidth - 5, 5, /*80*/ manage_authButtonWidth, 20, manage_authText));
             }
         }
     }
 
     @SubscribeEvent
     public void action(ActionPerformedEvent.Post e) {
-        if ((e.gui instanceof GuiMultiplayer || e.gui instanceof GuiMainMenu) && e.button.id == manageAuthButtonId) {
+        if ((e.gui instanceof GuiMultiplayer || e.gui instanceof GuiMainMenu) && e.button.id == Config.manageAuthButtonId) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiLogin(Minecraft.getMinecraft().currentScreen));
         }
     }

@@ -1,9 +1,12 @@
 package trollogyadherent.offlineauth.clientdata;
 
 import net.minecraft.client.multiplayer.ServerData;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.JsonUtil;
+import trollogyadherent.offlineauth.util.Util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -73,6 +76,9 @@ public class ClientData {
             } catch (IOException e) {
                 OfflineAuth.error(e.getMessage());
                 return false;
+            }
+            if (Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
+                OfflineAuth.varInstanceClient.OAserverDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
             }
         }
         return true;

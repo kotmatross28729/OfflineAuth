@@ -23,7 +23,7 @@ import java.security.cert.CertificateException;
 
 // Disregard That, I ...
 
-@Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]")
+@Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")
 public class OfflineAuth {
 
     private static Logger LOG;// = LogManager.getLogger(Tags.MODID);
