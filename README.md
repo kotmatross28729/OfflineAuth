@@ -1,8 +1,5 @@
 # OfflineAuth 1.7.10 (Forge)
 Beta Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
-It is advised to delete the `offlineauth` folder each time you update for now.
-
-## Warning! To update to version 0.2.46 you have to delete the following folder serverside: `offlineauth/OfflineAuthDatabase`<br>This will erase all accounts. This should not occure further in the development anymore
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
@@ -36,6 +33,7 @@ If you are a player:
 * Possibility of logging in with a keypair, rather than with a password
 * Backport of player faces in the multiplayer tab menu
 * Integration with [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) elytras (you will have to wait for its next release, for now Et Futurum breaks OfflineAuth's skin preview)
+* Integration with [Custom Main Menu](https://www.curseforge.com/minecraft/mc-mods/custom-main-menu), if a button or label has a name specified in config, a default server auth menu and server join action will be added to them 
 
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
