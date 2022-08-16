@@ -1,5 +1,5 @@
 # OfflineAuth 1.7.10 (Forge)
-Beta Minecraft authentification system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
+Beta Minecraft authentication system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
@@ -26,7 +26,7 @@ If you are a player:
 
 ### Features
 * Registration and deletion of accounts, changing account password and displayname
-* Working skins and capes implementation, you can even change your skin and cape ingame. Also, singleplayer support
+* Working skins and capes implementation, you can even change your skin and cape in-game. Also, single-player support
 * Allowing registration only to those who have one time tokens (generate those with the `/gentoken` command)
 * Config options can be changed via file or server console
 * End-to-end encryption of credentials
