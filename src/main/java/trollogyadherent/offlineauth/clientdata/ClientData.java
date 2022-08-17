@@ -64,23 +64,18 @@ public class ClientData {
         if (!OfflineAuth.varInstanceClient.datafile.exists()) {
             OfflineAuth.info("Data file does not exist");
             OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>();
-            if (!saveData()) {
-                return false;
-            }
         } else {
             try {
                 // Basically parses the content of offlineauth.json to an ArrayList of OAServerData objects
                 OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
-                //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
-                //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
             } catch (IOException e) {
                 OfflineAuth.error(e.getMessage());
                 return false;
             }
-            if (Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
-                OfflineAuth.varInstanceClient.OAserverDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
-            }
         }
-        return true;
+        if (Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
+            OfflineAuth.varInstanceClient.OAserverDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
+        }
+        return saveData();
     }
 }

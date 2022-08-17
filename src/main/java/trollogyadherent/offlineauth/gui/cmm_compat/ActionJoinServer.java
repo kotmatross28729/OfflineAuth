@@ -38,6 +38,9 @@ public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IActi
             return;
         }
 
+        /* Setting server as "current" (necessary for further auth) */
+        OfflineAuth.varInstanceClient.selectedServerData = new ServerData("", Config.cmmDefaultServerIp + ":" + Config.cmmDefaultServerPort);
+
         /* Getting server address and connecting */
         ServerData sd = new ServerData("", Config.cmmDefaultServerIp + ":" + Config.cmmDefaultServerPort);
         FMLClientHandler.instance().setupServerList();

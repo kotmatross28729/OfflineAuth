@@ -11,6 +11,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.clientdata.ClientData;
+import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.util.Util;
 
 public class ConfigGUI extends GuiConfig {
 
@@ -45,7 +48,14 @@ public class ConfigGUI extends GuiConfig {
         super.actionPerformed(b);
         /* "Done" button */
         if (b.id == 2000) {
+            /* Syncing config */
             Config.synchronizeConfigurationClient(OfflineAuth.confFile, true, false);
+
+            /* Adding CMM server data if it is new */
+            if (Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
+                OfflineAuth.varInstanceClient.OAserverDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
+                ClientData.saveData();
+            }
         }
     }
 

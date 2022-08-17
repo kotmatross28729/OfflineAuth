@@ -491,4 +491,12 @@ public class Util {
         }
         return gifDecoder.getFrame(0);
     }
+
+    public static String hideIP(String ip) {
+        if (/*ip.equals("localhost") || */ip.length() <= 3) {
+            return ip;
+        } else {
+            return ip.substring(0, 2) + "X.XXX.XXX.XX" + ip.substring(ip.length() - 1);
+        }
+    }
 }

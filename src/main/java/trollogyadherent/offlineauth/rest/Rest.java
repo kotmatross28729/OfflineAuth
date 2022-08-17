@@ -58,7 +58,7 @@ public class Rest {
     }
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to check my vibe, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to check my vibe, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -107,7 +107,7 @@ public class Rest {
 
     public static String register(Request request, Response response) throws NoSuchAlgorithmException {
         //OfflineAuth.info("Someone tries to register an account, identifier: " + request.queryParams("identifier") + ", displayname: " + request.queryParams("displayname"));
-        OfflineAuth.info("Someone tries to register an account, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to register an account, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -156,7 +156,7 @@ public class Rest {
     }
 
     public static String delete(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to delete an account, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to delete an account, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -203,7 +203,7 @@ public class Rest {
     }
 
     public static String changePassword(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to change a password, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to change a password, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -236,7 +236,7 @@ public class Rest {
     }
 
     public static String changeDisplayName(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to change a displayname, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to change a displayname, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -396,7 +396,7 @@ public class Rest {
     }
 
     public static Object handleTempPubKey(Request request, Response response) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        OfflineAuth.info("Ip " + request.raw().getRemoteAddr() + " from host " + request.raw().getRemoteHost() + " requests temporary public key");
+        OfflineAuth.info("Ip " + Util.hideIP(request.raw().getRemoteAddr()) + " from host " + Util.hideIP(request.raw().getRemoteHost()) + " requests temporary public key");
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -439,7 +439,7 @@ public class Rest {
     }
 
     public static String handleTokenChallenge(Request request, Response response) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        OfflineAuth.info("Someone tries to get a key token, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to get a key token, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -492,7 +492,7 @@ public class Rest {
     }
 
     public static String handleSkinUpload(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to upload a skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to upload a skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
 
         UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
@@ -570,7 +570,7 @@ public class Rest {
     }
 
     public static String handleCapeUpload(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to upload a cape, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to upload a cape, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
 
         UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
@@ -640,7 +640,7 @@ public class Rest {
     }
 
     public static String handleSkinRemoval(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to remove the skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to remove the skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
@@ -698,7 +698,7 @@ public class Rest {
     }
 
     public static String handleCapeRemoval(Request request, Response response) throws NoSuchAlgorithmException {
-        OfflineAuth.info("Someone tries to remove the skin, ip: " + request.raw().getRemoteAddr() + ", host: " + request.raw().getRemoteHost());
+        OfflineAuth.info("Someone tries to remove the skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
