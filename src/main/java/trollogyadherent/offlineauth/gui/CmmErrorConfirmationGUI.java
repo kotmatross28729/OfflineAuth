@@ -1,6 +1,7 @@
 package trollogyadherent.offlineauth.gui;
 
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
@@ -16,10 +17,11 @@ public class CmmErrorConfirmationGUI extends ConfirmationGui {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        setDialogSize(Minecraft.getMinecraft().fontRenderer.getStringWidth(translatedText) + 40, 130);
+
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.drawCenteredString(this.fontRendererObj, translatedText, this.width / 2, this.height/2 - 50,
-                color);
+        this.drawCenteredString(this.fontRendererObj, translatedText, this.width / 2, this.height/2 - 50, color);
     }
 
     @Override
