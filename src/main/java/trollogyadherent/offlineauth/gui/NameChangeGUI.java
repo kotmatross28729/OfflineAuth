@@ -1,5 +1,7 @@
 package trollogyadherent.offlineauth.gui;
 
+import net.minecraft.client.resources.I18n;
+
 import java.awt.*;
 
 public class NameChangeGUI extends DialogGui{
@@ -12,9 +14,9 @@ public class NameChangeGUI extends DialogGui{
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.drawCenteredString(this.fontRendererObj, "Do you really want to change your displayname?", this.width / 2, this.height/2 - 50,
+        this.drawCenteredString(this.fontRendererObj, I18n.format("offlineauth.dialog.displayname_change"), this.width / 2, this.height/2 - 50,
                 Color.WHITE.getRGB());
-        this.drawCenteredString(this.fontRendererObj, "You will lose your inventory and achievements.", this.width / 2, this.height/2 - 30,
+        this.drawCenteredString(this.fontRendererObj, I18n.format("offlineauth.dialog.displayname_change_2"), this.width / 2, this.height/2 - 30,
                 Color.WHITE.getRGB());
 
     }

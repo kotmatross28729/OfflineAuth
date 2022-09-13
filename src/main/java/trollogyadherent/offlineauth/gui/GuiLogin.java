@@ -60,6 +60,8 @@ public class GuiLogin extends GuiScreen {
 
     public String message = "";
 
+    private Object[] textFieldTabArray = new Object[6];
+
     public GuiLogin(GuiScreen prev) {
         this.mc = Minecraft.getMinecraft();
         this.fontRendererObj = mc.fontRenderer;
@@ -254,6 +256,25 @@ public class GuiLogin extends GuiScreen {
                 this.useKey.setIsChecked(oasd.isUsingKey());
             //}
         }
+
+        textFieldTabArray = new Object[]{identifier, pw, newPW, displayname, port, token};
+    }
+
+    boolean isAnyTextFieldFocused() {
+        for (int i = 0; i < textFieldTabArray.length; i ++) {
+            if (textFieldTabArray[i] instanceof GuiTextField) {
+                GuiTextField textField = (GuiTextField) textFieldTabArray[i];
+                if (textField.isFocused()) {
+                    return true;
+                }
+            } else {
+                GuiPasswordField pwField = (GuiPasswordField) textFieldTabArray[i];
+                if (pwField.isFocused()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -272,21 +293,53 @@ public class GuiLogin extends GuiScreen {
         this.newPW.textboxKeyTyped(c, k);
         this.port.textboxKeyTyped(c, k);
 
-        /* TODO: Handle tab properly (cycling through buttons would be great too) */
+        /* Cycling focus through all text fields with the tab key. */
         if (k == Keyboard.KEY_TAB) {
-            this.identifier.setFocused(!this.identifier.isFocused());
-            this.pw.setFocused(!this.pw.isFocused());
-            this.token.setFocused(!this.token.isFocused());
+            if (!isAnyTextFieldFocused()) {
+                identifier.setFocused(true);
+            } else {
 
-        /* TODO: Handle enter properly */
-        } else if (k == Keyboard.KEY_RETURN) {
+                boolean previousWasFocused = false;
+
+                for (int i = 0; i < textFieldTabArray.length; i++) {
+                    if (textFieldTabArray[i] instanceof GuiTextField) {
+                        GuiTextField textField = (GuiTextField) textFieldTabArray[i];
+                        if (textField.isFocused()) {
+                            textField.setFocused(false);
+                            if (i == textFieldTabArray.length - 1) {
+                                identifier.setFocused(true);
+                                continue;
+                            }
+                            previousWasFocused = true;
+                        } else if (previousWasFocused && textField.isEnabled) {
+                            textField.setFocused(true);
+                            previousWasFocused = false;
+                        }
+                    } else {
+                        GuiPasswordField pwField = (GuiPasswordField) textFieldTabArray[i];
+                        if (pwField.isFocused()) {
+                            pwField.setFocused(false);
+                            if (i == textFieldTabArray.length - 1) {
+                                identifier.setFocused(true);
+                                continue;
+                            }
+                            previousWasFocused = true;
+                        } else if (previousWasFocused && pwField.isEnabled) {
+                            pwField.setFocused(true);
+                            previousWasFocused = false;
+                        }
+                    }
+                }
+            }
+
+        } /*else if (k == Keyboard.KEY_RETURN) {
             if (this.identifier.isFocused()) {
                 this.identifier.setFocused(false);
                 this.pw.setFocused(true);
             } else if (this.pw.isFocused()) {
                 this.actionPerformed(this.login);
             }
-        }
+        } */
     }
 
     @Override

@@ -694,6 +694,7 @@ task updateBuildScript {
     }
 }
 
+/*
 if (!skipBuildScriptUpdateCheck.toBoolean() && isNewBuildScriptVersionAvailable(projectDir.toString())) {
     if (autoUpdateBuildScript.toBoolean()) {
         performBuildScriptUpdate(projectDir.toString())
@@ -701,6 +702,7 @@ if (!skipBuildScriptUpdateCheck.toBoolean() && isNewBuildScriptVersionAvailable(
         out.style(Style.SuccessHeader).println("Build script update available! Run 'gradle updateBuildScript'")
     }
 }
+ */
 
 static URL availableBuildScriptUrl() {
     new URL("https://raw.githubusercontent.com/FalsePattern/ExampleMod1.7.10/main/build.gradle")

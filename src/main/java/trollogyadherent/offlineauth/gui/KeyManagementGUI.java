@@ -127,6 +127,16 @@ public class KeyManagementGUI extends GuiScreen {
             return;
         }
 
+        if (k == Keyboard.KEY_TAB) {
+            if (publicKeyPath.isFocused()) {
+                publicKeyPath.setFocused(false);
+                privateKeyPath.setFocused(true);
+            } else  {
+                publicKeyPath.setFocused(true);
+                privateKeyPath.setFocused(false);
+            }
+        }
+
         this.privateKeyPath.textboxKeyTyped(c, k);
         this.publicKeyPath.textboxKeyTyped(c, k);
     }

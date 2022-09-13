@@ -1,5 +1,5 @@
 # OfflineAuth 1.7.10 (Forge)
-Beta Minecraft authentication system contained in a Forge mod. (Please note the EARLY ALPHA) Please report any bugs, especially security holes.
+Beta Minecraft authentication system contained in a Forge mod. (Please note the beta) Please report any bugs, especially security holes.
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
@@ -10,12 +10,12 @@ Beta Minecraft authentication system contained in a Forge mod. (Please note the 
 Microsoft forcing people to migrate from Mojang to Microsoft. Oh, and now chat reports.
 
 ### Tell me more
-This mod runs a small rest server (spark) alongside the main Minecraft process. This keeps everything contained to the server which could even run on a local network, independent of any external auth servers.
+This mod runs a small rest server (spark) alongside the main Minecraft process. This keeps everything contained on the server which could even run on a local network, independent of any external auth servers.
 
 ### Getting started
 If you are a server operator:
-* Drop mod jar into mods folder. Let it generate a config.
-* Your hosting solution needs to provide you with the option to open additional ports. Pick a port and set it in the config (default: 4567). Minecraft and the rest server can not both listen on the same port.
+* Drop the mod jar into mods folder. Let it generate a config.
+* Your hosting solution needs to provide you with the option to open additional ports. Pick a port and set it in the config (default: `4567`). Minecraft and the rest server can not both listen on the same port.
 * Tell your players about the port they need to input in order to be able to register accounts.
 * Use the `/fingerprint` command to get a fingerprint of the server public key. Tell players about it too.
 
@@ -60,11 +60,15 @@ If you are a player:
 ### Contact
 * [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken, or you have a suggestion.
 * Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `#minecraft-modding-general:matrix.org`.
+* Website: [mcdrama.net](https://www.mcdrama.net/articles/mods.html)
 
 ### License
-LGPLv3+SNEED
+`LGPLv3+SNEED`
 
 ### Feel free to help translate the mod, open PR's or send lang files directly to me
 
 ### Coming soon (with Et Futurum update):
 ![elytra_capes](https://user-images.githubusercontent.com/19153947/181366604-53025903-521f-498c-a2ee-f61b596e15f4.gif)
+
+## Buy me a coffee
+[ko-fi.com/jackisasubtlejoke](https://ko-fi.com/jackisasubtlejoke)

@@ -12,7 +12,7 @@ import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinNameFromServerPacket.SimpleMessage, IMessage>
 {
     /* Client to Server: what is the skin filename for this uuid? */
-    /* Server to Client: the filename is X. in case there is none, it returns "0". this would be the place probably to have custom default server skin TODO */
+    /* Server to Client: the filename is X. in case there is none, it returns "0". */
     @Override
     public IMessage onMessage(SimpleMessage message, MessageContext ctx)
     {

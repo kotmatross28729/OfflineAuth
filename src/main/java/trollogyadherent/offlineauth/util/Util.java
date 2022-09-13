@@ -194,7 +194,7 @@ public class Util {
         outputStream.write( a );
         outputStream.write( b );
 
-        return outputStream.toByteArray( );
+        return outputStream.toByteArray();
     }
 
     public static byte[] intToByteArray(int i) {

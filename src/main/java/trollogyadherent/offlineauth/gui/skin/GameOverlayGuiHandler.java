@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/* Class responsible for drawing player faces in the tab menu */
 public class GameOverlayGuiHandler extends GuiIngame{
 
     FontRenderer fontRenderer;

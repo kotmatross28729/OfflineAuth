@@ -6,8 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.gui.CmmErrorConfirmationGUI;
+import trollogyadherent.offlineauth.gui.ConfirmKeyOverwriteGUI;
+import trollogyadherent.offlineauth.gui.KeyManagementGUI;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.util.Util;
+
+import java.awt.*;
 
 @Optional.Interface(iface = "lumien.custommainmenu.lib.actions.IAction", modid = "CustomMainMenu", striprefs = true)
 public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IAction {
@@ -18,10 +23,12 @@ public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IActi
         OAServerData oasd = Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort));
         if (oasd == null) {
             OfflineAuth.error("Failed to get Custom Main Menu server data!");
+            Minecraft.getMinecraft().displayGuiScreen(new CmmErrorConfirmationGUI(Minecraft.getMinecraft().currentScreen, "offlineauth.confirm_text.cmm_no_data", "offlineauth.confirm.ok", Color.RED.getRGB()));
             return;
         }
         if (oasd.getDisplayName().length() == 0) {
             OfflineAuth.error("Displayname cannot be empty!");
+            Minecraft.getMinecraft().displayGuiScreen(new CmmErrorConfirmationGUI(Minecraft.getMinecraft().currentScreen, "offlineauth.confirm_text.displayname_empty", "offlineauth.confirm.ok", Color.RED.getRGB()));
             return;
         }
 
@@ -34,6 +41,7 @@ public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IActi
             Util.offlineMode(oasd.getDisplayName());
         } catch (IllegalAccessException ex) {
             OfflineAuth.error("Failed to get server data");
+            Minecraft.getMinecraft().displayGuiScreen(new CmmErrorConfirmationGUI(Minecraft.getMinecraft().currentScreen, "offlineauth.confirm_text.no_server_data", "offlineauth.confirm.ok", Color.RED.getRGB()));
             ex.printStackTrace();
             return;
         }

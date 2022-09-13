@@ -5,10 +5,10 @@
       "description": "A Minecraft authentication system contained in a Forge mod.",
       "version": "${modVersion}",
       "mcversion": "${minecraftVersion}",
-      "url": "https://github.com/trollogyadherent/OfflineAuth",
+      "url": "https://www.mcdrama.net/articles/mods.html",
       "updateUrl": "",
       "authorList": ["trollogyadherent"],
-      "credits": "TechnicianLP, SinTh0r4s, bspkrs, Gregorius Techneticies",
+      "credits": "TechnicianLP, SinTh0r4s, bspkrs, Gregorius Techneticies, FalsePattern",
       "logoFile": "assets/${modId}/logo.png",
       "screenshots": [],
       "dependencies": []
