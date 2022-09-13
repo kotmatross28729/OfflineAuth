@@ -71,4 +71,5 @@ If you are a player:
 ![elytra_capes](https://user-images.githubusercontent.com/19153947/181366604-53025903-521f-498c-a2ee-f61b596e15f4.gif)
 
 ## Buy me a coffee
-[ko-fi.com/jackisasubtlejoke](https://ko-fi.com/jackisasubtlejoke)
+* [ko-fi.com/jackisasubtlejoke](https://ko-fi.com/jackisasubtlejoke)
+* Monero: `86aNAyad1scfNpiZ9DM7rMPsM3gbQHBhqPefbgfPunyBiGAaaTH3SvWB66HRjRMNJj9Yu7tHizYej3E7V7BEVkmNMWpWC5f`
