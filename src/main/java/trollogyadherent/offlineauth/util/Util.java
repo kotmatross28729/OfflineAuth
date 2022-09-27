@@ -499,4 +499,30 @@ public class Util {
             return ip.substring(0, 2) + "X.XXX.XXX.XX" + ip.substring(ip.length() - 1);
         }
     }
+
+    /* Reads any file to string */
+    public static String readFile (File file) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+    }
+
+    /* Writes any string to file */
+    public static boolean writeFile (File file, String text) {
+        try {
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    return false;
+                }
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(text);
+            bw.close();
+
+            return true;
+        } catch (IOException e) {
+            OfflineAuth.error(e.getMessage());
+            return false;
+            //e.printStackTrace();
+        }
+    }
 }

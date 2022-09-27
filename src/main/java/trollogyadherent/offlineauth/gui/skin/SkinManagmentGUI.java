@@ -298,6 +298,10 @@ public class SkinManagmentGUI extends GuiScreen {
                             }
                         }
                         status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_skin_set");
+                        if (this.availableSkinsListGUI.selectedIndex == -1) {
+                            OfflineAuth.error("Could not get skin name to save as last used!");
+                            return;
+                        }
                         ClientSkinUtil.setLastUsedOfflineSkinName(((SkinListEntry) this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName);
                         //this.mc.displayGuiScreen(this.previous);
                     } else {
@@ -312,6 +316,10 @@ public class SkinManagmentGUI extends GuiScreen {
                             }
                         }
                         status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_cape_set");
+                        if (this.availableSkinsListGUI.selectedIndex == -1) {
+                            OfflineAuth.error("Could not get cape name to save as last used!");
+                            return;
+                        }
                         ClientSkinUtil.setLastUsedOfflineCapeName(((CapeListEntry) this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex)).capeName);
                     }
                 } else {

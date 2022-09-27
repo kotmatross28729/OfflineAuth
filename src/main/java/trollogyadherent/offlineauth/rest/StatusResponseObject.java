@@ -21,7 +21,7 @@ public class StatusResponseObject {
         } else if (status != null) {
             return status.toString();
         } else {
-            return null;
+            return "Error: status is null";
         }
     }
 
