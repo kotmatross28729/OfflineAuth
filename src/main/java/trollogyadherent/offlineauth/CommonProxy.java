@@ -29,6 +29,15 @@ public class CommonProxy {
             OfflineAuth.varInstanceServer = new VarInstanceServer();
         }
 
+        /* Initialize database */
+        if (Util.isServer()) {
+            if(!Database.initialize()) {
+                OfflineAuth.varInstanceServer = null;
+                OfflineAuth.info("Databse not initialized, returning from preinit...");
+                return;
+            }
+        }
+
         /* Config */
         OfflineAuth.confFile = event.getSuggestedConfigurationFile();
         if (Util.isServer()) {
@@ -49,11 +58,6 @@ public class CommonProxy {
         /* Start Spark server */
         if (Util.isServer()) {
             Rest.restStart();
-        }
-
-        /* Initialize database */
-        if (Util.isServer()) {
-            Database.initialize();
         }
 
         /* If there are no default skins in the default skin directory, unpacks its own skins */
@@ -133,7 +137,7 @@ public class CommonProxy {
     }
 
     public void serverStopping(FMLServerStoppingEvent event) {
-
+        Database.close();
     }
 
     public void serverStopped(FMLServerStoppedEvent event) {

@@ -19,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
@@ -28,22 +27,28 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 /* A lot was taken from https://github.com/samolego/SimpleAuth/blob/architectury/common/src/main/java/org/samo_lego/simpleauth/storage/database/LevelDB.java */
 public class Database {
 
-    public static void initialize() {
+    public static boolean initialize() {
+        OfflineAuth.debug("Opening database instance");
         Options options = new Options();
         try {
-            OfflineAuth.varInstanceServer.levelDBStore = factory.open(new File( OfflineAuth.varInstanceServer.DB_NAME), options);
+            OfflineAuth.varInstanceServer.levelDBStore = factory.open(new File(OfflineAuth.varInstanceServer.DB_NAME), options);
+            return true;
         } catch (IOException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to open database!");
+            e.printStackTrace();
         }
+        return false;
     }
 
     public static boolean close() {
+        OfflineAuth.debug("Closing database instance");
         if (OfflineAuth.varInstanceServer.levelDBStore != null) {
             try {
                 OfflineAuth.varInstanceServer.levelDBStore.close();
                 return true;
             } catch (Error | IOException e) {
-                OfflineAuth.error(e.getMessage());
+                OfflineAuth.error("Failed to close database!");
+                e.printStackTrace();
             }
         }
         return false;
@@ -114,7 +119,7 @@ public class Database {
             salt = Util.genSalt();
             passwordHash = Util.getPasswordHash(password, salt);
         }
-        String skin = "none";
+        /* String skin = "none"; */
 
         if (uuid.equals("")) {
             uuid = Util.genUUID();
@@ -144,7 +149,8 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to delete player " + identifier);
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.error_deleting", 500);
             //e.printStackTrace();
         }
@@ -175,7 +181,8 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to change player password (" + identifier + ")");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_update_pw", 500);
             //e.printStackTrace();
         }
@@ -211,7 +218,8 @@ public class Database {
 
                     return new StatusResponseObject("offlineauth.db.success_change_displayname", 200);
                 } catch (Error e) {
-                    OfflineAuth.error("Change displayname error: " + e.getMessage());
+                    OfflineAuth.error("Change displayname error: (1)");
+                    e.printStackTrace();
                     return new StatusResponseObject("offlineauth.db.fail_change_displayname", 500);
                 }
 
@@ -220,7 +228,8 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Change displayname error: (2)");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_change_displayname", 500);
             //e.printStackTrace();
         }
@@ -251,13 +260,14 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Uuid set error:");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_set_uuid", 500);
         }
     }
 
     public static StatusResponseObject changePlayerSkin(String identifier, String password, byte[] skinBytes, boolean force) {
-        if (force && identifier == null || (password == null && !force) || (password.equals("") && !force) || skinBytes == null || skinBytes.length == 1) {
+        if (force && identifier == null || (password == null && !force) || (password != null && password.equals("") && !force) || skinBytes == null || skinBytes.length == 1) {
             return new StatusResponseObject("offlineauth.db.identifier_pw_skin_null", 500);
         }
 
@@ -273,14 +283,14 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to change player skin");
             e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_upload_skin", 500);
         }
     }
 
     public static StatusResponseObject changePlayerCape(String identifier, String password, byte[] capeBytes, boolean force) {
-        if (force && identifier == null || (password == null && !force) || (password.equals("") && !force) || capeBytes == null || capeBytes.length == 1) {
+        if (force && identifier == null || (password == null && !force) || (password != null && password.equals("") && !force) || capeBytes == null || capeBytes.length == 1) {
             return new StatusResponseObject("offlineauth.db.identifier_pw_skin_null", 500);
         }
 
@@ -296,7 +306,7 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to change player cape");
             e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_upload_cape", 500);
         }
@@ -319,7 +329,8 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to delete player skin (" + identifier + ")");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_delete_skin", 500);
             //e.printStackTrace();
         }
@@ -342,7 +353,8 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.identifier_pw_invalid", 500);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to delete player cape (" + identifier + ")");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_delete_cape", 500);
             //e.printStackTrace();
         }
@@ -360,7 +372,8 @@ public class Database {
             }
             return new StatusResponseObject("offlineauth.db.success_delete_user", 200);
         } catch (Error e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to delete player data (" + identifier + ")");
+            e.printStackTrace();
             return new StatusResponseObject("offlineauth.db.fail_delete_user", 500);
         }
     }
@@ -383,7 +396,8 @@ public class Database {
             OfflineAuth.varInstanceServer.levelDBStore.put(bytes("restpassword"), bytes("data:" + data));
             return new StatusResponseObject("Successfully changed rest password!", 200);
         } catch (Error e) {
-            OfflineAuth.error("Rest password set error: " + e.getMessage());
+            OfflineAuth.error("Rest password set error:");
+            e.printStackTrace();
             return new StatusResponseObject("Error while changing rest password!", 500);
         }
     }
@@ -393,7 +407,8 @@ public class Database {
             OfflineAuth.varInstanceServer.levelDBStore.delete(bytes("restpassword"));
             return new StatusResponseObject("Successfully deleted rest password!", 200);
         } catch (Error e) {
-            OfflineAuth.error("Rest password delete error: " + e.getMessage());
+            OfflineAuth.error("Rest password delete error:");
+            e.printStackTrace();
             return new StatusResponseObject("Error while deleting rest password!", 500);
         }
     }
@@ -423,7 +438,7 @@ public class Database {
         String sep = ",";
         String lenSep = ":";
         try {
-            if(isUserRegisteredByIdentifier(identifier)){  // Gets data from db and removes "data:" prefix from it
+            if (isUserRegisteredByIdentifier(identifier)) {  // Gets data from db and removes "data:" prefix from it
                 // entry structure: 4 bytes telling how much data there is, the general data (entry1,entry2,entry3) in base64, and the skin image in bytes
                 byte[] allBytes = OfflineAuth.varInstanceServer.levelDBStore.get(bytes("ID:" + identifier));
                 int dataLen = Util.fourFirstBytesToInt(allBytes);
@@ -451,9 +466,12 @@ public class Database {
                 }
 
                 return new DBPlayerData(dataSplit[0], dataSplit[1], dataSplit[2], dataSplit[3], dataSplit[4], dataSplit[5], skinBytes, capeBytes);
+            } else {
+                OfflineAuth.debug("(getPlayerDataByIdentifier) isUserRegisteredByIdentifier(" + identifier + ") returned false");
             }
         } catch (Error e) {
-            OfflineAuth.error("Error getting data: " + e.getMessage());
+            OfflineAuth.error("Error getting data:");
+            e.printStackTrace();
         }
         return null;
     }
@@ -461,6 +479,10 @@ public class Database {
     public static DBPlayerData getPlayerDataByDisplayName(String displayname) {
         for (String ident : getRegisteredIdentifiers()) {
             DBPlayerData dbpd = getPlayerDataByIdentifier(ident);
+            if (dbpd == null) {
+                OfflineAuth.error("(getPlayerDataByDisplayName) got null player data for ident " + ident + ", displayname " + displayname);
+                return null;
+            }
             if (dbpd.displayname.equals(displayname)) {
                 return dbpd;
             }
@@ -530,7 +552,15 @@ public class Database {
         }
 
         DBPlayerData player = getPlayerDataByIdentifier(identifier);
+        if (player == null) {
+            OfflineAuth.error("(playerValidIgnoreDisplayName) player is null, returning false!");
+            return false;
+        }
         String passwordHash = Util.getPasswordHash(password, player.salt);
+        if (passwordHash == null) {
+            OfflineAuth.error("(playerValidIgnoreDisplayName) passwordHash is null, returning false!");
+            return false;
+        }
         return passwordHash.equals(player.passwordHash);
     }
 
@@ -548,6 +578,10 @@ public class Database {
         String storedPasswordHash = splitData[0];
         String salt = splitData[1];
         String passwordHash = Util.getPasswordHash(password, salt);
+        if (passwordHash == null) {
+            OfflineAuth.error("(restPasswordValid) passwordHash is null, returning false!");
+            return false;
+        }
         return passwordHash.equals(storedPasswordHash);
     }
 
@@ -555,7 +589,8 @@ public class Database {
         try {
             return OfflineAuth.varInstanceServer.levelDBStore.get(bytes("ID:" + identifier)) != null;
         } catch (DBException e) {
-            OfflineAuth.error(e.getMessage());
+            OfflineAuth.error("Failed to get player data from db (" + identifier + ")");
+            e.printStackTrace();
         }
         return false;
     }
@@ -641,6 +676,11 @@ public class Database {
             String key = new String(dbIterator.peekNext().getKey());
             if (key.startsWith("ID")) {
                 DBPlayerData dbpd = getPlayerDataByIdentifier(key.substring(3));
+                if (dbpd == null) {
+                    OfflineAuth.error("(getRegisteredIdentifiers) Error while reading database entry for key:");
+                    OfflineAuth.error(key);
+                    continue;
+                }
                 res.add(dbpd.identifier);
             }
         }

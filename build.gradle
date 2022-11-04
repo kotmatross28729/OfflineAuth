@@ -429,7 +429,7 @@ runClient {
 }
 
 runServer {
-    def arguments = []
+    def arguments = ["nogui"]
     def jvmArguments = []
 
     if (usesMixins.toBoolean()) {

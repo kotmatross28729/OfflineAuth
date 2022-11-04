@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -55,7 +56,23 @@ public class CommandPlayerExistsServer implements ICommand {
             return;
         }
         if (Database.isUserRegisteredByIdentifier(argString[0])) {
-            sender.addChatMessage(new ChatComponentText("User registered"));
+            sender.addChatMessage(new ChatComponentText("User registered (" + argString[0] + " is the identifier)"));
+            if (OfflineAuth.DEBUG_MODE) {
+                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(argString[0]);
+                if (dbpd == null) {
+                    OfflineAuth.debug("CommandPlayerExistsServer: dbpd null (1)!");
+                }
+                OfflineAuth.debug(dbpd.toString());
+            }
+        } else if (Database.isUserRegisteredByDisplayname(argString[0])) {
+            sender.addChatMessage(new ChatComponentText("User registered (" + argString[0] + " is the displayname)"));
+            if (OfflineAuth.DEBUG_MODE) {
+                DBPlayerData dbpd = Database.getPlayerDataByDisplayName(argString[0]);
+                if (dbpd == null) {
+                    OfflineAuth.debug("CommandPlayerExistsServer: dbpd null (2)!");
+                }
+                OfflineAuth.debug(dbpd.toString());
+            }
         } else {
             sender.addChatMessage(new ChatComponentText("User not registered"));
         }

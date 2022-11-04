@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.packet.packets;
 
-import com.google.common.base.Charsets;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -201,7 +200,7 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
             {
                 try {
                     String stringData = this.exchangeCode + c + this.skinName + c + this.displayName + c + this.skinHash;
-                    byte[] byteData = stringData.getBytes(Charsets.UTF_8);
+                    byte[] byteData = stringData.getBytes(StandardCharsets.UTF_8);
                     int byteDataLen = byteData.length;
                     byte[] byteDataLenBytes = Util.fillByteArrayLeading(BigInteger.valueOf(byteDataLen).toByteArray(), 4);
 

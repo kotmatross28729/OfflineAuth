@@ -47,4 +47,9 @@ public class DBPlayerData {
     public String getPublicKey() {
         return publicKey;
     }
+
+    @Override
+    public String toString() {
+        return "Data ~ Identifier: " + this.identifier + " ~ Displayname: " + this.displayname;
+    }
 }
