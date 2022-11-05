@@ -137,7 +137,9 @@ public class CommonProxy {
     }
 
     public void serverStopping(FMLServerStoppingEvent event) {
-        Database.close();
+        if (Util.isServer()) {
+            Database.close();
+        }
     }
 
     public void serverStopped(FMLServerStoppedEvent event) {

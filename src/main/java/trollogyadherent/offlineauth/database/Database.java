@@ -42,6 +42,10 @@ public class Database {
 
     public static boolean close() {
         OfflineAuth.debug("Closing database instance");
+        if (!Util.isServer()) {
+            OfflineAuth.error("Error, tried to close database in singleplayer!");
+            return false;
+        }
         if (OfflineAuth.varInstanceServer.levelDBStore != null) {
             try {
                 OfflineAuth.varInstanceServer.levelDBStore.close();
