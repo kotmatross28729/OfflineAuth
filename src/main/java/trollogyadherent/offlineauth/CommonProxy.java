@@ -29,15 +29,6 @@ public class CommonProxy {
             OfflineAuth.varInstanceServer = new VarInstanceServer();
         }
 
-        /* Initialize database */
-        if (Util.isServer()) {
-            if(!Database.initialize()) {
-                OfflineAuth.varInstanceServer = null;
-                OfflineAuth.info("Databse not initialized, returning from preinit...");
-                return;
-            }
-        }
-
         /* Config */
         OfflineAuth.confFile = event.getSuggestedConfigurationFile();
         if (Util.isServer()) {
@@ -47,6 +38,15 @@ public class CommonProxy {
         }
 
         OfflineAuth.warn("I am " + Tags.MODNAME + " at version " + Tags.VERSION + " and group name " + Tags.GROUPNAME);
+
+        /* Initialize database */
+        if (Util.isServer()) {
+            if(!Database.initialize()) {
+                OfflineAuth.varInstanceServer = null;
+                OfflineAuth.info("Databse not initialized, returning from preinit...");
+                return;
+            }
+        }
 
         FMLCommonHandler.instance().bus().register(this);
 
