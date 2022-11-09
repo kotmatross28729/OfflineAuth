@@ -1,11 +1,14 @@
 package trollogyadherent.offlineauth.command;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
@@ -55,6 +58,7 @@ public class CommandDeletePlayer implements ICommand {
         if (argString.length != 1) {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
         } else {
+            DBPlayerData dbPlayerData = Database.getPlayerDataByIdentifier(argString[0]);
             StatusResponseObject responseObject = Database.deleteUserData(argString[0]);
             if (responseObject.getStatusCode() == 200) {
                 sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.GREEN) + "Success"));
@@ -62,6 +66,15 @@ public class CommandDeletePlayer implements ICommand {
                 sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.RED) + "Command failed"));
             }
             OfflineAuth.info(sender.getCommandSenderName() + " issued deleteuser command for player " + argString[0] + " with status " + responseObject.getStatus());
+            if (responseObject.getStatusCode() == 200 && dbPlayerData != null) {
+
+                for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    if (((EntityPlayerMP) e).getDisplayName().equals(dbPlayerData.getDisplayname())) {
+                        ((EntityPlayerMP) e).playerNetServerHandler.kickPlayerFromServer(Config.accountDeletionKickMessage);
+                        break;
+                    }
+                }
+            }
         }
     }
 

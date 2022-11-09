@@ -37,7 +37,7 @@ public class CommonProxy {
             Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile(), false, true);
         }
 
-        OfflineAuth.warn("I am " + Tags.MODNAME + " at version " + Tags.VERSION + " and group name " + Tags.GROUPNAME);
+        OfflineAuth.info("Debug Mode: " + OfflineAuth.isDebugMode());
 
         /* Initialize database */
         if (Util.isServer()) {
@@ -128,6 +128,7 @@ public class CommonProxy {
             event.registerServerCommand(new CommandDeleteSkin());
             event.registerServerCommand(new CommandGetServerFingerprint());
             event.registerServerCommand(new CommandDeleteCape());
+            event.registerServerCommand(new CommandChangePlayerDisplayname());
         }
 
     }

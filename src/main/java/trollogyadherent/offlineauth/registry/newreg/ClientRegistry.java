@@ -2,6 +2,7 @@ package trollogyadherent.offlineauth.registry.newreg;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 
 import java.util.ArrayList;
@@ -58,9 +59,13 @@ public class ClientRegistry {
     }
 
     public void removeByDisplayName(String displayname) {
+        OfflineAuth.debug("(removeByDisplayName): displayname: " + displayname);
         Data data = getDataByDisplayName(displayname);
         if (data != null) {
+            OfflineAuth.debug("Data found, removing");
             this.playerEntities.remove(data);
+        } else {
+            OfflineAuth.debug("Data not found, not removing");
         }
     }
 

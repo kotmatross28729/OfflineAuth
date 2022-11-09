@@ -35,7 +35,10 @@ public class Request {
             if (pubKey == null) {
                 return new ResponseObject(false, false, false, "-", "", "", false, 500);
             }
-            Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port, pubKey));
+            if (!OfflineAuth.varInstanceClient.checkingForKey) {
+                OfflineAuth.varInstanceClient.checkingForKey = true;
+                Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port, pubKey));
+            }
             return new ResponseObject(false, false, false, "-", "", "", false, 500);
         }
 
@@ -76,6 +79,10 @@ public class Request {
 
     public static StatusResponseObject register(String ip, String port, String identifier, String displayname, String password, String uuid, String token, String clientPubKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
+            return new StatusResponseObject("Could not find server public key in cache", 500);
+        }
+        /*
+        if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
             if (pubKey == null) {
                 return new StatusResponseObject("Couldn't obtain server public key", 500);
@@ -83,6 +90,7 @@ public class Request {
             Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port, pubKey));
             return new StatusResponseObject("Please try again, if key fingerprint is correct", 500);
         }
+        */
 
         ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
         String baseUrl = "http://" + addr.getIP() + ":" + port + "/";

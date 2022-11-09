@@ -40,5 +40,18 @@ public class ServerKeyAddGUI extends DialogGui {
     protected void actionOnConfirm() throws IOException {
         ClientUtil.SaveServerPublicKeyToCache(pubKey, ip, port);
         OfflineAuth.varInstanceClient.selectedServerIndex = -1;
+        OfflineAuth.varInstanceClient.checkingForKey = false;
+        if (prev instanceof GuiLogin) {
+            OfflineAuth.varInstanceClient.prevWasKeyDialog = true;
+        }
+    }
+
+    @Override
+    protected void actionCancel() {
+        OfflineAuth.varInstanceClient.checkingForKey = false;
+        if (prev instanceof GuiLogin) {
+            OfflineAuth.varInstanceClient.prevWasKeyDialog = true;
+        }
+        super.actionCancel();
     }
 }

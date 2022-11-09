@@ -33,10 +33,10 @@ public class DownloadCapePacket implements IMessageHandler<DownloadCapePacket.Si
         {
             if (ctx.side.isServer() && message.exchangeCode == 0)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 0 (from client)");
-                //System.out.println(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of skin " + message.skinName);
+                OfflineAuth.debug("DownloadCapePacket onMessage triggered, code 0 (from client)");
+                OfflineAuth.debug(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of cape " + message.capeName);
                 if (message.capeName == null) {
-                    OfflineAuth.warn("DownloadCapePacket: got null skinName");
+                    OfflineAuth.warn("DownloadCapePacket: got null capeName");
                     return null;
                 }
                 if (ServerSkinUtil.capeCachedOnServer(message.capeName)) {
@@ -78,8 +78,8 @@ public class DownloadCapePacket implements IMessageHandler<DownloadCapePacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 1)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 1 (from server)");
-                //System.out.println("Received hash: " + message.skinHash);
+                OfflineAuth.debug("DownloadCapePacket onMessage triggered, code 1 (from server)");
+                OfflineAuth.debug("Received hash: " + message.capeHash);
 
                 if (message.capeHash.equals("-1")) {
                     OfflineAuth.warn("Cape " + message.capeName + " not found on server");
@@ -119,13 +119,13 @@ public class DownloadCapePacket implements IMessageHandler<DownloadCapePacket.Si
 
             if (ctx.side.isServer() && message.exchangeCode == 2)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 2 (from client)");
+                OfflineAuth.debug("DownloadSkinPacket onMessage triggered, code 2 (from client)");
                 OfflineAuth.info("Player " + ctx.getServerHandler().playerEntity.getDisplayName() + " requests the capebytes of " + message.capeName);
 
-                try {
-                    message.capeBytes = Util.fileToBytes(ServerSkinUtil.getCapeFile(message.capeName));
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                message.capeBytes = Util.fileToBytes(ServerSkinUtil.getCapeFile(message.capeName));
+                if (message.capeBytes == null) {
+                    OfflineAuth.error("Failed to load capeFile to bytes");
                     return null;
                 }
 
@@ -135,11 +135,12 @@ public class DownloadCapePacket implements IMessageHandler<DownloadCapePacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 3)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
+                OfflineAuth.debug("DownloadCapePacket onMessage triggered, code 3 (from server)");
                 try {
                     OfflineAuth.info("Writing received cape to file: " + message.capeName);
-                    if (message.capeBytes.length > Math.max(Config.maxCapeBytes, 50000)) {
-                        OfflineAuth.error("Error, server sent sussily much bytes, aborting");
+                    if (message.capeBytes.length > Config.maxCapeBytes) {
+                        OfflineAuth.error("Error, server sent sussily much bytes (more than configurated to accept), aborting");
+                        OfflineAuth.error("Amount of bytes received: " + message.capeBytes.length + ", config limit: " + Config.maxCapeBytes);
                         OfflineAuth.varInstanceClient.clientRegistry.setCapeObject(message.displayName, null);
                         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);
                         return null;

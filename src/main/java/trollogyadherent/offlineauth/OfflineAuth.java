@@ -48,7 +48,6 @@ public class OfflineAuth {
         LOG = event.getModLog();
         String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
         DEBUG_MODE = debugVar != null;
-        OfflineAuth.info("Debugmode: " + DEBUG_MODE);
         proxy.preInit(event);
     }
 
@@ -90,8 +89,15 @@ public class OfflineAuth {
         proxy.serverStopped(event);
     }
 
+    public static boolean isDebugMode() {
+        if (Config.config != null) {
+            return (Config.debugEnabled || DEBUG_MODE);
+        }
+        return (DEBUG_MODE);
+    }
+
     public static void debug(String message) {
-        if (DEBUG_MODE || Config.debugEnabled) {
+        if (isDebugMode()) {
             LOG.info("DEBUG: " + message);
         }
     }

@@ -103,8 +103,10 @@ public class ServerSkinUtil {
 
     @SuppressWarnings("CheckReturnValue")
     public static void removeSkinFromCache(String name) {
+        OfflineAuth.debug("(removeSkinFromCache): received " + name);
         File skin = new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png");
         if (skin.exists()) {
+            OfflineAuth.debug("(removeSkinFromCache): skin exists, deleting");
             skin.delete();
         }
     }

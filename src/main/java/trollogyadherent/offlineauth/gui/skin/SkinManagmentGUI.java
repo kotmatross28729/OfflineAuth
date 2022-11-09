@@ -332,11 +332,9 @@ public class SkinManagmentGUI extends GuiScreen {
                             return;
                         }
                         byte[] skinBytes;
-                        try {
-                            skinBytes = trollogyadherent.offlineauth.util.Util.fileToBytes(ClientSkinUtil.getSkinFile(skinName));
-                        } catch (IOException e) {
+                        skinBytes = trollogyadherent.offlineauth.util.Util.fileToBytes(ClientSkinUtil.getSkinFile(skinName));
+                        if(skinBytes == null) {
                             OfflineAuth.error("Failed to load skin to bytes: " + skinName);
-                            e.printStackTrace();
                             return;
                         }
                         OAServerData oasd = trollogyadherent.offlineauth.util.Util.getCurrentOAServerData();
@@ -394,11 +392,10 @@ public class SkinManagmentGUI extends GuiScreen {
                             return;
                         }
                         byte[] capeBytes;
-                        try {
-                            capeBytes = trollogyadherent.offlineauth.util.Util.fileToBytes(ClientSkinUtil.getCapeFile(capeName));
-                        } catch (IOException e) {
+
+                        capeBytes = trollogyadherent.offlineauth.util.Util.fileToBytes(ClientSkinUtil.getCapeFile(capeName));
+                        if (capeBytes == null) {
                             OfflineAuth.error("Failed to load cape to bytes: " + capeName);
-                            e.printStackTrace();
                             return;
                         }
 

@@ -57,6 +57,7 @@ public class Config {
         public static final String generalClient = "general_client";
         public static final String customMainMenuClient = "custommainmenu_client";
         public static final String generalServer = "general_server";
+        public static final String generalCommon = "general_common";
     }
 
     /* Applying defaults */
@@ -93,6 +94,11 @@ public class Config {
     public static int maxCapeBytes = Defaults.maxCapeBytes;
     public static boolean debugEnabled = Defaults.debugEnabled;
 
+    public static void synchronizeConfigurationCommon() {
+            Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
+            debugEnabled = debugEnabledProperty.getBoolean();
+    }
+
     /* Sync for when config has changed, client */
     public static void synchronizeConfigurationClient(File configFile, boolean force, boolean load) {
         if (!loaded || force) {
@@ -101,14 +107,16 @@ public class Config {
             }
             loaded = true;
 
+            synchronizeConfigurationCommon();
+
             Property saveButtonExitsProperty = config.get(Categories.generalClient, "saveButtonExits", Defaults.saveButtonExits, "Save button in server auth menu exits to the previous screen");
             savebuttonExit = saveButtonExitsProperty.getBoolean();
 
             Property facesInTabMenuProperty = config.get(Categories.generalClient, "facesInTabMenu", Defaults.facesInTabMenu, "Show player faces in tab menu (disable if causes incompatibility)");
             facesInTabMenu = facesInTabMenuProperty.getBoolean();
 
-            Property debugEnabledProperty = config.get(Categories.generalClient, "debugEnabled", Defaults.debugEnabled, "Show debug info");
-            debugEnabled = debugEnabledProperty.getBoolean();
+            //Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
+            //debugEnabled = debugEnabledProperty.getBoolean();
 
             Property manageAuthButtonIdProperty = config.get(Categories.generalClient, "manageAuthButtonId", Defaults.manageAuthButtonId, "Id of the Manage Auth button");
             manageAuthButtonId = manageAuthButtonIdProperty.getInt();
@@ -147,6 +155,8 @@ public class Config {
         if (!loaded || force) {
             config.load();
             loaded = true;
+
+            synchronizeConfigurationCommon();
 
             Property portProperty = config.get(Categories.generalServer, "port", Defaults.port, "Port on which the server will listen to authentication requests");
             port = portProperty.getInt();

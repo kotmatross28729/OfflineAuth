@@ -33,8 +33,8 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
         {
             if (ctx.side.isServer() && message.exchangeCode == 0)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 0 (from client)");
-                //System.out.println(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of skin " + message.skinName);
+                OfflineAuth.debug("DownloadSkinPacket onMessage triggered, code 0 (from client)");
+                OfflineAuth.debug(ctx.getServerHandler().playerEntity.getDisplayName() + " asks for hash of skin " + message.skinName);
                 if (message.skinName == null) {
                     OfflineAuth.warn("DownloadSkinPacket: got null skinName");
                     return null;
@@ -50,18 +50,19 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                     //DBPlayerData dbpd = Database.getPlayerDataByIdentifier(message.skinName);
                     DBPlayerData dbpd = Database.getPlayerDataByDisplayName(message.displayName);
                     if (dbpd == null) {
+                        OfflineAuth.debug("dbpd is null");
                         message.skinHash = "-1";
                         message.exchangeCode = 1;
                         return message;
                     }
                     byte[] skinBytes = dbpd.getSkinBytes();
                     if (skinBytes == null || skinBytes.length == 1) {
+                        OfflineAuth.debug("skinbytes null or len 1: " + Arrays.toString(skinBytes));
                         message.skinHash = "-1";
                     }
                     ServerSkinUtil.saveBytesToSkinCache(dbpd.getSkinBytes(), dbpd.getDisplayname());
-
-                        message.skinHash = Util.sha1Code(ServerSkinUtil.getSkinFile(message.skinName));
-                     if (message.skinHash == null) {
+                    message.skinHash = Util.sha1Code(ServerSkinUtil.getSkinFile(message.skinName));
+                    if (message.skinHash == null) {
                         message.skinHash = "-1";
                         OfflineAuth.error("Failed to get hash for skin " + message.skinName);
                     }
@@ -73,8 +74,8 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 1)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 1 (from server)");
-                //System.out.println("Received hash: " + message.skinHash);
+                OfflineAuth.debug("DownloadSkinPacket onMessage triggered, code 1 (from server)");
+                OfflineAuth.debug("Received hash: " + message.skinHash);
                 /*if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(message.displayName) == null) {
 
                 }*/
@@ -93,13 +94,15 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
                 String localSkinHash = "0";
                 if (ClientSkinUtil.skinPresentOnClient(message.skinName)) {
                     localSkinHash = Util.sha1Code(ClientSkinUtil.getSkinFile(message.skinName));
+                    OfflineAuth.debug("Skin present on client, hash: " + localSkinHash);
                 }
                 if (localSkinHash == null) {
+                    OfflineAuth.error("Skin hash null! Returning");
                     return null;
                 }
                 /* That means we have cached the skin, and it's the same file */
                 if (localSkinHash.equals(message.skinHash)) {
-                    OfflineAuth.info("Skin " + message.skinName + " already cached, not downloading");
+                    OfflineAuth.info("Skin " + message.skinName + " already cached, not downloading (hashes match)");
                     ResourceLocation skinResourceLocation = ClientSkinUtil.loadSkinFromCache(message.skinName);
                     OfflineAuth.varInstanceClient.clientRegistry.setResourceLocation(message.displayName, skinResourceLocation);
                     OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);
@@ -116,13 +119,13 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isServer() && message.exchangeCode == 2)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 2 (from client)");
+                OfflineAuth.debug("DownloadSkinPacket onMessage triggered, code 2 (from client)");
                 OfflineAuth.info("Player " + ctx.getServerHandler().playerEntity.getDisplayName() + " requests the skinbytes of " + message.skinName);
 
-                try {
-                    message.skinBytes = Util.fileToBytes(ServerSkinUtil.getSkinFile(message.skinName));
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                message.skinBytes = Util.fileToBytes(ServerSkinUtil.getSkinFile(message.skinName));
+                if (message.skinBytes == null) {
+                    OfflineAuth.error("Failed to load skin bytes, returning");
                     return null;
                 }
 
@@ -132,11 +135,12 @@ public class DownloadSkinPacket implements IMessageHandler<DownloadSkinPacket.Si
 
             if (ctx.side.isClient() && message.exchangeCode == 3)
             {
-                //System.out.println("DownloadSkinPacket onMessage triggered, code 3 (from server)");
+                OfflineAuth.debug("DownloadSkinPacket onMessage triggered, code 3 (from server)");
                 try {
                     OfflineAuth.info("Writing received skin to file: " + message.skinName);
-                    if (message.skinBytes.length > Math.max(Config.maxSkinBytes, 50000)) {
-                        OfflineAuth.error("Error, server sent sussily much bytes, aborting");
+                    if (message.skinBytes.length > Config.maxSkinBytes) {
+                        OfflineAuth.error("Error, server sent sussily much bytes (more than configurated to accept), aborting");
+                        OfflineAuth.error("Amounts of bytes received: " + message.skinBytes.length + ", config limit: " + Config.maxSkinBytes);
                         OfflineAuth.varInstanceClient.clientRegistry.setResourceLocation(message.displayName, null);
                         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);
                         return null;

@@ -28,6 +28,8 @@ public class VarInstanceClient {
     //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
     public ClientRegistry clientRegistry = new ClientRegistry();
     public Thread serverStatusVibecheckThread = null;
+    public boolean checkingForKey = false;
+    public boolean prevWasKeyDialog = false;
 
     public String serverDataJSONpath = new File(OfflineAuth.rootPath, "serverdata.json").getPath();
     public String clientSkinsPath = new File(OfflineAuth.rootPath, "ClientSkins").getPath();

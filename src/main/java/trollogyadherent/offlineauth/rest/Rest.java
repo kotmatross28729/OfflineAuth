@@ -497,6 +497,7 @@ public class Rest {
 
         UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
         if (rbo == null) {
+            OfflineAuth.debug("(skin upload) rbo is null!");
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.change_skin_error", 500));
         }
@@ -513,23 +514,28 @@ public class Rest {
 
         /* The verification token MUST be consumed, that's why these two simple checks are not at the top of the function */
         if (!Config.allowSkinUpload) {
+            OfflineAuth.debug("skin upload is disabled, returning");
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.skin_upload_disabled", 500));
         }
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
+            OfflineAuth.debug("skin too large, returning (maxSkinBytes: " + Config.maxSkinBytes + ")");
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.skin_too_large", 500));
         }
 
         /* Checking if the bytes are a legit png */
         try {
             if (!Util.pngIsSane(skinBytes)) {
+                OfflineAuth.debug("skin image not sane, returning");
                 return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
             }
             BufferedImage test = ImageIO.read(new ByteArrayInputStream(skinBytes));
             if (test == null) {
+                OfflineAuth.debug("skin test BufferedImage is null, returning");
                 return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
             }
         } catch (IOException e) {
+            OfflineAuth.debug("skin IOException, returning");
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.invalid_skin_file", 500));
         }
 
@@ -542,25 +548,32 @@ public class Rest {
             }
 
             if (changeResult.getStatusCode() == 200) {
+                OfflineAuth.debug("Successfully added skin to database for identifier " + identifier);
                 /* Checking if player is ingame and if yes, deleting some caches */
                 DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
-                if (dbpd != null) {
-                    String displayname = dbpd.getDisplayname();
-                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
-                            OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
-                            ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
+                if (dbpd == null) {
+                    OfflineAuth.error("Identifier " + identifier + " not found in Database!!!");
+                    return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.change_skin_error", 500));
+                }
+                String displayname = dbpd.getDisplayname();
+                for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                        OfflineAuth.debug("Ident " + identifier + ", displayname " + displayname + " is ingame, setting skin in player registry");
+                        OfflineAuth.debug("Playerreg before operation: " + OfflineAuth.varInstanceServer.playerRegistry);
+                        OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
+                        OfflineAuth.debug("Playerreg after operation: " + OfflineAuth.varInstanceServer.playerRegistry);
+                        ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
 
-                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                                IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
-                            }
-                            break;
+                        for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                            OfflineAuth.debug("Sending skin invalidation packet to player " + displayname);
+                            IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
+                            PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
                         }
+                        break;
                     }
                 }
             }
-
+            OfflineAuth.debug("Sending changeResult " + changeResult.getStatus() + ", code: " + changeResult.getStatusCode());
             return JsonUtil.objectToJson(changeResult);
         } catch (Exception e) {
             e.printStackTrace();

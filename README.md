@@ -20,8 +20,8 @@ If you are a server operator:
 * Use the `/fingerprint` command to get a fingerprint of the server public key. Tell players about it too.
 
 If you are a player:
-* Drop mod jar into mods folder.
-* Add server in multiplayer menu. Go to the "Manage auth" menu.
+* Drop the mod jar into your `mods` folder.
+* Add server in the multiplayer menu. Go to the `Manage auth` menu.
 * Change the auth port if needed, and register an account. Afterwards you should be able to join the server. If you are registering an account for the first time, you will have to confirm the public key fingerprint, and retry.
 
 ### Features
@@ -39,7 +39,7 @@ If you are a player:
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
 * `/deleteplayer <identifier> (alias: delplayer)` - Delete a player account
 * `/listusers (alias: luser)` - List registered users
-* `/playerexists <identifier>` - Check if a given identifier is already registered
+* `/playerexists <identifier/displayname>` - Display `username` and `displayname` of a user, if registered
 * `/gentoken` - Generates a one time use account creation token
 * `/fingerprint` - Displays the fingerprint of the public key of the server (if users know it in advance, this can tell them if someone is performing a man in the middle attack on them)
 * `/deleteskin <identifier> (alias: delskin)` - Deletes the skin of a user
@@ -59,8 +59,8 @@ If you are a player:
 
 ### Contact
 * [This project GitHub repo](https://github.com/trollogyadherent/OfflineAuth), create an issue if something is broken, or you have a suggestion.
-* Matrix rooms `#boysgregified:matrix.thisisjoes.site` and `#minecraft-modding-general:matrix.org`.
-* Website: [mcdrama.net](https://www.mcdrama.net/articles/mods.html)
+* Matrix `#boysgregified:matrix.thisisjoes.site`.
+* Website: [mcdrama.net](https://www.mcdrama.net/articles/mods.html).
 
 ### License
 `LGPLv3+SNEED`

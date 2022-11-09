@@ -17,6 +17,7 @@ import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
+import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -54,7 +55,6 @@ public class GuiLogin extends GuiScreen {
     private GuiTextFieldEnabledSectionSign displayname;
 
     private GuiScreen prev;
-    public GuiScreen prev_ = prev;
 
     private int basey;
 
@@ -258,6 +258,11 @@ public class GuiLogin extends GuiScreen {
         }
 
         textFieldTabArray = new Object[]{identifier, pw, newPW, displayname, port, token};
+
+        if (!OfflineAuth.varInstanceClient.prevWasKeyDialog) {
+            checkForKey();
+        }
+        OfflineAuth.varInstanceClient.prevWasKeyDialog = false;
     }
 
     boolean isAnyTextFieldFocused() {
@@ -340,6 +345,35 @@ public class GuiLogin extends GuiScreen {
                 this.actionPerformed(this.login);
             }
         } */
+        if (port.isFocused()) {
+            checkForKey();
+        }
+    }
+
+    void checkForKey() {
+        if (OfflineAuth.varInstanceClient.checkingForKey) {
+            return;
+        }
+        Thread registerThread = new Thread(new Runnable() {
+            public void run() {
+                OfflineAuth.varInstanceClient.checkingForKey = true;
+                String ip = Util.getIP(OfflineAuth.varInstanceClient.selectedServerData);
+                try {
+                    if (ClientUtil.getServerPublicKeyFromCache(ip, port.getText()) == null) {
+                        PublicKey pubKey = Request.getServerPubKey(ip, port.getText());
+                        if (pubKey == null) {
+                            OfflineAuth.varInstanceClient.checkingForKey = false;
+                            return;
+                        }
+                        Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port.getText(), pubKey));
+                    }
+                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                    OfflineAuth.error("Failed to read public key for " + OfflineAuth.varInstanceClient.selectedServerData.serverIP);
+                    e.printStackTrace();
+                }
+            }
+        });
+        registerThread.start();
     }
 
     @Override

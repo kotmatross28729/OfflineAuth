@@ -159,17 +159,18 @@ public class ClientSkinUtil {
         }
         return path;
     }
+
     public static byte[] skinToBytes(String skinName) {
         String skinPath = localSkinPathFromName(skinName);
         if (skinPath == null) {
             return new byte[1];
         }
-        try {
-            return Util.fileToBytes(new File(skinPath));
-        } catch (IOException e) {
+        byte[] res = Util.fileToBytes(new File(skinPath));
+        if (res == null) {
             OfflineAuth.error("Couldn't read local skin: " + skinPath);
             return new byte[1];
         }
+        return res;
     }
 
     public static String[] getAvailableSkinNames() {

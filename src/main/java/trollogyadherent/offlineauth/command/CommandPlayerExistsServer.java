@@ -55,26 +55,17 @@ public class CommandPlayerExistsServer implements ICommand {
             sender.addChatMessage(new ChatComponentText("Command usage: " + getCommandUsage(null)));
             return;
         }
+        DBPlayerData dbpd = null;
         if (Database.isUserRegisteredByIdentifier(argString[0])) {
-            sender.addChatMessage(new ChatComponentText("User registered (" + argString[0] + " is the identifier)"));
-            if (OfflineAuth.DEBUG_MODE) {
-                DBPlayerData dbpd = Database.getPlayerDataByIdentifier(argString[0]);
-                if (dbpd == null) {
-                    OfflineAuth.debug("CommandPlayerExistsServer: dbpd null (1)!");
-                }
-                OfflineAuth.debug(dbpd.toString());
-            }
+            dbpd = Database.getPlayerDataByIdentifier(argString[0]);
         } else if (Database.isUserRegisteredByDisplayname(argString[0])) {
-            sender.addChatMessage(new ChatComponentText("User registered (" + argString[0] + " is the displayname)"));
-            if (OfflineAuth.DEBUG_MODE) {
-                DBPlayerData dbpd = Database.getPlayerDataByDisplayName(argString[0]);
-                if (dbpd == null) {
-                    OfflineAuth.debug("CommandPlayerExistsServer: dbpd null (2)!");
-                }
-                OfflineAuth.debug(dbpd.toString());
-            }
+            dbpd = Database.getPlayerDataByDisplayName(argString[0]);
+        }
+        if (dbpd == null) {
+            sender.addChatMessage(new ChatComponentText("Neither username nor displayname found"));
         } else {
-            sender.addChatMessage(new ChatComponentText("User not registered"));
+            sender.addChatMessage(new ChatComponentText("User registered (username: \"" + dbpd.getIdentifier() + "\", displayname: \"" + dbpd.getDisplayname() + "\")"));
+            OfflineAuth.debug(dbpd.toString());
         }
 
         OfflineAuth.info(sender.getCommandSenderName() + " issued playerexists command");

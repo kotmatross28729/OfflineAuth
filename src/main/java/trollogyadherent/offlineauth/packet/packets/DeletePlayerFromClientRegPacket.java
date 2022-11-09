@@ -18,7 +18,7 @@ public class DeletePlayerFromClientRegPacket implements IMessageHandler<DeletePl
     {
         if (ctx.side.isClient())
         {
-            //System.out.println("DeletePlayerFromClientRegPacket onMessage triggered (from server), displayName: " + message.displayName);
+            OfflineAuth.debug("DeletePlayerFromClientRegPacket onMessage triggered (from server), displayName: " + message.displayName);
             OfflineAuth.varInstanceClient.clientRegistry.removeByDisplayName(message.displayName);
             ClientSkinUtil.removeSkinFromCache(message.displayName);
             ClientSkinUtil.removeCapeFromCache(message.displayName);

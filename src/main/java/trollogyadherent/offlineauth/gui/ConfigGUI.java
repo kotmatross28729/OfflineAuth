@@ -3,8 +3,6 @@ package trollogyadherent.offlineauth.gui;
 import com.google.common.collect.ImmutableList;
 import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.IConfigElement;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -17,12 +15,13 @@ import trollogyadherent.offlineauth.util.Util;
 
 public class ConfigGUI extends GuiConfig {
 
-    private static IConfigElement ce = new ConfigElement(Config.config.getCategory(Config.Categories.generalClient));
+    private static IConfigElement ceClient = new ConfigElement(Config.config.getCategory(Config.Categories.generalClient));
+    private static IConfigElement ceCommon = new ConfigElement(Config.config.getCategory(Config.Categories.generalCommon));
     private static IConfigElement ceCMM = new ConfigElement(Config.config.getCategory(Config.Categories.customMainMenuClient));
 
     public ConfigGUI(GuiScreen parent) {
         //this.parentScreen = parent;
-        super(parent, ImmutableList.of(ce, ceCMM), "offlineauth", "offlineauth", false, false, I18n.format("offlineauth.configgui.title"), OfflineAuth.confFile.getAbsolutePath());
+        super(parent, ImmutableList.of(ceClient, ceCommon, ceCMM), "offlineauth", "offlineauth", false, false, I18n.format("offlineauth.configgui.title"), OfflineAuth.confFile.getAbsolutePath());
         OfflineAuth.debug("Instantiating config gui");
     }
 

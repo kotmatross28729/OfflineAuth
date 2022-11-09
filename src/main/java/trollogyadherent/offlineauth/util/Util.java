@@ -160,8 +160,14 @@ public class Util {
         FileUtils.writeByteArrayToFile(file, bytes);
     }
 
-    public static byte[] fileToBytes(File file) throws IOException {
-        return FileUtils.readFileToByteArray(file);
+    public static byte[] fileToBytes(File file) {
+        try {
+            return FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to convert " + file.getAbsolutePath() + " to bytes!");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void bytesSaveToFile(byte[] bytes, File file) throws IOException {

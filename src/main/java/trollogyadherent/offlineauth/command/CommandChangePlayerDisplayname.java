@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.command;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -78,8 +79,23 @@ public class CommandChangePlayerDisplayname implements ICommand {
             return;
         }
 
+        DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
+        if (dbpd == null) {
+            sender.addChatMessage(new ChatComponentText("Couldn't find that player"));
+            return;
+        }
+        String oldDisplayName = dbpd.getDisplayname();
+
         StatusResponseObject res = Database.changePlayerDisplayName(identifier, "", argString[1], true);
         OfflineAuth.info(sender.getCommandSenderName() + " issued changeuuid command with status " + res.getStatus());
+        if (res.getStatusCode() == 200) {
+            for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                if (((EntityPlayerMP) e).getDisplayName().equals(oldDisplayName)) {
+                    ((EntityPlayerMP) e).playerNetServerHandler.kickPlayerFromServer("Your displayname has been changed to \""+ argString[1] +"\" by a moderator.");
+                    break;
+                }
+            }
+        }
     }
 
     @Override
