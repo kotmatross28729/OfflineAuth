@@ -34,6 +34,7 @@ If you are a player:
 * Backport of player faces in the multiplayer tab menu
 * Integration with [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) elytras (you will have to wait for its next release, for now Et Futurum breaks OfflineAuth's skin preview)
 * Integration with [Custom Main Menu](https://www.curseforge.com/minecraft/mc-mods/custom-main-menu), if a button or label has a name specified in config, a default server auth menu and server join action will be added to them 
+* Experimental integration with `FTB Library` and `FTB utils` (skins appearing in the friends menu). You will need a special fork of the first, found [here](https://github.com/trollogyadherent/FTB-Library), and a `GT:MEGA` or `GT:NH` build of `FTB Utils`. `GT:NH` builds can be found [here](https://github.com/GTNewHorizons/FTB-Utilities/releases) (Built against version [1.0.18.7-GTNH](https://github.com/GTNewHorizons/FTB-Utilities/releases/tag/1.0.18.7-GTNH)).
 
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
