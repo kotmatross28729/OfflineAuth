@@ -46,6 +46,15 @@ public class ClientRegistry {
         }
         if (getPlayerEntityByDisplayName(displayName) == null) {
             this.playerEntities.add(new Data(skinName, skinResourceLocation, epmp, capeObject, displayName));
+        } else if (getDataByDisplayName(displayName) != null) {
+            if (skinName != null)
+                setSkinName(displayName, skinName);
+            if (skinResourceLocation != null)
+                setResourceLocation(displayName, skinResourceLocation);
+            if (epmp != null)
+                setEntityPlayer(displayName, epmp);
+            if (capeObject != null)
+                setCapeObject(displayName, capeObject);
         }
     }
 
