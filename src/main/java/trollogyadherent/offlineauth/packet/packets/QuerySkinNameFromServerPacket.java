@@ -6,8 +6,12 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.database.DBPlayerData;
+import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
+import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
+import trollogyadherent.offlineauth.util.Util;
 
 public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinNameFromServerPacket.SimpleMessage, IMessage>
 {
@@ -25,6 +29,23 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
             ServerPlayerData sd = OfflineAuth.varInstanceServer.playerRegistry.getPlayerDataByDisplayName(message.displayName);
             if (sd == null) {
                 OfflineAuth.debug("Player not found in server registry!");
+                OfflineAuth.debug("Assuming API-like call, adding player from db");
+
+                DBPlayerData dbpd = Database.getPlayerDataByDisplayName(message.displayName);
+                if (dbpd == null) {
+                    OfflineAuth.debug("displayname not found, creating fake user with default skin");
+                    message.skinName = ServerSkinUtil.getRandomDefaultSkinName();
+                    OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(message.displayName, message.displayName, Util.offlineUUID(message.displayName), message.skinName, false));
+                } else {
+                    String skinName = ServerSkinUtil.getRandomDefaultSkinName();
+                    if (dbpd.getSkinBytes().length > 1) {
+                        ServerSkinUtil.saveBytesToSkinCache(dbpd.getSkinBytes(), dbpd.getDisplayname());
+                        skinName = dbpd.getDisplayname();
+                    }
+                    boolean hasCape = dbpd.getCapeBytes().length > 1;
+                    message.skinName = skinName;
+                    OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName, hasCape));
+                }
             } else {
                 OfflineAuth.debug("Player found in server registry, skin is " + sd.skinName);
                 message.skinName = sd.skinName;

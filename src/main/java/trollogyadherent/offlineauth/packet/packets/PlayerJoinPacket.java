@@ -219,10 +219,12 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             skinName = dbpd.getDisplayname();
                         }
 
-                        /* getting if palyer has a cape */
+                        /* getting if player has a cape */
                         boolean hasCape = dbpd.getCapeBytes().length > 1;
 
                         /* Adding player to registry */
+                        OfflineAuth.debug("Removing player " + dbpd.getDisplayname() + " from server playerRegistry, in case a fake API user has been added prior");
+                        OfflineAuth.varInstanceServer.playerRegistry.deleteByDisplayName(dbpd.getDisplayname());
                         OfflineAuth.debug("Adding player " + dbpd.getDisplayname() + " to server playerRegistry");
                         OfflineAuth.debug(OfflineAuth.varInstanceServer.playerRegistry.toString());
                         OfflineAuth.varInstanceServer.playerRegistry.add(new ServerPlayerData(dbpd.getIdentifier(), dbpd.getDisplayname(), dbpd.getUuid(), skinName, hasCape));
