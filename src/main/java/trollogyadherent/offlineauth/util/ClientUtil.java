@@ -11,6 +11,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 public class ClientUtil {
+    /*https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/modification-development/1424716-code-snippit-detect-if-world-is-single-player-or*/
     public static boolean isSinglePlayer()
     {
         try

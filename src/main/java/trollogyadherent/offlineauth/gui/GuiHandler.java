@@ -294,6 +294,8 @@ public class GuiHandler {
     @SubscribeEvent
     public void action(ActionPerformedEvent.Post e) {
         if ((e.gui instanceof GuiMultiplayer || e.gui instanceof GuiMainMenu) && e.button.id == Config.manageAuthButtonId) {
+            OfflineAuth.varInstanceClient.prevWasKeyDialog = false;
+            OfflineAuth.varInstanceClient.checkingForKey = false;
             Minecraft.getMinecraft().displayGuiScreen(new GuiLogin(Minecraft.getMinecraft().currentScreen));
         }
     }

@@ -49,7 +49,7 @@ public class ClientRegistry {
         }
     }
 
-    Data getDataByDisplayName(String displayName) {
+    public Data getDataByDisplayName(String displayName) {
         for (Data data : this.playerEntities) {
             if (data.displayName.equals(displayName)) {
                 return data;
