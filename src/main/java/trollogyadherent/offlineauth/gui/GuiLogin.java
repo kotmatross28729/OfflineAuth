@@ -422,6 +422,10 @@ public class GuiLogin extends GuiScreen {
 
         /* Looping through cache list, if found, updating the entry */
         for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+            if (oasd == null) {
+                OfflineAuth.warn("(actionSave): oasd null");
+                continue;
+            }
             if (oasd.getIp().equals(oaServerDataTemp.getIp()) && oasd.getPort().equals(oaServerDataTemp.getPort())) {
                 found = true;
                 oasd.setIdentifier(oaServerDataTemp.getIdentifier());
