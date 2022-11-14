@@ -10,12 +10,28 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.SendAuthPortPacket;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 
 public class ServerEventListener {
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent e) throws IllegalAccessException {
         OfflineAuth.info("Player joined server: " + e.player.getDisplayName());
         EntityPlayer player = e.player;
+
+        //((EntityPlayerMP)e.player).playerNetServerHandler.netManage
+
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+                    ((EntityPlayerMP)e.player).playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
+                }
+            }
+        }, 5, TimeUnit.SECONDS);
+
 
         /* Sending auth port to the player, and the auth packet too */
         IMessage msg = new SendAuthPortPacket.SimpleMessage(Config.port);
@@ -69,6 +85,8 @@ public class ServerEventListener {
         OfflineAuth.info("Player quit server out: " + e.player.getDisplayName());
         //System.out.println("Removing skinRegistry entry for displayname " + e.player.getDisplayName());
         OfflineAuth.varInstanceServer.playerRegistry.deleteByIdentifier(OfflineAuth.varInstanceServer.playerRegistry.getIdentifierFromDisplayName(e.player.getDisplayName()));
+
+        OfflineAuth.varInstanceServer.authenticatedDisplaynames.remove(e.player.getDisplayName());
         //System.out.println(OfflineAuth.varInstanceServer.playerRegistry.toString());
         /*for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
             IMessage msg = new ResetCachesPacket.SimpleMessage();

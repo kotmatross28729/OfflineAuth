@@ -10,6 +10,7 @@ import trollogyadherent.offlineauth.registry.ServerPlayerRegistry;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class VarInstanceServer {
     public final String DB_NAME = new File(OfflineAuth.rootPath, "OfflineAuthDatabase").getPath();
@@ -25,6 +26,8 @@ public class VarInstanceServer {
     public String keyPairPath = new File(OfflineAuth.rootPath, "ServerKeys").getPath();
     public ServerKeyRegistry keyRegistry = new ServerKeyRegistry();
     public ServerKeyTokenRegistry keyTokenRegistry = new ServerKeyTokenRegistry();
+
+    public ArrayList<String> authenticatedDisplaynames = new ArrayList<>();
 
     public boolean changedUUID = false;
 

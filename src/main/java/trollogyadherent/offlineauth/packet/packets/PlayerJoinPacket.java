@@ -235,6 +235,9 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
                             PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
                         }
+
+                        /* Marking user as authenticated */
+                        OfflineAuth.varInstanceServer.authenticatedDisplaynames.add(dbpd.getDisplayname());
                     } else {
                         entityPlayerMP.playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                     }
