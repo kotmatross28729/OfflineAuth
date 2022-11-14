@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+Thermos/Crucible/etc, are not supported.
+
 Please describe the bug. If necessary, attach pictures/gifs.
 **Enable debug mode in config and send full log**, I can't help without that.
 State if you are using a modpack.
