@@ -29,6 +29,8 @@ public class VarInstanceServer {
 
     public ArrayList<String> authenticatedDisplaynames = new ArrayList<>();
 
+    public Field displaynameField = ReflectionHelper.findField(net.minecraft.entity.player.EntityPlayer.class, "displayname", "field_178872_h");
+
     public boolean changedUUID = false;
 
     public boolean DEBUGtamperWithUUID = false;
@@ -36,6 +38,7 @@ public class VarInstanceServer {
     public VarInstanceServer() {
         uuidIdField.setAccessible(true);
         uuidIdField2.setAccessible(true);
+        displaynameField.setAccessible(true);
 
         /* Creating dirs */
         File defaultServerSkinsFile = new File(defaultServerSkinsPath);

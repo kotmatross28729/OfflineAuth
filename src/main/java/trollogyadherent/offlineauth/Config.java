@@ -49,6 +49,8 @@ public class Config {
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
         public static final boolean debugEnabled = false;
+        public static final int secondsBeforeKick = 5;
+        public static final boolean secureEachEntityEvent = true;
     }
 
     /* Basically an enum for different config categories */
@@ -93,6 +95,8 @@ public class Config {
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
     public static boolean debugEnabled = Defaults.debugEnabled;
+    public static int secondsBeforeKick = Defaults.secondsBeforeKick;
+    public static boolean secureEachEntityEvent = Defaults.secureEachEntityEvent;
 
     public static void synchronizeConfigurationCommon() {
             Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
@@ -205,6 +209,12 @@ public class Config {
 
             Property maxCapeBytesProperty = config.get(Categories.generalServer, "maxCapeBytes", Defaults.maxSkinBytes, "Maximum amount of bytes allowed in incoming cape upload request");
             maxCapeBytes = maxCapeBytesProperty.getInt();
+
+            Property secondsBeforeKickProperty = config.get(Categories.generalServer, "secondsBeforeKick", Defaults.secondsBeforeKick, "How much seconds should elapse before the server kicks unauthenticated players (if the modpack is large, you might need to increase this)");
+            secondsBeforeKick = secondsBeforeKickProperty.getInt();
+
+            Property secureEachEntityEventProperty = config.get(Categories.generalServer, "secureEachEntityEvent", Defaults.secureEachEntityEvent, "Cancelling every single EntityEvent coming from a player who is not yet authenticated. Might be CPU intensive, so it can be turned off");
+            secureEachEntityEvent = secureEachEntityEventProperty.getBoolean();
         }
 
         if(config.hasChanged()) {

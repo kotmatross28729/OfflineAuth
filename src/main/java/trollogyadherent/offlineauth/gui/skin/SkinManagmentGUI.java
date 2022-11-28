@@ -57,6 +57,7 @@ public class SkinManagmentGUI extends GuiScreen {
         this.previous = previous;
     }
 
+    @Override
     public void initGui()
     {
         SkinGuiRenderTicker.skinResourceLocation = null;

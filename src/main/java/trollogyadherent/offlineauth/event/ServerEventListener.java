@@ -1,10 +1,18 @@
 package trollogyadherent.offlineauth.event;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
@@ -30,7 +38,7 @@ public class ServerEventListener {
                     ((EntityPlayerMP)e.player).playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                 }
             }
-        }, 5, TimeUnit.SECONDS);
+        }, Config.secondsBeforeKick, TimeUnit.SECONDS);
 
 
         /* Sending auth port to the player, and the auth packet too */
@@ -92,5 +100,75 @@ public class ServerEventListener {
             IMessage msg = new ResetCachesPacket.SimpleMessage();
             PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
         }*/
+    }
+
+    public void warnNotLoggedIn(EntityPlayer player) {
+        player.addChatMessage(new ChatComponentText((char) 167 + "cYou are not logged in!"));
+    }
+
+    public void warnNotLoggedIn(ICommandSender iCommandSender) {
+        iCommandSender.addChatMessage(new ChatComponentText((char) 167 + "cYou are not logged in!"));
+    }
+
+    @SubscribeEvent
+    public void onBlockPlaceEvent(BlockEvent.PlaceEvent e) {
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+            e.setCanceled(true);
+            warnNotLoggedIn(e.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onMultiPlaceEvent(BlockEvent.MultiPlaceEvent e) {
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+            e.setCanceled(true);
+            warnNotLoggedIn(e.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockBreakEvent(BlockEvent.BreakEvent e) {
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.getPlayer().getDisplayName())) {
+            e.setCanceled(true);
+            warnNotLoggedIn(e.getPlayer());
+        }
+    }
+
+    @SubscribeEvent
+    public void onCommandEvent(CommandEvent e) {
+        if (e.sender instanceof DedicatedServer) {
+            return;
+        }
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.sender.getCommandSenderName())) {
+            if (e.isCancelable()) {
+                e.setCanceled(true);
+                warnNotLoggedIn(e.sender);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityEvent(EntityEvent e) throws IllegalAccessException {
+        if (!Config.secureEachEntityEvent) {
+            return;
+        }
+        if (!(e.entity instanceof EntityPlayerMP)) {
+            return;
+        }
+        String displayName = (String) OfflineAuth.varInstanceServer.displaynameField.get(e.entity);
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(displayName)) {
+            if (e.isCancelable()) {
+                e.setCanceled(true);
+                //warnNotLoggedIn((EntityPlayerMP)e.entity);
+            }
+        }
+    }
+
+    @SubscribeEvent()
+    public void onMessage (ServerChatEvent e) {
+        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+            e.setCanceled(true);
+            warnNotLoggedIn(e.player);
+        }
     }
 }
