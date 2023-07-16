@@ -139,6 +139,9 @@ public class GuiHandler {
                 if (OfflineAuth.varInstanceClient.selectedServerIndex == -1) {
                     return;
                 }
+                if (multiplayerGui.field_146803_h.field_148198_l.size() == 0 || OfflineAuth.varInstanceClient.selectedServerIndex >= multiplayerGui.field_146803_h.field_148198_l.size()) {
+                    return;
+                }
                 OfflineAuth.varInstanceClient.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(OfflineAuth.varInstanceClient.selectedServerIndex)).field_148301_e;
                 //System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
 

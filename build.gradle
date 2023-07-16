@@ -35,15 +35,15 @@ buildscript {
         }
         maven {
             name = "jitpack"
-            url = "https://jitpack.falsepattern.com/"
+            url 'https://jitpack.io'
         }
+
         maven {
-            name = "mavenpattern"
-            url = "https://maven.falsepattern.com/"
+            url 'https://mvn.falsepattern.com/releases'
         }
     }
     dependencies {
-        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.7'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
         classpath 'com.falsepattern:jtweaker:0.2.1'
     }
 }
@@ -59,7 +59,7 @@ plugins {
     id 'com.google.devtools.ksp'         version '1.5.30-1.0.0' apply false
     id 'org.ajoberstar.grgit'            version '4.1.1'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
-    id 'com.palantir.git-version'        version '0.13.0'
+//    id 'com.palantir.git-version'        version '0.13.0'
     id 'de.undercouch.download'          version '5.0.1'
     id 'com.github.gmazzo.buildconfig'   version '3.0.3'        apply false
 }
@@ -616,87 +616,6 @@ tasks.withType(GenerateModuleMetadata) {
 // workaround variable hiding in pom processing
 def projectConfigs = project.configurations
 
-// publishing
-
-def getMavenSettingsCredentials = {
-    String userHome = System.getProperty( "user.home" );
-    File mavenSettings = new File(userHome, ".m2/settings.xml")
-    def xmlSlurper = new XmlSlurper()
-    def output = xmlSlurper.parse(mavenSettings)
-    return output."servers"."server"
-}
-
-def getCredentials = {
-    String username = System.getenv("MAVEN_DEPLOY_USER")
-    String password = System.getenv("MAVEN_DEPLOY_PASSWORD")
-    if (username == null) {
-        try {
-            def entries = getMavenSettingsCredentials()
-            for (entry in entries) {
-                if (entry."id".text() == repositoryName) {
-                    return [username: entry.username.text(), password: entry.password.text()]
-                }
-            }
-        } catch (Exception ignored){}
-        return [username: "none", password: "none"]
-    } else {
-        return [username: username, password: password]
-    }
-}
-
-//Publishing
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-            if(usesShadowedDependencies.toBoolean()) {
-                artifact source: shadowJar, classifier: ""
-            }
-            artifact source: sourcesJar, classifier: "sources"
-            artifact source: usesShadowedDependencies.toBoolean() ? shadowDevJar : devJar, classifier: "dev"
-            if (apiPackage) {
-                artifact source: apiJar, classifier: "api"
-            }
-
-            groupId = mavenGroupId
-            artifactId = mavenArtifactId + "-mc" + minecraftVersion
-            version = gitVersion()
-
-            // remove extra garbage from minecraft and minecraftDeps configuration
-            pom.withXml {
-                def badArtifacts = [:].withDefault {[] as Set<String>}
-                for (configuration in [projectConfigs.minecraft, projectConfigs.minecraftDeps]) {
-                    for (dependency in configuration.allDependencies) {
-                        badArtifacts[dependency.group == null ? "" : dependency.group] += dependency.name
-                    }
-                }
-                // example for specifying extra stuff to ignore
-                // badArtifacts["org.example.group"] += "artifactName"
-
-                Node pomNode = asNode()
-                pomNode.dependencies.'*'.findAll() {
-                    badArtifacts[it.groupId.text()].contains(it.artifactId.text())
-                }.each() {
-                    it.parent().remove(it)
-                }
-            }
-        }
-    }
-
-    repositories {
-        if (repositoryURL.trim() != "") {
-            maven {
-                name = repositoryName
-                url = repositoryURL
-                def creds = getCredentials()
-                credentials {
-                    username = creds?.username ?: "none"
-                    password = creds?.password ?: "none"
-                }
-            }
-        }
-    }
-}
 
 // Updating
 task updateBuildScript {
