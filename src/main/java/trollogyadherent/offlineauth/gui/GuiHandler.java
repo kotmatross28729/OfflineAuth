@@ -1,12 +1,15 @@
 package trollogyadherent.offlineauth.gui;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiSelectWorld;
+import net.minecraft.client.gui.ServerListEntryNormal;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
@@ -14,7 +17,6 @@ import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-
 import trollogyadherent.offlineauth.gui.cmm_compat.IActionJoinServerWrapper;
 import trollogyadherent.offlineauth.gui.cmm_compat.IActionObjectGuiLoginWrapper;
 import trollogyadherent.offlineauth.request.Request;
@@ -30,7 +32,12 @@ import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 @SideOnly(Side.CLIENT)
@@ -139,9 +146,10 @@ public class GuiHandler {
                 if (OfflineAuth.varInstanceClient.selectedServerIndex == -1) {
                     return;
                 }
-                if (multiplayerGui.field_146803_h.field_148198_l.size() == 0 || OfflineAuth.varInstanceClient.selectedServerIndex >= multiplayerGui.field_146803_h.field_148198_l.size()) {
+                if (OfflineAuth.varInstanceClient.selectedServerIndex >= multiplayerGui.field_146803_h.field_148198_l.size()) {
                     return;
                 }
+
                 OfflineAuth.varInstanceClient.selectedServerData = ((ServerListEntryNormal) multiplayerGui.field_146803_h.field_148198_l.get(OfflineAuth.varInstanceClient.selectedServerIndex)).field_148301_e;
                 //System.out.println("Changed server to " + OfflineAuth.varInstanceClient.selectedServerData.serverName);
 

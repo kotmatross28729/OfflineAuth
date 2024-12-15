@@ -238,40 +238,24 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.manageKey);
         //this.buttonList.add(this.browsePrivateKey);
 
-        //System.out.println("OfflineAuth.varInstanceClient: " + OfflineAuth.varInstanceClient);
-        //System.out.println("selectedServerData: " + OfflineAuth.varInstanceClient.selectedServerData);
-
-        if (OfflineAuth.varInstanceClient.selectedServerData == null) {
-            return;
-        }
-        String ip = Util.getIP(OfflineAuth.varInstanceClient.selectedServerData);
-        String port = Util.getPort(OfflineAuth.varInstanceClient.selectedServerData);
         OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
-
-        if (oasd == null) {
-            oasd = new OAServerData(ip, port);
-            OfflineAuth.varInstanceClient.OAserverDataCache.add(oasd);
+        if (oasd != null) {
+            if (oasd.getIdentifier() != null) {
+                this.identifier.setText(oasd.getIdentifier());
+            }
+            if (oasd.getDisplayName() != null) {
+                this.displayname.setText(oasd.getDisplayName());
+            }
+            if (oasd.getPassword() != null) {
+                this.pw.setText(oasd.getPassword());
+            }
+            if (oasd.getRestPort() != null) {
+                this.port.setText(oasd.getRestPort());
+            }
+            //if (oasd.getUseKey() != null) {
+            this.useKey.setIsChecked(oasd.isUsingKey());
+            //}
         }
-
-        if (oasd.getIdentifier() != null) {
-            this.identifier.setText(oasd.getIdentifier());
-        }
-
-        if (oasd.getDisplayName() != null) {
-            this.displayname.setText(oasd.getDisplayName());
-        }
-
-        if (oasd.getPassword() != null) {
-            this.pw.setText(oasd.getPassword());
-        }
-
-        if (oasd.getRestPort() != null) {
-            this.port.setText(oasd.getRestPort());
-        }
-
-        //if (oasd.getUseKey() != null) {
-        this.useKey.setIsChecked(oasd.isUsingKey());
-        //}
 
         textFieldTabArray = new Object[]{identifier, pw, newPW, displayname, port, token};
 
@@ -451,7 +435,7 @@ public class GuiLogin extends GuiScreen {
                 oasd.setPrivateKeyPath(oaServerDataTemp.getPrivateKeyPath());
                 oasd.setPublicKeyPath(oaServerDataTemp.getPublicKeyPath());
                 //if (saveDisplayName) {
-                    oasd.setDisplayName(oaServerDataTemp.getDisplayName());
+                oasd.setDisplayName(oaServerDataTemp.getDisplayName());
                 //}
             }
         }

@@ -38,9 +38,6 @@ public class OAServerData {
         this.validServer = validServer;
     }
 
-    public OAServerData(String ip, String port) {
-    }
-
     public boolean isValidServer() {
         return validServer;
     }
