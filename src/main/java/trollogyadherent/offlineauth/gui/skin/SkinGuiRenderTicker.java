@@ -286,7 +286,7 @@ public class SkinGuiRenderTicker
                 new ItemStack(Items.firework_charge), new ItemStack(Items.fireworks),
                 new ItemStack(Items.nether_star), new ItemStack(Items.emerald), new ItemStack(Items.stick), new ItemStack(GameRegistry.findItem("minecraft", "golden_apple"), 1, 1));
 
-        if (Loader.isModLoaded("witchery")) {
+        if (OfflineAuth.isWitcheryLoaded) {
             Collections.addAll(playerItems, new ItemStack(GameRegistry.findItem("witchery", "ingredient"), 1, 9), new ItemStack(GameRegistry.findItem("witchery", "ingredient"), 1, 11), new ItemStack(GameRegistry.findItem("witchery", "vampirebook")));
         }
 
@@ -313,8 +313,10 @@ public class SkinGuiRenderTicker
             OfflineAuth.error("Error loading skin image " + skinName);
             return;
         }
-        if (bufferedImage.getHeight() == 64) {
-            bufferedImage = new LegacyConversion().convert(bufferedImage);
+        if(!OfflineAuth.isSSBLoaded) {
+            if (bufferedImage.getHeight() == 64) {
+                bufferedImage = new LegacyConversion().convert(bufferedImage);
+            }
         }
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
         ClientSkinUtil.loadTexture(bufferedImage, skinResourceLocation);

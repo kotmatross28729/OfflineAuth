@@ -92,7 +92,7 @@ public class SkinManagmentGUI extends GuiScreen {
         capeCheckbox = new GuiCheckBox(8, this.width - 20 - capeStringLen, this.height - 60, capeString, false);
         capeCheckbox.setIsChecked(true);
         this.buttonList.add(capeCheckbox);
-        if (Loader.isModLoaded("etfuturum")) {
+        if (OfflineAuth.isEFRLoaded) {
             String elytraString = I18n.format("Elytra");
             int elytraStringLen = Minecraft.getMinecraft().fontRenderer.getStringWidth(elytraString);
             elytraCheckbox = new GuiCheckBox(9, this.width - 45 - capeStringLen - elytraStringLen, this.height - 60, "Elytra", false);

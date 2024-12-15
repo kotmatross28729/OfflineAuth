@@ -324,14 +324,17 @@ public class ClientEventListener {
                 e_.printStackTrace();
                 return;
             }
-            if (bufferedImage.getHeight() == 64) {
-                bufferedImage = new LegacyConversion().convert(bufferedImage);
+            if(!OfflineAuth.isSSBLoaded) {
+                if (bufferedImage.getHeight() == 64) {
+                    bufferedImage = new LegacyConversion().convert(bufferedImage);
+                }
             }
+
             ClientSkinUtil.loadTexture(bufferedImage, rl);
             OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = rl;
             try {
                 OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, rl);
-                /*if (Loader.isModLoaded("etfuturum")) {
+                /*if (OfflineAuth.isEFRLoaded) {
                     ResourceLocation rlFuturum = new ResourceLocation("etfuturum", "offlineskin/" + skinName);
                     ClientSkinUtil.loadTexture(bufferedImage, rlFuturum);
                 }*/

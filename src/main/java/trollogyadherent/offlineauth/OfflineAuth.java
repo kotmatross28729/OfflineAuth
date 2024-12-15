@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import cpw.mods.fml.common.Loader;
 
 /* TODO: admin command that changes player uuid */
 /* TODO: players should be assigned uuids made up randomly by the server and kept in the db like skins */
@@ -41,6 +42,13 @@ public class OfflineAuth {
     public final static int maxPngDimension = 2500;
 
 
+    public static boolean isEFRLoaded;
+    public static boolean isWitcheryLoaded;
+    public static boolean isCMMLoaded;
+
+    public static boolean isSSBLoaded;
+
+
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
@@ -49,6 +57,11 @@ public class OfflineAuth {
         String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
         DEBUG_MODE = debugVar != null;
         proxy.preInit(event);
+
+        isEFRLoaded = Loader.isModLoaded("etfuturum");
+        isWitcheryLoaded = Loader.isModLoaded("witchery");
+        isCMMLoaded = Loader.isModLoaded("CustomMainMenu");
+        isSSBLoaded = Loader.isModLoaded("simpleskinbackport");
     }
 
     @Mod.EventHandler

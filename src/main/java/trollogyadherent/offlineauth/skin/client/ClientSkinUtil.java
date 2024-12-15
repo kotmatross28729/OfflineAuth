@@ -55,8 +55,10 @@ public class ClientSkinUtil {
             if (result == null) {
                 return null;
             }
-            if (result.getHeight() == 64) {
-                result = new LegacyConversion().convert(result);
+            if(!OfflineAuth.isSSBLoaded) {
+                if (result.getHeight() == 64) {
+                    result = new LegacyConversion().convert(result);
+                }
             }
             return result;
         }

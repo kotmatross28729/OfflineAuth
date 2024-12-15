@@ -55,7 +55,7 @@ public class GuiHandler {
         btnlstField = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
         btnlstField.setAccessible(true);
 
-        if (Loader.isModLoaded("CustomMainMenu")) {
+        if (OfflineAuth.isCMMLoaded) {
             labelListField = ReflectionHelper.findField(lumien.custommainmenu.gui.GuiCustom.class, "textLabels");
             labelListField.setAccessible(true);
 
@@ -80,7 +80,7 @@ public class GuiHandler {
         }
 
         /* Injecting functions to appropriately named custom main menu buttons, if the mod is loaded */
-        if (Loader.isModLoaded("CustomMainMenu") && (reflectedCMMbuttonList == null && reflectedCMMlabelList == null) && (/*e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain ||*/ e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
+        if (OfflineAuth.isCMMLoaded && (reflectedCMMbuttonList == null && reflectedCMMlabelList == null) && (/*e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain ||*/ e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
             try {
                 reflectedCMMbuttonList = btnlstField.get(e.gui);
                 if (reflectedCMMbuttonList == null || ((java.util.List) reflectedCMMbuttonList).size() == 0) {
