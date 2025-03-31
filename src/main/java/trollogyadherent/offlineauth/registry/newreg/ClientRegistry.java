@@ -6,6 +6,7 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ClientRegistry {
     private ArrayList<Data> playerEntities;
@@ -61,6 +62,15 @@ public class ClientRegistry {
     public Data getDataByDisplayName(String displayName) {
         for (Data data : this.playerEntities) {
             if (data.displayName.equals(displayName)) {
+                return data;
+            }
+        }
+        return null;
+    }
+    
+    public Data getDataByUUID(UUID uuid) {
+        for (Data data : this.playerEntities) {
+            if (data.entityPlayer.getUniqueID().equals(uuid)) {
                 return data;
             }
         }
@@ -154,14 +164,14 @@ public class ClientRegistry {
         this.playerEntities = new ArrayList<>();
     }
 
-    private class Data {
-        String skinName;
-        String displayName;
-        ResourceLocation skinResourceLocation;
-        EntityPlayer entityPlayer;
-        boolean skinNameIsBeingQueried;
-        ResourceLocation tabMenuResourceLocation;
-        CapeObject capeObject;
+    public class Data {
+        public String skinName;
+        public String displayName;
+        public ResourceLocation skinResourceLocation;
+        public EntityPlayer entityPlayer;
+        public boolean skinNameIsBeingQueried;
+        public ResourceLocation tabMenuResourceLocation;
+        public CapeObject capeObject;
 
         Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer, CapeObject capeObject, String displayName) {
             this.skinName = skinName;

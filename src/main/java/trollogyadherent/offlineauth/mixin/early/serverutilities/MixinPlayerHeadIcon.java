@@ -7,6 +7,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -15,7 +16,11 @@ import org.spongepowered.asm.mixin.Unique;
 import serverutils.lib.client.ClientUtils;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
+import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
+import trollogyadherent.offlineauth.registry.newreg.ClientRegistry;
 import trollogyadherent.offlineauth.skin.SkinUtil;
+import trollogyadherent.offlineauth.util.Util;
 
 import java.util.UUID;
 
@@ -51,25 +56,18 @@ public class MixinPlayerHeadIcon {
 		if (thePlayer.getGameProfile().getId().equals(dynamicUUID)) {
 			return thePlayer.getLocationSkin();
 		}
-		
-		EntityPlayer player = mc.theWorld.func_152378_a(dynamicUUID);
-		
-		if(SkinUtil.uuidToName.containsKey(dynamicUUID)) {
-			final ResourceLocation oar = SkinUtil.getSkinResourceLocationByDisplayName(dynamicUUID);
-			if (oar != null) {
-				return oar;
-			}
-		} else if (player != null) {
-			String displayName = player.getDisplayName();
-			
-			final ResourceLocation oar = SkinUtil.getSkinResourceLocationByDisplayName(displayName);
 
-			if (oar != null) {
-				SkinUtil.uuidToName.put(dynamicUUID, player.getDisplayName());
-				return oar;
+		ClientRegistry.Data dataC = OfflineAuth.varInstanceClient.clientRegistry.getDataByUUID(dynamicUUID);
+		
+		if (dataC != null) {
+			if(dataC.displayName != null) {
+				final ResourceLocation oar = SkinUtil.getSkinResourceLocationByDisplayName(dataC.displayName);
+				if (oar != null) {
+					return oar;
+				}
 			}
 		}
-		
+
 		return SkinManager.field_152793_a;
 	}
 }

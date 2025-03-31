@@ -27,6 +27,12 @@ public class ServerPlayerRegistry {
         OfflineAuth.debug("Ident by displayname: " + ident);
         return getPlayerDataByIdentifier(ident);
     }
+    
+    public ServerPlayerData getPlayerDataByUUID(String uuid) {
+        String ident = getIdentifierFromUUID(uuid);
+        OfflineAuth.debug("Ident by uuid: " + ident);
+        return getPlayerDataByIdentifier(ident);
+    }
 
     public void clear() {
         playerDataList = new ArrayList<>();
@@ -79,6 +85,15 @@ public class ServerPlayerRegistry {
             }
         }
 
+        return null;
+    }
+    public String getIdentifierFromUUID(String uuid) {
+        for (ServerPlayerData spd : this.playerDataList) {
+            if (spd.uuid.equals(uuid)) {
+                return spd.identifier;
+            }
+        }
+        
         return null;
     }
 }

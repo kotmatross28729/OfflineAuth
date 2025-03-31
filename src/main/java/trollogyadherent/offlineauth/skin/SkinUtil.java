@@ -38,34 +38,4 @@ public class SkinUtil {
 		}
 		return null;
 	}
-	
-	//Not the best solution, but
-	public static Map<UUID, String> uuidToName = new HashMap<>();
-	
-	public static ResourceLocation getSkinResourceLocationByDisplayName(UUID uuid) {
-		String displayName = uuidToName.get(uuid);
-		
-		if (ClientUtil.isSinglePlayer()) {
-			return OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation;
-		}
-		final ResourceLocation r = OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName);
-		if (r != null) {
-			return r;
-		}
-		if (!OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-			if (OfflineAuth.varInstanceClient.clientRegistry.getDataByDisplayName(displayName) == null) {
-				OfflineAuth.varInstanceClient.clientRegistry.insert(
-						(String) null,
-						(ResourceLocation) null,
-						(EntityPlayer) null,
-						(CapeObject) null,
-						displayName);
-			}
-			final IMessage msg = (IMessage) new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
-			PacketHandler.net.sendToServer(msg);
-			OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-		}
-		return null;
-	}
-	
 }
