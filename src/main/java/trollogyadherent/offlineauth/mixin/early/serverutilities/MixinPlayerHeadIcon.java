@@ -1,12 +1,14 @@
 package trollogyadherent.offlineauth.mixin.early.serverutilities;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -16,12 +18,18 @@ import serverutils.lib.client.ClientUtils;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.packet.PacketHandler;
+import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.registry.newreg.ClientRegistry;
-import trollogyadherent.offlineauth.skin.SkinUtil;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
+import trollogyadherent.offlineauth.util.Util;
 
-import java.util.Map;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Mixin(value = PlayerHeadIcon.class, priority = 999)
 public class MixinPlayerHeadIcon {
@@ -39,20 +47,13 @@ public class MixinPlayerHeadIcon {
 	public void bindTexture() {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(offlineAuth$getOASkin());
 	}
-	
-	@Unique
-	private static final Map<UUID, SkinUtil.CachedSkin> offlineAuth$skinCache = new ConcurrentHashMap<>();
-	@Unique
-	private static final long CACHE_EXPIRY_TIME = 10 * 20; // 10 seconds
-	
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$getOASkin() {
 		if(uuid == null) return SkinManager.field_152793_a;
-		
+
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityClientPlayerMP thePlayer = mc.thePlayer;
-		WorldClient theWorld = mc.theWorld;
 		UUID dynamicUUID = uuid.equals(ClientUtils.localPlayerHead.uuid)
 				? StringUtils.fromString(mc.getSession().getPlayerID())
 				: uuid;
@@ -61,33 +62,64 @@ public class MixinPlayerHeadIcon {
 		if (thePlayer.getGameProfile().getId().equals(dynamicUUID)) {
 			return thePlayer.getLocationSkin();
 		}
-		
-		SkinUtil.CachedSkin cachedSkin = offlineAuth$skinCache.get(uuid);
-		long currentTime = theWorld.getTotalWorldTime();
-		
-		if (cachedSkin != null && cachedSkin.skin != null && (currentTime - cachedSkin.timestamp) < CACHE_EXPIRY_TIME) {
-			return cachedSkin.skin;
-		}
-		
-		ResourceLocation skin = offlineAuth$loadOASkin(dynamicUUID);
 
-		offlineAuth$skinCache.put(uuid, new SkinUtil.CachedSkin(skin, currentTime));
-		
-		return skin;
+		return offlineAuth$loadOASkin(mc, dynamicUUID);
 	}
 	
 	@Unique
 	@SideOnly(Side.CLIENT)
-	private ResourceLocation offlineAuth$loadOASkin(UUID dynamicUUID) {
-		ClientRegistry.Data dataC = OfflineAuth.varInstanceClient.clientRegistry.getDataByUUID(dynamicUUID);
-		if (dataC != null) {
-			if(dataC.displayName != null) {
-				final ResourceLocation oar = SkinUtil.getSkinResourceLocationByDisplayName(dataC.displayName);
-				if (oar != null) {
-					return oar;
+	private ResourceLocation offlineAuth$loadOASkin(Minecraft mc, UUID dynamicUUID) {
+		Logger log = LogManager.getLogger();
+	
+		String displayName = OfflineAuth.varInstanceClient.clientRegistry.getDisplayNameByUUID(StringUtils.fromUUID(dynamicUUID));
+		
+		log.fatal("NAME NULL ? : " + (displayName == null));
+		
+		if(displayName != null) {
+
+			log.warn("displayName ? : " + (displayName));
+			
+			if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
+				IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
+				PacketHandler.net.sendToServer(msg);
+				OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
+				OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName);
+			} else {
+				ResourceLocation rl;
+				File imageFile = ClientSkinUtil.getSkinFile(OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName));
+				if (imageFile == null || !imageFile.exists()) {
+					return SkinManager.field_152793_a;
+				} else {
+					if (OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName) == null) {
+						BufferedImage bufferedImage;
+						try {
+							if (!Util.pngIsSane(imageFile)) {
+								OfflineAuth.error("Sussy error loading skin image, not sane: " + displayName);
+								return SkinManager.field_152793_a;
+							}
+							bufferedImage = ImageIO.read(imageFile);
+							if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
+								BufferedImage bufferedImageNew = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight() * 2, bufferedImage.getType());
+								Graphics g = bufferedImageNew.getGraphics();
+								g.drawImage(bufferedImage, 0, 0, null);
+								g.dispose();
+								bufferedImage = bufferedImageNew;
+							}
+							rl = new ResourceLocation("offlineauth", "tabmenuskins/" + displayName);
+							ClientSkinUtil.loadTexture(bufferedImage, rl);
+							OfflineAuth.varInstanceClient.clientRegistry.setTabMenuResourceLocation(displayName, rl);
+						} catch (IOException e_) {
+							OfflineAuth.error("Error loading skin image " + displayName);
+							return SkinManager.field_152793_a;
+						}
+					}
+					
+					return OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName);
 				}
 			}
 		}
 		return SkinManager.field_152793_a;
 	}
+	
+	
 }

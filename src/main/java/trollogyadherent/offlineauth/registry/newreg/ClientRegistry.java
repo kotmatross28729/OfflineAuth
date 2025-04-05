@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
+import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -68,15 +69,28 @@ public class ClientRegistry {
         return null;
     }
     
+    //Not working?
     public Data getDataByUUID(UUID uuid) {
         for (Data data : this.playerEntities) {
-            if (data.entityPlayer.getUniqueID().equals(uuid)) {
-                return data;
+            if(data.entityPlayer != null) {
+                if (data.entityPlayer.getUniqueID().equals(uuid)) {
+                    return data;
+                }
             }
         }
         return null;
     }
-
+    
+    
+    public String getDisplayNameByUUID(String uuid) {
+        for (Data data : this.playerEntities) {
+            if(Util.offlineUUID(data.displayName).equals(uuid)){
+                return data.displayName;
+            }
+        }
+        return null;
+    }
+    
     public void removeByDisplayName(String displayname) {
         OfflineAuth.debug("(removeByDisplayName): displayname: " + displayname);
         Data data = getDataByDisplayName(displayname);

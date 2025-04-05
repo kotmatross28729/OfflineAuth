@@ -34,15 +34,4 @@ public class SkinUtil {
 		}
 		return null;
 	}
-	
-	public static class CachedSkin {
-		public ResourceLocation skin;
-		public long timestamp;
-		
-		public CachedSkin(ResourceLocation skin, long timestamp) {
-			this.skin = skin;
-			this.timestamp = timestamp;
-		}
-	}
-	
 }
