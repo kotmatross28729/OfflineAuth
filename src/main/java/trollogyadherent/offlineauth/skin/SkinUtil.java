@@ -9,10 +9,6 @@ import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.util.ClientUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class SkinUtil {
 	//From the lost FTBLib version
 	public static ResourceLocation getSkinResourceLocationByDisplayName(final String displayName) {
@@ -38,4 +34,15 @@ public class SkinUtil {
 		}
 		return null;
 	}
+	
+	public static class CachedSkin {
+		public ResourceLocation skin;
+		public long timestamp;
+		
+		public CachedSkin(ResourceLocation skin, long timestamp) {
+			this.skin = skin;
+			this.timestamp = timestamp;
+		}
+	}
+	
 }
