@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 /* Class responsible for drawing player faces in the tab menu */
-public class GameOverlayGuiHandler extends GuiIngame{
+public class GameOverlayGuiHandler extends GuiIngame {
 
     FontRenderer fontRenderer;
 
@@ -111,7 +111,7 @@ public class GameOverlayGuiHandler extends GuiIngame{
                         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
                         PacketHandler.net.sendToServer(msg);
                         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName);
+                        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName, mc.theWorld.getPlayerEntityByName(displayName) == null ? null : mc.theWorld.getPlayerEntityByName(displayName).getUniqueID());
                     } else {
                         ResourceLocation rl;
                         File imageFile = ClientSkinUtil.getSkinFile(OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName));

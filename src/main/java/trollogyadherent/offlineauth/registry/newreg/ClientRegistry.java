@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
-import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -42,12 +41,9 @@ public class ClientRegistry {
         return null;
     }
 
-    public void insert(String skinName, ResourceLocation skinResourceLocation, EntityPlayer epmp, CapeObject capeObject, String displayName) {
-        if (epmp == null) {
-            //return;
-        }
+    public void insert(String skinName, ResourceLocation skinResourceLocation, EntityPlayer epmp, CapeObject capeObject, String displayName, UUID uuid) {
         if (getPlayerEntityByDisplayName(displayName) == null) {
-            this.playerEntities.add(new Data(skinName, skinResourceLocation, epmp, capeObject, displayName));
+            this.playerEntities.add(new Data(skinName, skinResourceLocation, epmp, capeObject, displayName, uuid));
         } else if (getDataByDisplayName(displayName) != null) {
             if (skinName != null)
                 setSkinName(displayName, skinName);
@@ -57,6 +53,8 @@ public class ClientRegistry {
                 setEntityPlayer(displayName, epmp);
             if (capeObject != null)
                 setCapeObject(displayName, capeObject);
+            if (uuid != null)
+                setUUID(displayName, uuid);
         }
     }
 
@@ -68,24 +66,13 @@ public class ClientRegistry {
         }
         return null;
     }
-    
-    //Not working?
-    public Data getDataByUUID(UUID uuid) {
+
+    public String getDisplayNameByUUID(UUID uuid) {
         for (Data data : this.playerEntities) {
-            if(data.entityPlayer != null) {
-                if (data.entityPlayer.getUniqueID().equals(uuid)) {
-                    return data;
+            if(data.uuid != null) {
+                if (data.uuid.equals(uuid)) {
+                    return data.displayName;
                 }
-            }
-        }
-        return null;
-    }
-    
-    
-    public String getDisplayNameByUUID(String uuid) {
-        for (Data data : this.playerEntities) {
-            if(Util.offlineUUID(data.displayName).equals(uuid)){
-                return data.displayName;
             }
         }
         return null;
@@ -173,6 +160,14 @@ public class ClientRegistry {
         }
         data.capeObject = capeObject;
     }
+    
+    public void setUUID(String displayName, UUID uuid) {
+        Data data = getDataByDisplayName(displayName);
+        if (data == null) {
+            return;
+        }
+        data.uuid = uuid;
+    }
 
     public void clear() {
         this.playerEntities = new ArrayList<>();
@@ -186,14 +181,17 @@ public class ClientRegistry {
         public boolean skinNameIsBeingQueried;
         public ResourceLocation tabMenuResourceLocation;
         public CapeObject capeObject;
+    
+        public UUID uuid;
 
-        Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer, CapeObject capeObject, String displayName) {
+        Data (String skinName, ResourceLocation skinResourceLocation, EntityPlayer entityPlayer, CapeObject capeObject, String displayName, UUID uuid) {
             this.skinName = skinName;
             this.skinResourceLocation = skinResourceLocation;
             this.entityPlayer = entityPlayer;
             this.skinNameIsBeingQueried = false;
             this.capeObject = capeObject;
             this.displayName = displayName;
+            this.uuid = uuid;
         }
     }
 }

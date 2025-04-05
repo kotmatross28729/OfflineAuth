@@ -56,7 +56,7 @@ public class ClientEventListener {
 
         //System.out.println("Detected player join event, we joined");
 
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName, ((EntityPlayer) e.entity).getUniqueID());
 
         /* Asking server for data about us, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
@@ -84,7 +84,7 @@ public class ClientEventListener {
         String displayName = ((AbstractClientPlayer) e.entity).getDisplayName();
 
         //System.out.println("Detected player join event: " + displayName);
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName, ((EntityPlayer) e.entity).getUniqueID());
         /* Asking server for data about this guy, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
         PacketHandler.net.sendToServer(msg);
@@ -180,7 +180,7 @@ public class ClientEventListener {
 
         String displayName = player.getDisplayName();
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName, mc.thePlayer.getUniqueID());
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -189,7 +189,7 @@ public class ClientEventListener {
 
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName, mc.thePlayer.getUniqueID());
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -257,27 +257,13 @@ public class ClientEventListener {
 
         EntityPlayer entityPlayerMP = e.entityPlayer;
         String displayName = entityPlayerMP.getDisplayName();
-
-        ////////////////////////////7
-        /*GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-
-        GL11.glDepthMask(!entityPlayerMP.isInvisible());
-
-        char c0 = 61680;
-        int j = c0 % 65536;
-        int k = c0 / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-         */
-        //////////////////////////////
-
+        
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) != null && OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
             OfflineAuth.varInstanceClient.clientRegistry.setEntityPlayer(displayName, entityPlayerMP);
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName, entityPlayerMP.getUniqueID());
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -285,7 +271,7 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName, entityPlayerMP.getUniqueID());
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
