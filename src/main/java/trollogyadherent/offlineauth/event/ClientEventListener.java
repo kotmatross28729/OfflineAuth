@@ -56,7 +56,7 @@ public class ClientEventListener {
 
         //System.out.println("Detected player join event, we joined");
 
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName, ((EntityPlayer) e.entity).getUniqueID());
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
 
         /* Asking server for data about us, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
@@ -84,7 +84,7 @@ public class ClientEventListener {
         String displayName = ((AbstractClientPlayer) e.entity).getDisplayName();
 
         //System.out.println("Detected player join event: " + displayName);
-        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName, ((EntityPlayer) e.entity).getUniqueID());
+        OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
         /* Asking server for data about this guy, adding to playerreg there */
         IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
         PacketHandler.net.sendToServer(msg);
@@ -180,7 +180,7 @@ public class ClientEventListener {
 
         String displayName = player.getDisplayName();
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName, mc.thePlayer.getUniqueID());
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -189,7 +189,7 @@ public class ClientEventListener {
 
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName, mc.thePlayer.getUniqueID());
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.thePlayer, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -263,7 +263,7 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName) == null) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName, entityPlayerMP.getUniqueID());
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
@@ -271,7 +271,7 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getSkinNameByDisplayName(displayName) == null && !OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
-            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName, entityPlayerMP.getUniqueID());
+            OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, entityPlayerMP, null, displayName);
             IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
             PacketHandler.net.sendToServer(msg);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);

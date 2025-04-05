@@ -47,6 +47,10 @@ public class Util {
     public static String offlineUUID(String username) {
         return String.valueOf(UUID.nameUUIDFromBytes(("OfflinePlayer:" + username.toLowerCase()).getBytes(Charsets.UTF_8)));
     }
+    
+    public static UUID offlineUUID2(String username) {
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username.toLowerCase()).getBytes(Charsets.UTF_8));
+    }
 
     public static String genSalt() {
         Random r = new SecureRandom();

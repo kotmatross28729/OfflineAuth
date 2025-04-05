@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.gui.GuiPlayerInfo;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
@@ -16,7 +18,9 @@ import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
+import trollogyadherent.offlineauth.util.Util;
 
+import java.util.List;
 import java.util.UUID;
 
 @Mixin(value = PlayerHeadIcon.class, priority = 999)
@@ -57,15 +61,19 @@ public class MixinPlayerHeadIcon {
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$loadOASkin(Minecraft mc, UUID dynamicUUID) {
-		String displayName = OfflineAuth.varInstanceClient.clientRegistry.getDisplayNameByUUID(dynamicUUID);
+		NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
+		List<GuiPlayerInfo> players = (List<GuiPlayerInfo>)handler.playerInfoList;
 		
-		if(SkinUtil.uuidToName.containsKey(dynamicUUID)) {
+		if(!SkinUtil.uuidToName.containsKey(dynamicUUID)) {
+			for(GuiPlayerInfo player : players) {
+				if(Util.offlineUUID2(player.name).equals(dynamicUUID)) {
+					SkinUtil.uuidToName.put(dynamicUUID, player.name);
+				}
+			}
+		} else {
 			return SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID));
-		} else if(displayName != null) {
-			SkinUtil.uuidToName.put(dynamicUUID, displayName);
-			return SkinUtil.getSkinResourceLocationByDisplayName(mc, displayName);
 		}
-		
+
 		return SkinManager.field_152793_a;
 	}
 	

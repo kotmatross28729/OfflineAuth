@@ -29,7 +29,7 @@ public class SkinUtil {
 			IMessage msg = new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
 			PacketHandler.net.sendToServer(msg);
 			OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
-			OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName, mc.theWorld.getPlayerEntityByName(displayName) == null ? null : mc.theWorld.getPlayerEntityByName(displayName).getUniqueID());
+			OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName);
 		}
 		return SkinManager.field_152793_a;
 	}
