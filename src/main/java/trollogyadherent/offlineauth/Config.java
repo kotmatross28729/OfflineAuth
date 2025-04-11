@@ -20,6 +20,7 @@ public class Config {
         public static final boolean saveButtonExits = true; // In auth management, if the "Save" button exits to previous menu, or not
         public static final int manageAuthButtonId = 420;
         public static final boolean facesInTabMenu = true;
+        public static final boolean showQuestionMarkIfUnknown = true;
         public static final boolean showUseKey = true;
         public static final boolean showConfigInAuth = true;
 
@@ -67,6 +68,7 @@ public class Config {
     public static boolean savebuttonExit = Defaults.saveButtonExits;
     public static  int manageAuthButtonId = Defaults.manageAuthButtonId;
     public static boolean facesInTabMenu = Defaults.facesInTabMenu;
+    public static boolean showQuestionMarkIfUnknown = Defaults.showQuestionMarkIfUnknown;
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
 
@@ -118,6 +120,9 @@ public class Config {
 
             Property facesInTabMenuProperty = config.get(Categories.generalClient, "facesInTabMenu", Defaults.facesInTabMenu, "Show player faces in tab menu (disable if causes incompatibility)");
             facesInTabMenu = facesInTabMenuProperty.getBoolean();
+    
+            Property showQuestionMarkIfUnknownProperty = config.get(Categories.generalClient, "showQuestionMarkIfUnknown", Defaults.facesInTabMenu, "Should show question mark if player skin unknown? Otherwise shows steve's face");
+            showQuestionMarkIfUnknown = showQuestionMarkIfUnknownProperty.getBoolean();
 
             //Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
             //debugEnabled = debugEnabledProperty.getBoolean();

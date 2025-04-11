@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 import serverutils.lib.client.ClientUtils;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -42,7 +43,7 @@ public class MixinPlayerHeadIcon {
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$getOASkin() {
-		if(uuid == null) return SkinManager.field_152793_a;
+		if(uuid == null) return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityClientPlayerMP thePlayer = mc.thePlayer;
@@ -74,7 +75,7 @@ public class MixinPlayerHeadIcon {
 			return SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID));
 		}
 
-		return SkinManager.field_152793_a;
+		return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 	}
 	
 }

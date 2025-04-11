@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.Tags;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.registry.newreg.ClientRegistry;
@@ -48,6 +49,8 @@ public class VarInstanceClient {
     public CapeObject singlePlayerCapeObject = null;
     public ResourceLocation singlePlayerSkinResourceLocation = null;
     public String displayNameBeforeServerJoin = null;
+    
+    public ResourceLocation defaultResourceLocation = new ResourceLocation(Tags.MODID, "textures/gui/default.png");
 
     /* Reflection fields */
     public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
