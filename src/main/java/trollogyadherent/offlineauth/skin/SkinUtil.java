@@ -34,4 +34,26 @@ public class SkinUtil {
 		}
 		return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 	}
+	
+	//From lost ftblib fork
+	public static ResourceLocation getSkinResourceLocation(final String displayName) {
+		if (ClientUtil.isSinglePlayer()) {
+			return OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation;
+		}
+		final ResourceLocation r = OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName);
+		if (r != null) {
+			return r;
+		}
+		if (!OfflineAuth.varInstanceClient.clientRegistry.skinNameIsBeingQueried(displayName)) {
+			if (OfflineAuth.varInstanceClient.clientRegistry.getDataByDisplayName(displayName) == null) {
+				OfflineAuth.varInstanceClient.clientRegistry.insert((String)null, (ResourceLocation)null, null, null, displayName);
+			}
+			final IMessage msg = (IMessage)new QuerySkinNameFromServerPacket.SimpleMessage(displayName);
+			PacketHandler.net.sendToServer(msg);
+			OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
+		}
+		return null;
+	}
+	
+	
 }

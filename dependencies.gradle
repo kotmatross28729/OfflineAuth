@@ -57,6 +57,7 @@ dependencies {
     //compile(deobfCurse("ftb-library-legacy-forge-237167:2291433"))
     //compile(deobfCurse("ftb-utilities-forge-237102:2291494"))
     compileOnly name: 'ServerUtilities-2.1.36-pre-dev'
+    compileOnly name: 'tabfaces-1.0.3-master.6+9150fad914-dirty'
 
     compileOnly fileTree(dir: 'libs', include: '*.jar')
     compileOnly fileTree(dir: 'libs', include: '*.zip')
