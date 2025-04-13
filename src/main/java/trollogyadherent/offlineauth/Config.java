@@ -47,7 +47,7 @@ public class Config {
         public static final boolean allowOpsTokenGen = true;
         public static final boolean allowOpsUUIDChange = false;
         public static final boolean allowDisplayNameChange = true;
-        public static final boolean allowOpsDisplayNameChange = true;
+        public static final boolean allowOpsDisplayNameChange = false;
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
         public static final boolean debugEnabled = false;
@@ -68,7 +68,7 @@ public class Config {
     /* Client defaults */
     public static boolean savebuttonExit = Defaults.saveButtonExits;
     public static  int manageAuthButtonId = Defaults.manageAuthButtonId;
-    public static boolean facesInTabMenu = Defaults.facesInTabMenu;
+    public static boolean facesInTabMenu = Defaults.facesInTabMenu; //TODO: if TabFaces is loaded, this should be false by default (better way) | Maybe also check TF configs
     public static boolean showQuestionMarkIfUnknown = Defaults.showQuestionMarkIfUnknown;
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
@@ -86,7 +86,7 @@ public class Config {
     public static boolean allowRegistration = Defaults.allowRegistration;
     public static boolean allowTokenRegistration = Defaults.allowTokenRegistration;
     public static boolean allowSkinUpload = Defaults.allowSkinUpload;
-    public static boolean allowCapeUpload = Defaults.allowCapeUpload;
+    public static boolean allowCapeUpload = Defaults.allowCapeUpload; //TODO: if CPM is loaded, this should be false by default (better way)
     public static String motd = Defaults.motd;
     public static String other = Defaults.other;
     public static String kickMessage = Defaults.kickMessage;

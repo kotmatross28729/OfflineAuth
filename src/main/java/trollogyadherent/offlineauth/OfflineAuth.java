@@ -1,8 +1,16 @@
 package trollogyadherent.offlineauth;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
@@ -12,17 +20,16 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import cpw.mods.fml.common.Loader;
 
-/* TODO: admin command that changes player uuid */
-/* TODO: players should be assigned uuids made up randomly by the server and kept in the db like skins */
-/* TODO: password reset tokens */
-/* TODO: spam prevention, lock registration if mass registration detected*/
-/* TODO: configurable custom default skin (serverside) */
-/* TODO: selectable uuid */
-/* TODO: button to delete the server pubkey from the cache, in case somehow the server configs get yeeten */
 
-// Disregard That, I ...
+///
+/* TODO: password reset tokens */   //See how registration tokens work
+/* TODO: spam prevention, lock registration if mass registration detected*/ //Not sure about implementation
+/* TODO: button to delete the server pubkey from the cache, in case somehow the server configs get yeeten */ //*Almost* the same as skin cache button
+///
+
+/* TODO: DisplayName -> CommandSenderName */
+
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")
 public class OfflineAuth {
@@ -40,12 +47,9 @@ public class OfflineAuth {
     public static VarInstanceServer varInstanceServer;
     public static boolean DEBUG_MODE;
     public final static int maxPngDimension = 2500;
-
-
     public static boolean isEFRLoaded;
     public static boolean isWitcheryLoaded;
     public static boolean isCMMLoaded;
-
     public static boolean isSSBLoaded;
 
 
@@ -101,7 +105,7 @@ public class OfflineAuth {
     public void serverStopped(FMLServerStoppedEvent event) {
         proxy.serverStopped(event);
     }
-
+    
     public static boolean isDebugMode() {
         if (Config.config != null) {
             return (Config.debugEnabled || DEBUG_MODE);
@@ -118,7 +122,6 @@ public class OfflineAuth {
     public static void info(String message) {
         LOG.info(message);
     }
-
     public static void warn(String message) {
         LOG.warn(message);
     }
