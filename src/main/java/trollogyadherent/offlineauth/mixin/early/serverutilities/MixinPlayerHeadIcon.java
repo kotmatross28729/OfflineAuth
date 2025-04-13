@@ -72,7 +72,7 @@ public class MixinPlayerHeadIcon {
 				}
 			}
 		} else {
-			return SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID));
+			return SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID), false);
 		}
 
 		return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
