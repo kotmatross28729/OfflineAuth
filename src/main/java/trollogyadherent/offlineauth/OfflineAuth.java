@@ -28,9 +28,6 @@ import java.security.cert.CertificateException;
 /* TODO: button to delete the server pubkey from the cache, in case somehow the server configs get yeeten */ //*Almost* the same as skin cache button
 ///
 
-/* TODO: DisplayName -> CommandSenderName */
-
-
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")
 public class OfflineAuth {
 

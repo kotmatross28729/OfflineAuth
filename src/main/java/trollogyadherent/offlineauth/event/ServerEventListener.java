@@ -155,6 +155,9 @@ public class ServerEventListener {
         if (!(e.entity instanceof EntityPlayerMP)) {
             return;
         }
+//         "Okay, for some fucking reason, server and client use this field DIFFERENTLY. Some have it obfuscated, SOME DO NOT
+//          Fucking forge, fucking mcp, AND FUCKING I, because I didn't find out about it before"
+//              - My attempt (torture) to remake everything on commandSenderName (this is fucking impossible), @Kotmatross28729 - 04.13.25
         String displayName = (String) OfflineAuth.varInstanceServer.displaynameField.get(e.entity);
         if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(displayName)) {
             if (e.isCancelable()) {
