@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import trollogyadherent.offlineauth.skin.SkinUtil;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 @Mixin(value = ClientRegistry.class, priority = 999)
 public class MixinClientRegistry {
@@ -24,10 +25,12 @@ public class MixinClientRegistry {
 			cir.setReturnValue(VarInstanceClient.minecraftRef.thePlayer.getLocationSkin());
 		}
 		
-		ResourceLocation oaSkin = null;
+		ResourceLocation oaSkin;
 		
 		if(VarInstanceClient.minecraftRef.theWorld != null) {
 			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(VarInstanceClient.minecraftRef, displayName, true);
+		} else {
+			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(displayName);
 		}
 		
 		if (oaSkin != null) {

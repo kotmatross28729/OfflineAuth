@@ -17,6 +17,7 @@ import trollogyadherent.offlineauth.request.Request;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.rest.ResponseObject;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -48,6 +49,7 @@ public class GuiLogin extends GuiScreen {
     private GuiButton changePW;
     private GuiButton changeDisplayName;
     private GuiButton uploadSkin;
+    private GuiButton clearSkinCache;
     private GuiButton deleteAccount;
     private GuiButton save;
     private GuiCheckBox useKey;
@@ -103,6 +105,8 @@ public class GuiLogin extends GuiScreen {
                 break;
             case 10:
                 actionTogglePWvisibility();
+            case 11:
+                actionClearSkinCache();
         }
     }
 
@@ -223,10 +227,14 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.uploadSkin);
         this.buttonList.add(this.deleteAccount);
         this.buttonList.add(this.togglePWButton);
-
+        
+        //TODO: message if successful like check registration?
+        this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
         this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.config"));
+        if(!Config.clearSkinCacheOnLogin)
+            this.buttonList.add(this.clearSkinCache);
         this.buttonList.add(this.config);
         this.buttonList.add(this.cancel);
         this.buttonList.add(this.save);
@@ -665,5 +673,9 @@ public class GuiLogin extends GuiScreen {
     public void actionUploadSkin() {
         actionSave(true, false);
         Minecraft.getMinecraft().displayGuiScreen(new SkinManagmentGUI(Minecraft.getMinecraft().currentScreen));
+    }
+    
+    public void actionClearSkinCache() {
+        ClientSkinUtil.clearSkinCache();
     }
 }

@@ -46,7 +46,9 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
         if (ctx.side.isClient() && message.exchangecode == 0)
         {
             /* Deleting skin cache */
-            ClientSkinUtil.clearSkinCache();
+            if(Config.clearSkinCacheOnLogin) {
+                ClientSkinUtil.clearSkinCache();
+            }
 
             OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
             if (oasd == null) {

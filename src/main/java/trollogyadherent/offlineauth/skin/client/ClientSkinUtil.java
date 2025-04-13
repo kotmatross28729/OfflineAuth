@@ -68,6 +68,28 @@ public class ClientSkinUtil {
             return null;
         }
     }
+    
+    
+    public static BufferedImage bufferedImageFromskinCacheQuiet(String name) {
+        try {
+            if (!Util.pngIsSane(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"))) {
+                return null;
+            }
+            BufferedImage result = ImageIO.read(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"));
+            if (result == null) {
+                return null;
+            }
+            if(!OfflineAuth.isSSBLoaded) {
+                if (result.getHeight() == 64) {
+                    result = new LegacyConversion().convert(result);
+                }
+            }
+            return result;
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
 
     public static void loadTexture(BufferedImage bufferedImage, ResourceLocation resourceLocation) {
         if (bufferedImage == null || resourceLocation == null) {
@@ -83,6 +105,16 @@ public class ClientSkinUtil {
 
     public static ResourceLocation loadSkinFromCache(String skinName) {
         BufferedImage img = bufferedImageFromskinCache(skinName);
+        if (img == null) {
+            return null;
+        }
+        ResourceLocation location = new ResourceLocation("offlineauth", "skins/" + skinName);
+        loadTexture(img, location);
+        return location;
+    }
+    
+    public static ResourceLocation loadSkinFromCacheQuiet(String skinName) {
+        BufferedImage img = bufferedImageFromskinCacheQuiet(skinName);
         if (img == null) {
             return null;
         }

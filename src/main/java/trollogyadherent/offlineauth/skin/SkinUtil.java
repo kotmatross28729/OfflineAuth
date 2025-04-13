@@ -15,12 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SkinUtil {
-	public static Map<UUID, String> uuidToName = new HashMap<>();
 	
-	//TODO: Can't send QuerySkinNameFromServerPacket without login? (no faces in server sel. menu)
-	//	- clientRegistry clears at server menu
-	//	- getSkinNameByDisplayName... / skinNameIsBeingQueried check always false
-	//	- returns default
+	//For ServerUtilities compat
+	public static Map<UUID, String> uuidToName = new HashMap<>();
+
 	public static ResourceLocation getSkinResourceLocationByDisplayName(Minecraft mc, final String displayName, boolean nullable) {
 		if (ClientUtil.isSinglePlayer()) {
 			return OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation;
@@ -38,7 +36,7 @@ public class SkinUtil {
 		}
 		return nullable ? null : Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 	}
-	
+
 	//From lost ftblib fork
 //	public static ResourceLocation getSkinResourceLocation(final String displayName) {
 //		if (ClientUtil.isSinglePlayer()) {

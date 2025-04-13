@@ -13,6 +13,7 @@ offlineauth.guilogin.btn.delete_account=Delete Account
 offlineauth.guilogin.btn.change_password=Change Password
 offlineauth.guilogin.btn.change_name=Change Name
 offlineauth.guilogin.btn.upload_skin=Skins
+offlineauth.guilogin.btn.clear_cache=Clear skin cache
 offlineauth.guilogin.btn.save=Save
 offlineauth.guilogin.btn.cancel=Cancel
 offlineauth.guilogin.btn.config=Config

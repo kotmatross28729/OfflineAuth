@@ -20,7 +20,7 @@ public class OfflineAuthLateMixins implements ILateMixinLoader {
 		
 		if (loadedMods.contains("tabfaces")) {
 			mixins.add("tabfaces.MixinClientRegistry"); //Tab menu | Chat : ✅
-			//mixins.add("tabfaces.MixinClientUtil");
+			mixins.add("tabfaces.MixinClientUtil"); 	//Server menu     : 🟧
 		}
 		
 		return mixins;

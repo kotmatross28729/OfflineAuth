@@ -23,6 +23,7 @@ public class Config {
         public static final boolean showQuestionMarkIfUnknown = true;
         public static final boolean showUseKey = true;
         public static final boolean showConfigInAuth = true;
+        public static final boolean clearSkinCacheOnLogin = true;
 
         /* Client - Custom Main Menu integration */
         public static final String cmmDefaultServerIp = "localhost";
@@ -71,6 +72,7 @@ public class Config {
     public static boolean showQuestionMarkIfUnknown = Defaults.showQuestionMarkIfUnknown;
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
+    public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
 
     /* Client - Custom Main Menu defaults */
     public static String cmmDefaultServerIp = Defaults.cmmDefaultServerIp;
@@ -121,8 +123,11 @@ public class Config {
             Property facesInTabMenuProperty = config.get(Categories.generalClient, "facesInTabMenu", Defaults.facesInTabMenu, "Show player faces in tab menu (disable if causes incompatibility)");
             facesInTabMenu = facesInTabMenuProperty.getBoolean();
     
-            Property showQuestionMarkIfUnknownProperty = config.get(Categories.generalClient, "showQuestionMarkIfUnknown", Defaults.facesInTabMenu, "Should show question mark if player skin unknown? Otherwise shows steve's face");
+            Property showQuestionMarkIfUnknownProperty = config.get(Categories.generalClient, "showQuestionMarkIfUnknown", Defaults.showQuestionMarkIfUnknown, "Should show question mark if player skin unknown? Otherwise shows steve's face");
             showQuestionMarkIfUnknown = showQuestionMarkIfUnknownProperty.getBoolean();
+    
+            Property clearSkinCacheOnLoginProperty = config.get(Categories.generalClient, "clearSkinCacheOnLogin", Defaults.clearSkinCacheOnLogin, "Should clear skin cache when logging into the server. When false, useful for integration with TabFaces's server selection menu");
+            clearSkinCacheOnLogin = clearSkinCacheOnLoginProperty.getBoolean();
 
             //Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
             //debugEnabled = debugEnabledProperty.getBoolean();
