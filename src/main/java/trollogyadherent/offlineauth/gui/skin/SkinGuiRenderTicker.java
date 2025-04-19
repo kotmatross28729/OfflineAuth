@@ -2,7 +2,6 @@ package trollogyadherent.offlineauth.gui.skin;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -22,6 +21,7 @@ import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.gui.skin.util.EntityUtil;
@@ -34,8 +34,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SideOnly(Side.CLIENT)
 public class SkinGuiRenderTicker
@@ -313,7 +317,7 @@ public class SkinGuiRenderTicker
             OfflineAuth.error("Error loading skin image " + skinName);
             return;
         }
-        if(!OfflineAuth.isSSBLoaded) {
+        if(Config.useLegacyConversion) {
             if (bufferedImage.getHeight() == 64) {
                 bufferedImage = new LegacyConversion().convert(bufferedImage);
             }

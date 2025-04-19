@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.util.GifDecoder;
@@ -55,7 +56,7 @@ public class ClientSkinUtil {
             if (result == null) {
                 return null;
             }
-            if(!OfflineAuth.isSSBLoaded) {
+            if(Config.useLegacyConversion) {
                 if (result.getHeight() == 64) {
                     result = new LegacyConversion().convert(result);
                 }
@@ -79,7 +80,7 @@ public class ClientSkinUtil {
             if (result == null) {
                 return null;
             }
-            if(!OfflineAuth.isSSBLoaded) {
+            if(Config.useLegacyConversion) {
                 if (result.getHeight() == 64) {
                     result = new LegacyConversion().convert(result);
                 }

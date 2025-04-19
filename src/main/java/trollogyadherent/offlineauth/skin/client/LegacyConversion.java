@@ -9,8 +9,7 @@ public class LegacyConversion {
     private int imageWidth;
     private int imageHeight;
 
-    public BufferedImage convert(BufferedImage newtype)
-    {
+    public BufferedImage convert(BufferedImage newtype) {
         imageWidth = 64;
         imageHeight = 32;
 
@@ -28,8 +27,7 @@ public class LegacyConversion {
         return localBufferedImage;
     }
 
-    private boolean hasTransparency(int p_hasTransparency_1_, int p_hasTransparency_2_, int p_hasTransparency_3_, int p_hasTransparency_4_)
-    {
+    private boolean hasTransparency(int p_hasTransparency_1_, int p_hasTransparency_2_, int p_hasTransparency_3_, int p_hasTransparency_4_) {
         for (int i = p_hasTransparency_1_; i < p_hasTransparency_3_; i++)
         {
             for (int j = p_hasTransparency_2_; j < p_hasTransparency_4_; j++)
@@ -42,15 +40,13 @@ public class LegacyConversion {
         return false;
     }
 
-    private void setAreaOpaque(int p_setAreaOpaque_1_, int p_setAreaOpaque_2_, int p_setAreaOpaque_3_, int p_setAreaOpaque_4_)
-    {
+    private void setAreaOpaque(int p_setAreaOpaque_1_, int p_setAreaOpaque_2_, int p_setAreaOpaque_3_, int p_setAreaOpaque_4_) {
         for (int i = p_setAreaOpaque_1_; i < p_setAreaOpaque_3_; i++)
             for (int j = p_setAreaOpaque_2_; j < p_setAreaOpaque_4_; j++)
                 imageData[(i + j * imageWidth)] |= -16777216;
     }
 
-    private void setAreaTransparent(int p_setAreaTransparent_1_, int p_setAreaTransparent_2_, int p_setAreaTransparent_3_, int p_setAreaTransparent_4_)
-    {
+    private void setAreaTransparent(int p_setAreaTransparent_1_, int p_setAreaTransparent_2_, int p_setAreaTransparent_3_, int p_setAreaTransparent_4_) {
         if (hasTransparency(p_setAreaTransparent_1_, p_setAreaTransparent_2_, p_setAreaTransparent_3_, p_setAreaTransparent_4_))
             return;
 

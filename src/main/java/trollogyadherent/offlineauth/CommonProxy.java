@@ -28,7 +28,7 @@ public class CommonProxy {
         if (Util.isServer()) {
             OfflineAuth.varInstanceServer = new VarInstanceServer();
         }
-
+        
         /* Config */
         OfflineAuth.confFile = event.getSuggestedConfigurationFile();
         if (Util.isServer()) {

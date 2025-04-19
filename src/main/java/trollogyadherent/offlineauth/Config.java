@@ -19,11 +19,13 @@ public class Config {
         /* Client category defaults */
         public static final boolean saveButtonExits = true; // In auth management, if the "Save" button exits to previous menu, or not
         public static final int manageAuthButtonId = 420;
-        public static final boolean facesInTabMenu = true;
+        public static final boolean facesInTabMenu = !OfflineAuth.isTFLoaded;
         public static final boolean showQuestionMarkIfUnknown = true;
         public static final boolean showUseKey = true;
         public static final boolean showConfigInAuth = true;
         public static final boolean clearSkinCacheOnLogin = true;
+    
+        public static final boolean useLegacyConversion = !OfflineAuth.isSSBLoaded && !OfflineAuth.isCPMLoaded;
 
         /* Client - Custom Main Menu integration */
         public static final String cmmDefaultServerIp = "localhost";
@@ -38,7 +40,7 @@ public class Config {
         public static final boolean allowRegistration = true;
         public static final boolean allowTokenRegistration = true;
         public static final boolean allowSkinUpload = true;
-        public static final boolean allowCapeUpload = true;
+        public static final boolean allowCapeUpload = !OfflineAuth.isCPMLoaded;
         public static final String motd = "Hello World"; //unused
         public static final String other = "Sneed's Feed & Seed"; //unused
         public static final String kickMessage = "You are not registered on this server!";
@@ -73,7 +75,9 @@ public class Config {
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
     public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
-
+    
+    public static boolean useLegacyConversion = Defaults.useLegacyConversion;
+    
     /* Client - Custom Main Menu defaults */
     public static String cmmDefaultServerIp = Defaults.cmmDefaultServerIp;
     public static int cmmDefaultServerPort = Defaults.cmmDefaultServerPort;
@@ -86,7 +90,7 @@ public class Config {
     public static boolean allowRegistration = Defaults.allowRegistration;
     public static boolean allowTokenRegistration = Defaults.allowTokenRegistration;
     public static boolean allowSkinUpload = Defaults.allowSkinUpload;
-    public static boolean allowCapeUpload = Defaults.allowCapeUpload; //TODO: if CPM is loaded, this should be false by default (better way)
+    public static boolean allowCapeUpload = Defaults.allowCapeUpload;
     public static String motd = Defaults.motd;
     public static String other = Defaults.other;
     public static String kickMessage = Defaults.kickMessage;
@@ -128,7 +132,10 @@ public class Config {
     
             Property clearSkinCacheOnLoginProperty = config.get(Categories.generalClient, "clearSkinCacheOnLogin", Defaults.clearSkinCacheOnLogin, "Should clear skin cache when logging into the server. When false, useful for integration with TabFaces's server selection menu");
             clearSkinCacheOnLogin = clearSkinCacheOnLoginProperty.getBoolean();
-
+    
+            Property useLegacyConversionProperty = config.get(Categories.generalClient, "useLegacyConversion", Defaults.useLegacyConversion, "Whether to convert the skin to the old format. If you don't have SSB or CPM installed, it's better to leave it true");
+            useLegacyConversion = useLegacyConversionProperty.getBoolean();
+            
             //Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
             //debugEnabled = debugEnabledProperty.getBoolean();
 

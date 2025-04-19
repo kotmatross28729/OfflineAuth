@@ -13,12 +13,19 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.rest.OAServerData;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -152,7 +159,58 @@ public class Util {
             return "";
         }
     }
-
+    
+    //TODO: test this? (I don't have ipv6 + I'm not even sure if it's possible to run a server on it (it's probably possible, but I don't know how))
+    
+    //!IPv6 test
+    public static String getIPv6(ServerData serverData) {
+        if (serverData == null) {
+            return null;
+        }
+        return getIPv6(serverData.serverIP);
+    }
+    public static String getIPv6(String ipport) {
+        if (ipport == null) {
+            return null;
+        }
+        if (ipport.startsWith("[")) { //V6
+            int endIndex = ipport.indexOf("]");
+            if (endIndex != -1) {
+                return ipport.substring(1, endIndex);
+            }
+        } else { //V4
+            int colonIndex = ipport.indexOf(":");
+            if (colonIndex != -1) {
+                return ipport.substring(0, colonIndex);
+            }
+        }
+        return ipport;
+    }
+    public static String getPortv6(ServerData serverData) {
+        if (serverData == null) {
+            return "";
+        }
+        return getPortv6(serverData.serverIP);
+    }
+    public static String getPortv6(String ipport) {
+        if (ipport == null) {
+            return "";
+        }
+        if (ipport.startsWith("[")) { //V6
+            int endIndex = ipport.indexOf("]");
+            if (endIndex != -1 && endIndex + 1 < ipport.length() && ipport.charAt(endIndex + 1) == ':') {
+                return ipport.substring(endIndex + 2);
+            }
+        } else { //V4
+            int colonIndex = ipport.indexOf(":");
+            if (colonIndex != -1) {
+                return ipport.substring(colonIndex + 1);
+            }
+        }
+        return "";
+    }
+    //!IPv6 test
+    
     /* Loads image from File to String, encoded inh base64 */
     public static String fileToBs64(File file) throws IOException {
         byte[] bytes = FileUtils.readFileToByteArray(file);

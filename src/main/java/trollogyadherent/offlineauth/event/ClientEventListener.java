@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
@@ -310,7 +311,7 @@ public class ClientEventListener {
                 e_.printStackTrace();
                 return;
             }
-            if(!OfflineAuth.isSSBLoaded) {
+            if(Config.useLegacyConversion) {
                 if (bufferedImage.getHeight() == 64) {
                     bufferedImage = new LegacyConversion().convert(bufferedImage);
                 }

@@ -48,21 +48,26 @@ public class OfflineAuth {
     public static boolean isWitcheryLoaded;
     public static boolean isCMMLoaded;
     public static boolean isSSBLoaded;
+    public static boolean isTFLoaded;
+    public static boolean isCPMLoaded;
 
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc, and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
-        LOG = event.getModLog();
-        String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
-        DEBUG_MODE = debugVar != null;
-        proxy.preInit(event);
-
         isEFRLoaded = Loader.isModLoaded("etfuturum");
         isWitcheryLoaded = Loader.isModLoaded("witchery");
         isCMMLoaded = Loader.isModLoaded("CustomMainMenu");
         isSSBLoaded = Loader.isModLoaded("simpleskinbackport");
+    
+        isTFLoaded = Loader.isModLoaded("tabfaces");
+        isCPMLoaded = Loader.isModLoaded("customplayermodels");
+        
+        LOG = event.getModLog();
+        String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
+        DEBUG_MODE = debugVar != null;
+        proxy.preInit(event);
     }
 
     @Mod.EventHandler
