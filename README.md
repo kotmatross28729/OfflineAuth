@@ -3,6 +3,9 @@ Beta Minecraft authentication system contained in a Forge mod. (Please note the 
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
 
+### Wiki
+[OfflineAuth wiki](https://github.com/kotmatross28729/OfflineAuth/wiki)
+
 ### Showcase
 [youtube.com/watch?v=mB4DD_z5lvQ](https://www.youtube.com/watch?v=mB4DD_z5lvQ)
 
