@@ -36,7 +36,7 @@ public class SkinUtil {
 		}
 		return nullable ? null : Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 	}
-
+	
 	//From lost ftblib fork
 //	public static ResourceLocation getSkinResourceLocation(final String displayName) {
 //		if (ClientUtil.isSinglePlayer()) {

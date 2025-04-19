@@ -57,8 +57,14 @@ public class ClientSkinUtil {
                 return null;
             }
             if(Config.useLegacyConversion) {
-                if (result.getHeight() == 64) {
-                    result = new LegacyConversion().convert(result);
+                //1:1 -> 2:1
+                if (result.getWidth() == result.getHeight()) {
+                    result = new LegacyConversion().convertToOld(result);
+                }
+            } else {
+                //2:1 -> 1:1
+                if (result.getWidth() / result.getHeight() == 2) {
+                    result = new LegacyConversion().convertToNew(result);
                 }
             }
             return result;
@@ -81,8 +87,14 @@ public class ClientSkinUtil {
                 return null;
             }
             if(Config.useLegacyConversion) {
-                if (result.getHeight() == 64) {
-                    result = new LegacyConversion().convert(result);
+                //1:1 -> 2:1
+                if (result.getWidth() == result.getHeight()) {
+                    result = new LegacyConversion().convertToOld(result);
+                }
+            } else {
+                //2:1 -> 1:1
+                if (result.getWidth() / result.getHeight() == 2) {
+                    result = new LegacyConversion().convertToNew(result);
                 }
             }
             return result;

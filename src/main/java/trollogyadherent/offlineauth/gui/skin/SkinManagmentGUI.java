@@ -1,13 +1,11 @@
 package trollogyadherent.offlineauth.gui.skin;
 
 import cpw.mods.fml.client.config.GuiCheckBox;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.resources.*;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -28,12 +26,15 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SkinManagmentGUI extends GuiScreen {
@@ -317,7 +318,7 @@ public class SkinManagmentGUI extends GuiScreen {
                             }
                         }
                         status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format("offlineauth.skingui.sp_cape_set");
-                        if (this.availableSkinsListGUI.selectedIndex == -1) {
+                        if (this.availableCapesListGUI.selectedIndex == -1) {
                             OfflineAuth.error("Could not get cape name to save as last used!");
                             return;
                         }

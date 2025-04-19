@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import serverutils.lib.client.ClientUtils;
+import serverutils.lib.gui.GuiHelper;
+import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
@@ -25,7 +27,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Mixin(value = PlayerHeadIcon.class, priority = 999)
-public class MixinPlayerHeadIcon {
+public class MixinPlayerHeadIcon extends ImageIcon {
+	
+	public MixinPlayerHeadIcon(ResourceLocation tex) {
+		super(tex);
+	}
 	
 	@Shadow(remap = false)
 	@Final
@@ -39,6 +45,27 @@ public class MixinPlayerHeadIcon {
 	@SideOnly(Side.CLIENT)
 	public void bindTexture() {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(offlineAuth$getOASkin());
+	}
+	
+	/**
+	 * @author kotmatross
+	 * @reason compat
+	 */
+	@Overwrite(remap = false)
+	@SideOnly(Side.CLIENT)
+	public void draw(int x, int y, int w, int h) {
+		this.bindTexture();
+		
+		//Use 64x32
+		if(Config.useLegacyConversion) {
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.125, 0.25, 0.25, 0.5);
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.25, 0.75, 0.5);
+		}
+		//Use 64x64
+		else {
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.125, 0.125, 0.25, 0.25);
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.125, 0.75, 0.25);
+		}
 	}
 	@Unique
 	@SideOnly(Side.CLIENT)

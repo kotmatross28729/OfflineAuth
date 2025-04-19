@@ -318,8 +318,14 @@ public class SkinGuiRenderTicker
             return;
         }
         if(Config.useLegacyConversion) {
-            if (bufferedImage.getHeight() == 64) {
-                bufferedImage = new LegacyConversion().convert(bufferedImage);
+            //1:1 -> 2:1
+            if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
+                bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
+            }
+        } else {
+            //2:1 -> 1:1
+            if (bufferedImage.getWidth() / bufferedImage.getHeight() == 2) {
+                bufferedImage = new LegacyConversion().convertToNew(bufferedImage);
             }
         }
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
