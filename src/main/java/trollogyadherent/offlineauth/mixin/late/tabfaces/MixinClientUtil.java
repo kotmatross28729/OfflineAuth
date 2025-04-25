@@ -29,18 +29,18 @@ public class MixinClientUtil {
 	 * @author kotmatross
 	 * @reason useLegacyConversion compat
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public static void drawPlayerFace(ResourceLocation rl, float xPos, float yPos, float alpha) {
 		if (rl != null) {
 			VarInstanceClient.minecraftRef.getTextureManager().bindTexture(rl);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
 			
-			//Use 64x32
+			//Use 2:1 (64x32)
 			if(Config.useLegacyConversion) {
 				offlineAuth$drawTexturedRect(xPos, yPos, 8, 8, 0.125, 0.25, 0.25, 0.5);
 				offlineAuth$drawTexturedRect(xPos, yPos, 8, 8, 0.625, 0.25, 0.75, 0.5);
 			}
-			//Use 64x64
+			//Use 1:1 (64x64)
 			else {
 				offlineAuth$drawTexturedRect(xPos, yPos, 8, 8, 0.125, 0.125, 0.25, 0.25);
 				offlineAuth$drawTexturedRect(xPos, yPos, 8, 8, 0.625, 0.125, 0.75, 0.25);
@@ -85,7 +85,7 @@ public class MixinClientUtil {
 	 * @author kotmatross
 	 * @reason Remove ClientRegistry.Data usage
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public static void drawHoveringTextWithFaces(GuiScreen screen, GameProfile[] profiles, List<String> textLines,
 												 int x, int y) {
 		if (!textLines.isEmpty()) {

@@ -6,17 +6,32 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import spark.Request;
 import spark.Response;
+import static spark.Spark.get;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.staticFiles;
 import spark.utils.IOUtils;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
-import trollogyadherent.offlineauth.packet.packets.DeletePlayerFromClientRegPacket;
+import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.packet.PacketHandler;
+import trollogyadherent.offlineauth.packet.packets.DeletePlayerFromClientRegPacket;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
-import trollogyadherent.offlineauth.request.objects.*;
+import trollogyadherent.offlineauth.request.objects.ChallengeRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.ChangeDisplaynameRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.ChangePasswordRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.DeleteAccountRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.RegisterRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.RemoveSkinOrCapeRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.UploadSkinOrCapeRequestBodyObject;
+import trollogyadherent.offlineauth.request.objects.VibeCheckRequestBodyObject;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
-import trollogyadherent.offlineauth.util.*;
+import trollogyadherent.offlineauth.util.AesKeyUtil;
+import trollogyadherent.offlineauth.util.JsonUtil;
+import trollogyadherent.offlineauth.util.RsaKeyUtil;
+import trollogyadherent.offlineauth.util.ServerUtil;
+import trollogyadherent.offlineauth.util.Util;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -24,14 +39,19 @@ import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Base64;
-
-import static spark.Spark.*;
 
 public class Rest {
 
@@ -72,7 +92,7 @@ public class Rest {
         VibeCheckRequestBodyObject rbo = (VibeCheckRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), VibeCheckRequestBodyObject.class);
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
@@ -96,11 +116,11 @@ public class Rest {
             } else {
                 returnedDisplayName = Database.playerValid(identifier, displayname, password);
             }
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, returnedDisplayName, Config.motd, Config.other, Config.allowDisplayNameChange, 200);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, returnedDisplayName, Config.allowDisplayNameChange, 200);
             return JsonUtil.objectToJson(responseObject);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
     }
@@ -243,13 +263,13 @@ public class Rest {
         }
 
         if (!Config.allowDisplayNameChange) {
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, false, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", false, 500);
         }
 
         ChangeDisplaynameRequestBodyObject rbo = (ChangeDisplaynameRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), ChangeDisplaynameRequestBodyObject.class);
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
@@ -453,7 +473,7 @@ public class Rest {
         ChallengeRequestBodyObject rbo = (ChallengeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), ChallengeRequestBodyObject.class);
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
@@ -589,7 +609,7 @@ public class Rest {
         UploadSkinOrCapeRequestBodyObject rbo =  RestUtil.getUploadSkinOrCapeRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()));
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
@@ -662,7 +682,7 @@ public class Rest {
         RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();
@@ -720,7 +740,7 @@ public class Rest {
         RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);
         if (rbo == null) {
             OfflineAuth.varInstanceServer.keyRegistry.remove(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
-            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.motd, Config.other, Config.allowDisplayNameChange, 500);
+            ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", Config.allowDisplayNameChange, 500);
             return JsonUtil.objectToJson(responseObject);
         }
         String identifier = rbo.getIdentifier();

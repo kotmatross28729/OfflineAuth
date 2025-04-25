@@ -2,14 +2,6 @@ package trollogyadherent.offlineauth.command;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
-import trollogyadherent.offlineauth.Config;
-import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.database.DBPlayerData;
-import trollogyadherent.offlineauth.database.Database;
-import trollogyadherent.offlineauth.rest.StatusResponseObject;
-import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +40,7 @@ public class CommandChangePlayerUUID implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
+        /**
         if (sender instanceof EntityPlayerMP && !Util.isOp((EntityPlayerMP) sender) || sender instanceof EntityPlayerMP && Util.isOp((EntityPlayerMP) sender) && !Config.allowOpsUUIDChange) {
             sender.addChatMessage(new ChatComponentText((char) 167 + "cYou do not have permission to use this command"));
             return;
@@ -80,6 +73,7 @@ public class CommandChangePlayerUUID implements ICommand {
 
         StatusResponseObject res = Database.setPlayerUUID(identifier, "", argString[1], true);
         OfflineAuth.info(sender.getCommandSenderName() + " issued changeuuid command with status " + res.getStatus());
+        */
     }
 
     @Override

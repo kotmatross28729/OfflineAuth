@@ -18,6 +18,10 @@ public class OfflineAuthLateMixins implements ILateMixinLoader {
 	public List<String> getMixins(Set<String> loadedMods) {
 		List<String> mixins = new ArrayList<>();
 		
+		if (loadedMods.contains("serverutilities")) {
+			mixins.add("serverutilities.MixinServerUtilitiesPlayerEventHandler");
+		}
+		
 		if (loadedMods.contains("tabfaces")) {
 			mixins.add("tabfaces.MixinClientRegistry"); //Tab menu | Chat : ✅
 			mixins.add("tabfaces.MixinClientUtil"); 	//Server menu     : 🟧

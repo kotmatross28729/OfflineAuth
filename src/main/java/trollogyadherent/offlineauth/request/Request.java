@@ -33,13 +33,13 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
             if (pubKey == null) {
-                return new ResponseObject(false, false, false, "-", "", "", false, 500);
+                return new ResponseObject(false, false, false, "-", false, 500);
             }
             if (!OfflineAuth.varInstanceClient.checkingForKey) {
                 OfflineAuth.varInstanceClient.checkingForKey = true;
                 Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port, pubKey));
             }
-            return new ResponseObject(false, false, false, "-", "", "", false, 500);
+            return new ResponseObject(false, false, false, "-",  false, 500);
         }
 
         String clientKeyToken = "";
@@ -47,7 +47,7 @@ public class Request {
             String tempToken = getChallengeToken(ip, port, identifier, clientPubKey, clientPrivKey, ServerKeyTokenRegistry.TokenType.VIBECHECK);
             if (tempToken == null) {
                 OfflineAuth.error("clientToken is null!");
-                return new ResponseObject(false, false, false, "-", "", "", false, 500);
+                return new ResponseObject(false, false, false, "-", false, 500);
             }
             clientKeyToken = tempToken;
         }
@@ -61,7 +61,7 @@ public class Request {
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
         if (aesKeyPlusIv == null) {
             OfflineAuth.error("aesKeyPlusIv is null!");
-            return new ResponseObject(false, false, false, "-", "", "", false, 500);
+            return new ResponseObject(false, false, false, "-",false, 500);
         }
 
         post.setEntity(RequestUtil.getVibeCheckRequestBody(aesKeyPlusIv, identifier, displayname, password, clientKeyToken));
@@ -73,7 +73,7 @@ public class Request {
         } catch (Exception e) {
             OfflineAuth.error(e.getMessage());
             //e.printStackTrace();
-            return new ResponseObject(false, false, false, "-", "", "", false, 500);
+            return new ResponseObject(false, false, false, "-", false, 500);
         }
     }
 

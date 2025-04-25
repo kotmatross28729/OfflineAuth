@@ -41,13 +41,11 @@ public class Config {
         public static final boolean allowTokenRegistration = true;
         public static final boolean allowSkinUpload = true;
         public static final boolean allowCapeUpload = !OfflineAuth.isCPMLoaded;
-        public static final String motd = "Hello World"; //unused
-        public static final String other = "Sneed's Feed & Seed"; //unused
         public static final String kickMessage = "You are not registered on this server!";
         public static final boolean userListPublic = false;
         public static final String accountDeletionKickMessage = "Your account has been terminated ;_;";
         public static final boolean allowOpsTokenGen = true;
-        public static final boolean allowOpsUUIDChange = false;
+        public static final boolean blockServerUtilitiesDisplayNameChange = true;
         public static final boolean allowDisplayNameChange = true;
         public static final boolean allowOpsDisplayNameChange = false;
         public static final int maxSkinBytes = 500000;
@@ -91,14 +89,12 @@ public class Config {
     public static boolean allowTokenRegistration = Defaults.allowTokenRegistration;
     public static boolean allowSkinUpload = Defaults.allowSkinUpload;
     public static boolean allowCapeUpload = Defaults.allowCapeUpload;
-    public static String motd = Defaults.motd;
-    public static String other = Defaults.other;
     public static String kickMessage = Defaults.kickMessage;
     public static boolean userListPublic = Defaults.userListPublic;
     public static String accountDeletionKickMessage = Defaults.accountDeletionKickMessage;
     public static boolean allowOpsTokenGen = Defaults.allowOpsTokenGen;
-    public static boolean allowOpsUUIDChange = Defaults.allowOpsUUIDChange;
     public static boolean allowOpsDisplayNameChange = Defaults.allowOpsDisplayNameChange;
+    public static boolean blockServerUtilitiesDisplayNameChange = Defaults.blockServerUtilitiesDisplayNameChange;
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
@@ -194,12 +190,6 @@ public class Config {
             Property allowCapeUploadProperty = config.get(Categories.generalServer, "allowCapeUpload", Defaults.allowSkinUpload, "Allow or disallow uploading of capes");
             allowCapeUpload = allowCapeUploadProperty.getBoolean();
 
-            Property motdProperty = config.get(Categories.generalServer, "motd", Defaults.motd, "Optional MOTD");
-            motd = motdProperty.getString();
-
-            Property otherProperty = config.get(Categories.generalServer, "other", Defaults.other, "Optional other. MOTD2 ??");
-            other = otherProperty.getString();
-
             Property kickMessageProperty = config.get(Categories.generalServer, "kickMessage", Defaults.kickMessage, "Message displayed when an unregistered player gets kicked");
             kickMessage = kickMessageProperty.getString();
 
@@ -212,12 +202,12 @@ public class Config {
             Property allowOpsTokenGenProperty = config.get(Categories.generalServer, "allowOpsTokenGen", Defaults.allowOpsTokenGen, "Allow or disallow OP's to generate invite tokens");
             allowOpsTokenGen = allowOpsTokenGenProperty.getBoolean();
 
-            Property allowOpsUUIDChangeProperty = config.get(Categories.generalServer, "allowOpsUUIDChange", Defaults.allowOpsUUIDChange, "Allow or disallow OP's to change user uuids");
-            allowOpsUUIDChange = allowOpsUUIDChangeProperty.getBoolean();
-
             Property allowOpsDisplayNameChangeProperty = config.get(Categories.generalServer, "allowOpsDisplayNameChange", Defaults.allowOpsDisplayNameChange, "Allow or disallow OP's to change user displaynames");
             allowOpsDisplayNameChange = allowOpsDisplayNameChangeProperty.getBoolean();
-
+    
+            Property blockServerUtilitiesDisplayNameChangeProperty = config.get(Categories.generalServer, "blockServerUtilitiesDisplayNameChange", Defaults.blockServerUtilitiesDisplayNameChange, "Disables the use of nicknames in the Server Utilities, as changing the display name will result in an actual account \"ban\".");
+            blockServerUtilitiesDisplayNameChange = blockServerUtilitiesDisplayNameChangeProperty.getBoolean();
+            
             Property allowDisplayNameChangeProperty = config.get(Categories.generalServer, "allowDisplayNameChange", Defaults.allowDisplayNameChange, "Allow or disallow users to change displaynames");
             allowDisplayNameChange = allowDisplayNameChangeProperty.getBoolean();
 
