@@ -13,6 +13,9 @@ public class LegacyConversion {
     public BufferedImage convertToOld(BufferedImage buffImg) {
         if (buffImg == null)
             return null;
+    
+        if(buffImg.getWidth() == 0 || buffImg.getHeight() == 0) 
+            return null;
         
         imageWidth = buffImg.getWidth();
         imageHeight = buffImg.getHeight() / 2;
@@ -24,9 +27,9 @@ public class LegacyConversion {
 
         imageData = ((DataBufferInt) localBufferedImage.getRaster().getDataBuffer()).getData();
 
-        setAreaOpaque(0, 0, imageHeight, imageHeight/2);
-        setAreaTransparent(imageHeight, 0, imageHeight*2, imageHeight);
-        setAreaOpaque(0, imageHeight/2, imageHeight*2, imageHeight);
+        setAreaOpaque(0,             0,                     imageHeight,  imageHeight/2);
+        setAreaTransparent( imageHeight,          0, imageHeight*2,                   imageHeight);
+        setAreaOpaque(0, imageHeight/2,   imageHeight*2,                   imageHeight);
 
         return localBufferedImage;
     }
@@ -36,44 +39,44 @@ public class LegacyConversion {
         if (buffImg == null)
             return null;
         
+        if(buffImg.getWidth() == 0 || buffImg.getHeight() == 0)
+            return null;
+        
         imageWidth = buffImg.getWidth();
         imageHeight = buffImg.getHeight() * 2;
+        int RATIO = imageHeight / 64;
         
         BufferedImage localBufferedImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics localGraphics = localBufferedImage.getGraphics();
         localGraphics.drawImage(buffImg, 0, 0, null);
         
         //Copy
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(24, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber( 4, imageHeight), getMagicNumber(16, imageHeight), getMagicNumber( 8, imageHeight),getMagicNumber(20, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(28, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(24, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber( 8, imageHeight), getMagicNumber(16, imageHeight), getMagicNumber(12, imageHeight),getMagicNumber(20, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(20, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(16, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber( 8, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(12, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(24, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber( 4, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber( 8, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(28, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(24, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber( 0, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber( 4, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(32, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(28, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber(12, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(16, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(40, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(36, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(44, imageHeight), getMagicNumber(16, imageHeight), getMagicNumber(48, imageHeight),getMagicNumber(20, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(44, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(40, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(16, imageHeight), getMagicNumber(52, imageHeight),getMagicNumber(20, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(36, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(32, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber(48, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(52, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(40, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(36, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber(44, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(48, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(44, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(40, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber(40, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(44, imageHeight),getMagicNumber(32, imageHeight), null);
-        localGraphics.drawImage(localBufferedImage, getMagicNumber(48, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(44, imageHeight), getMagicNumber(64, imageHeight), getMagicNumber(52, imageHeight), getMagicNumber(20, imageHeight), getMagicNumber(56, imageHeight),getMagicNumber(32, imageHeight), null);
-        
+        localGraphics.drawImage(localBufferedImage, 24 * RATIO, 48 * RATIO, 20 * RATIO, 52 * RATIO, 4  * RATIO, 16 * RATIO, 8  * RATIO, 20 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 28 * RATIO, 48 * RATIO, 24 * RATIO, 52 * RATIO, 8  * RATIO, 16 * RATIO, 12 * RATIO, 20 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 20 * RATIO, 52 * RATIO, 16 * RATIO, 64 * RATIO, 8  * RATIO, 20 * RATIO, 12 * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 24 * RATIO, 52 * RATIO, 20 * RATIO, 64 * RATIO, 4  * RATIO, 20 * RATIO, 8  * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 28 * RATIO, 52 * RATIO, 24 * RATIO, 64 * RATIO, 0         , 20 * RATIO, 4  * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 32 * RATIO, 52 * RATIO, 28 * RATIO, 64 * RATIO, 12 * RATIO, 20 * RATIO, 16 * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 40 * RATIO, 48 * RATIO, 36 * RATIO, 52 * RATIO, 44 * RATIO, 16 * RATIO, 48 * RATIO, 20 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 44 * RATIO, 48 * RATIO, 40 * RATIO, 52 * RATIO, 48 * RATIO, 16 * RATIO, 52 * RATIO, 20 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 36 * RATIO, 52 * RATIO, 32 * RATIO, 64 * RATIO, 48 * RATIO, 20 * RATIO, 52 * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 40 * RATIO, 52 * RATIO, 36 * RATIO, 64 * RATIO, 44 * RATIO, 20 * RATIO, 48 * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 44 * RATIO, 52 * RATIO, 40 * RATIO, 64 * RATIO, 40 * RATIO, 20 * RATIO, 44 * RATIO, 32 * RATIO, null);
+        localGraphics.drawImage(localBufferedImage, 48 * RATIO, 52 * RATIO, 44 * RATIO, 64 * RATIO, 52 * RATIO, 20 * RATIO, 56 * RATIO, 32 * RATIO, null);
+    
+    
         localGraphics.dispose();
         imageData = ((DataBufferInt) localBufferedImage.getRaster().getDataBuffer()).getData();
-        setAreaOpaque2(0, 0, imageHeight/2, imageHeight/4);
-        setAreaTransparent2(imageHeight/2, 0, imageHeight, imageHeight/2);
-        setAreaOpaque2(0, imageHeight/4, imageHeight, imageHeight/2);
-        setAreaTransparent2(0, imageHeight/2, imageHeight/4, getMagicNumber(48, imageHeight));
-        setAreaTransparent2(imageHeight/4, imageHeight/2, getMagicNumber(40, imageHeight), getMagicNumber(48, imageHeight));
-        setAreaTransparent2(getMagicNumber(40, imageHeight), imageHeight/2, getMagicNumber(56, imageHeight), getMagicNumber(48, imageHeight));
-        setAreaTransparent2(0, getMagicNumber(48, imageHeight), imageHeight/4, imageHeight);
-        setAreaOpaque2(imageHeight/4, getMagicNumber(48, imageHeight), getMagicNumber(48, imageHeight), imageHeight);
-        setAreaTransparent2(getMagicNumber(48, imageHeight), getMagicNumber(48, imageHeight), imageHeight, imageHeight);
+        setAreaOpaque2(      0        ,  0        , 32 * RATIO, 16 * RATIO);
+        setAreaTransparent2(32 * RATIO,  0        , 64 * RATIO, 32 * RATIO);
+        setAreaOpaque2(      0        , 16 * RATIO, 64 * RATIO, 32 * RATIO);
+        setAreaTransparent2( 0        , 32 * RATIO, 16 * RATIO, 48 * RATIO);
+        setAreaTransparent2(16 * RATIO, 32 * RATIO, 40 * RATIO, 48 * RATIO);
+        setAreaTransparent2(40 * RATIO, 32 * RATIO, 56 * RATIO, 48 * RATIO);
+        setAreaTransparent2( 0        , 48 * RATIO, 16 * RATIO, 64 * RATIO);
+        setAreaOpaque2(     16 * RATIO, 48 * RATIO, 48 * RATIO, 64 * RATIO);
+        setAreaTransparent2(48 * RATIO, 48 * RATIO, 64 * RATIO, 64 * RATIO);
         return localBufferedImage;
-    }
-    
-    //Fucking magic numbers
-    public static int getMagicNumber(int to, int from) {
-        return Math.round(from / ((64F / (float)to)));
     }
     
     private boolean hasTransparency(int p_hasTransparency_1_, int p_hasTransparency_2_, int p_hasTransparency_3_, int p_hasTransparency_4_) {
