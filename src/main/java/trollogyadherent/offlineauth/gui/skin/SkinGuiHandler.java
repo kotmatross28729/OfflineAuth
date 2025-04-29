@@ -28,11 +28,11 @@ public class SkinGuiHandler {
         btnlst.setAccessible(true);
     }
 
-    @SubscribeEvent
-    public void attach(DrawScreenEvent.Pre e) {
-        if (e.gui instanceof GuiOptions) {
-        }
-    }
+//    @SubscribeEvent
+//    public void attach(DrawScreenEvent.Pre e) {
+//        if (e.gui instanceof GuiOptions) {
+//        }
+//    }
 
     @SubscribeEvent
     public void open(InitGuiEvent.Post e) throws IllegalAccessException {
@@ -79,23 +79,24 @@ public class SkinGuiHandler {
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Specials.Pre e) {
+        //TODO: if cape disabled (config) -> return
+        
         if (!(Minecraft.getMinecraft().currentScreen instanceof SkinManagmentGUI)) {
             return;
         }
+        
+        if(SkinGuiRenderTicker.clientPlayerMP == null || SkinGuiRenderTicker.clientPlayerMP.dataWatcher == null) {
+            return;
+        }
+        
         // some voodoo that happens in the minecraft setHideCape function
         byte b0 = SkinGuiRenderTicker.clientPlayerMP.dataWatcher.getWatchableObjectByte(16);
-        SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 1 << /*p_82239_1_*/ 1)));
+        SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, (byte) (b0 | 1 << /*p_82239_1_*/ 1));
         if (!((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).capeCheckbox.isChecked()) {
             return;
         }
         if (((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).elytraCheckbox != null && ((SkinManagmentGUI)Minecraft.getMinecraft().currentScreen).elytraCheckbox.isChecked() && OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() != null) {
             OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject().getCurrentFrame(e.partialRenderTick);
-
-            // some voodoo that happens in the minecraft setHideCape function
-            //byte b0 = SkinGuiRenderTicker.clientPlayerMP.dataWatcher.getWatchableObjectByte(16);
-            //SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 1 << /*p_82239_1_*/ 1)));
-
-
             return;
         }
         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() == null) {

@@ -14,6 +14,8 @@
 
 * Improved compatibility with TabFaces (avoiding Overwrite in `ClientUtil.drawHoveringTextWithFaces`, `MixinClientUtil`)
 
+* (Potentially (need testing)) fixed an issue where the player would sometimes not render in the skin selection menu
+
 ---
 
 # v0.3.04
