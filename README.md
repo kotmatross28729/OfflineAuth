@@ -1,4 +1,4 @@
-# OfflineAuth 1.7.10 (Forge)
+# OfflineAuth 1.7.10 Fork (Forge)
 Beta Minecraft authentication system contained in a Forge mod. (Please note the beta) Please report any bugs, especially security holes.
 
 ![image](https://user-images.githubusercontent.com/19153947/178967503-51b17062-e549-4869-82c9-3e0615dc759f.png)
@@ -6,11 +6,11 @@ Beta Minecraft authentication system contained in a Forge mod. (Please note the 
 ### Wiki
 [OfflineAuth wiki](https://github.com/kotmatross28729/OfflineAuth/wiki)
 
-### Showcase
-[youtube.com/watch?v=mB4DD_z5lvQ](https://www.youtube.com/watch?v=mB4DD_z5lvQ)
 
 ### Motivation
-Microsoft forcing people to migrate from Mojang to Microsoft. Oh, and now chat reports.
+Original: "Microsoft forcing people to migrate from Mojang to Microsoft. Oh, and now chat reports."
+
+My: "Authentication method independent of any external servers (Mojang/Microsoft/Other third party services). A.K.A. My server - My authentication"
 
 ### Tell me more
 This mod runs a small rest server (spark) alongside the main Minecraft process. This keeps everything contained on the server which could even run on a local network, independent of any external auth servers.
@@ -29,15 +29,16 @@ If you are a player:
 
 ### Features
 * Registration and deletion of accounts, changing account password and displayname
-* Working skins and capes implementation, you can even change your skin and cape in-game. Also, single-player support
+* Working skins implementation (with the ability to change them without leaving the game, just re-enter on server). Also, single-player support
 * Allowing registration only to those who have one time tokens (generate those with the `/gentoken` command)
 * Config options can be changed via file or server console
 * End-to-end encryption of credentials
 * Possibility of logging in with a keypair, rather than with a password
-* Backport of player faces in the multiplayer tab menu
-* Integration with [Et Futurum Requiem](https://github.com/Roadhog360/Et-Futurum-Requiem) elytras (you will have to wait for its next release, for now Et Futurum breaks OfflineAuth's skin preview)
+* Backport of player faces in the multiplayer tab menu (But I recommend using [TabFaces](https://github.com/JackOfNoneTrades/TabFaces))
 * Integration with [Custom Main Menu](https://www.curseforge.com/minecraft/mc-mods/custom-main-menu), if a button or label has a name specified in config, a default server auth menu and server join action will be added to them
-* Experimental integration with `FTB Library` and `FTB utils` (skins appearing in the friends menu). You will need a special fork of the first, found [here](https://github.com/trollogyadherent/FTB-Library), and a `GT:MEGA` or `GT:NH` build of `FTB Utils`. `GT:NH` builds can be found [here](https://github.com/GTNewHorizons/FTB-Utilities/releases) (Built against version [1.0.18.7-GTNH](https://github.com/GTNewHorizons/FTB-Utilities/releases/tag/1.0.18.7-GTNH)).
+* Integration with [Server Utilities](https://github.com/GTNewHorizons/ServerUtilities) (skin in the GUIs)
+* Integration with [TabFaces](https://github.com/JackOfNoneTrades/TabFaces) (skin)
+
 
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
@@ -71,8 +72,10 @@ If you are a player:
 
 ### Feel free to help translate the mod, open PR's or send lang files directly to me
 
-### Coming soon (with Et Futurum update):
-![elytra_capes](https://user-images.githubusercontent.com/19153947/181366604-53025903-521f-498c-a2ee-f61b596e15f4.gif)
+[//]: # (### Coming soon &#40;with Et Futurum update&#41;:)
+
+[//]: # (![elytra_capes]&#40;https://user-images.githubusercontent.com/19153947/181366604-53025903-521f-498c-a2ee-f61b596e15f4.gif&#41;)
+
 
 ## Buy me a coffee
 * [ko-fi.com/jackisasubtlejoke](https://ko-fi.com/jackisasubtlejoke)

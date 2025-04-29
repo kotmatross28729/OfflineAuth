@@ -40,7 +40,7 @@ public class Config {
         public static final boolean allowRegistration = true;
         public static final boolean allowTokenRegistration = true;
         public static final boolean allowSkinUpload = true;
-        public static final boolean allowCapeUpload = !OfflineAuth.isCPMLoaded;
+        public static final boolean allowCapeUpload = false;
         public static final String kickMessage = "You are not registered on this server!";
         public static final boolean userListPublic = false;
         public static final String accountDeletionKickMessage = "Your account has been terminated ;_;";
@@ -68,12 +68,11 @@ public class Config {
     /* Client defaults */
     public static boolean savebuttonExit = Defaults.saveButtonExits;
     public static  int manageAuthButtonId = Defaults.manageAuthButtonId;
-    public static boolean facesInTabMenu = Defaults.facesInTabMenu; //TODO: if TabFaces is loaded, this should be false by default (better way) | Maybe also check TF configs
+    public static boolean facesInTabMenu = Defaults.facesInTabMenu;
     public static boolean showQuestionMarkIfUnknown = Defaults.showQuestionMarkIfUnknown;
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
     public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
-    
     public static boolean useLegacyConversion = Defaults.useLegacyConversion;
     
     /* Client - Custom Main Menu defaults */

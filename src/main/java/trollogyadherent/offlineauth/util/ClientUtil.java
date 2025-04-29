@@ -40,8 +40,6 @@ public class ClientUtil {
     }
 
     public static void SaveServerPublicKeyToCache(PublicKey pubKey, String ip, String port) throws IOException {
-
-
         File f = new File(getServerKeyPath(ip, port));
         f.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(f);

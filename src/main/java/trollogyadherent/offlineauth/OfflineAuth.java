@@ -25,7 +25,6 @@ import java.security.cert.CertificateException;
 ///
 /* TODO: password reset tokens */   //See how registration tokens work
 /* TODO: spam prevention, lock registration if mass registration detected*/ //Not sure about implementation
-/* TODO: button to delete the server pubkey from the cache, in case somehow the server configs get yeeten */ //*Almost* the same as skin cache button
 ///
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")

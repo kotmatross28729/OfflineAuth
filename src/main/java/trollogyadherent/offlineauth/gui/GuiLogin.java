@@ -50,6 +50,7 @@ public class GuiLogin extends GuiScreen {
     private GuiButton changeDisplayName;
     private GuiButton uploadSkin;
     private GuiButton clearSkinCache;
+    private GuiButton clearServerPubKey;
     private GuiButton deleteAccount;
     private GuiButton save;
     private GuiCheckBox useKey;
@@ -107,6 +108,8 @@ public class GuiLogin extends GuiScreen {
                 actionTogglePWvisibility();
             case 11:
                 actionClearSkinCache();
+            case 12:
+                actionClearServerPubKey();
         }
     }
 
@@ -230,11 +233,18 @@ public class GuiLogin extends GuiScreen {
         
         //TODO: message if successful, like check registration?
         this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
+    
+        //this.clearServerPubKey = new GuiButton(12, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn."));
+       
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
         this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.config"));
         if(!Config.clearSkinCacheOnLogin)
             this.buttonList.add(this.clearSkinCache);
+    
+        //TODO
+        //this.buttonList.add(this.clearServerPubKey);
+        
         this.buttonList.add(this.config);
         this.buttonList.add(this.cancel);
         this.buttonList.add(this.save);
@@ -678,4 +688,13 @@ public class GuiLogin extends GuiScreen {
     public void actionClearSkinCache() {
         ClientSkinUtil.clearSkinCache();
     }
+    
+    public void actionClearServerPubKey() {
+        OAServerData oasd = Util.getCurrentOAServerData();
+        if(oasd != null && oasd.getIp() != null && oasd.getPort() != null) {
+            Util.clearServerPubKey(oasd.getIp(), oasd.getPort());
+        }
+    }
+    
+    
 }

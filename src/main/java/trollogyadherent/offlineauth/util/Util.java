@@ -58,7 +58,15 @@ public class Util {
     public static UUID offlineUUID2(String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username.toLowerCase()).getBytes(Charsets.UTF_8));
     }
-
+    
+    public static void clearServerPubKey(String ip, String port) {
+        try {
+            FileUtils.forceDelete(new File(ClientUtil.getServerKeyPath(ip, port)));
+        } catch (IOException e) {
+            OfflineAuth.error("Failed to clear server public key cache");
+        }
+    }
+    
     public static String genSalt() {
         Random r = new SecureRandom();
         byte[] salt = new byte[32];
@@ -102,7 +110,7 @@ public class Util {
     public static OAServerData getOAServerDatabyIP(String ip, String port) {
         for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
             if (oasd.getIp().equals(ip) && oasd.getPort().equals(port)) {
-                return  oasd;
+                return oasd;
             }
         }
         return null;
@@ -137,18 +145,16 @@ public class Util {
 
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
     public static String getIP(ServerData serverData) {
+        //return getIPv6(serverData);
+        
         if (serverData == null) {
             return null;
         }
         return serverData.serverIP.split(":")[0];
     }
-
-    /* Basically same as above but for a string of type ip:port */
-    public static String getIP(String ipport) {
-        return ipport.split(":")[0];
-    }
-
     public static String getPort(ServerData serverData) {
+        //return getPortv6(serverData);
+        
         if (serverData == null) {
             return "";
         }
@@ -160,9 +166,15 @@ public class Util {
         }
     }
     
-    //TODO: test this? (I don't have ipv6 + I'm not even sure if it's possible to run a server on it (it's probably possible, but I don't know how))
     
-    //!IPv6 test
+    
+    
+    
+    //TODO: test this? (I don't have ipv6)
+    // Also, mixins -> vanilla -> change to v6 compat
+    // Also, need to tweak all rest classes
+    
+    //!IPv6 test ---START---
     public static String getIPv6(ServerData serverData) {
         if (serverData == null) {
             return null;
@@ -209,7 +221,11 @@ public class Util {
         }
         return "";
     }
-    //!IPv6 test
+    //!IPv6 test ---END---
+    
+    
+    
+    
     
     /* Loads image from File to String, encoded inh base64 */
     public static String fileToBs64(File file) throws IOException {
