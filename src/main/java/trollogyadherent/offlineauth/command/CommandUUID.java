@@ -4,11 +4,13 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.misc.Unused;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Unused
 public class CommandUUID implements ICommand {
     private final List aliases;
 

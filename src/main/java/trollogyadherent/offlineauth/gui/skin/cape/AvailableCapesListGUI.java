@@ -17,6 +17,7 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class AvailableCapesListGUI extends GuiListExtended {
+    
     protected final Minecraft mc;
     public final List capeEntries;
 

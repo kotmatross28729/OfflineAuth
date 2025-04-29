@@ -35,8 +35,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 
-public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.SimpleMessage, IMessage>
-{
+public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.SimpleMessage, IMessage> {
     /* Server to Client: give me your password */
     /* Client to Server; *sends password*. If the hash does not match, player kicked */
     @Override

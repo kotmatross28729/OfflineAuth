@@ -7,7 +7,7 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.ClientUtil;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.security.PublicKey;
 

@@ -11,8 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 /* Basically mojang code but some vars have modified access */
 @SideOnly(Side.CLIENT)
-public class GuiTextFieldCopyForPassword extends Gui
-{
+public class GuiTextFieldCopyForPassword extends Gui {
     final FontRenderer field_146211_a;
     public int xPosition;
     public int yPosition;

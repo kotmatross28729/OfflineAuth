@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 /* Info and credentials for servers */
 public class ClientData {
+    
     /* Used to read the data json file to a string */
     public static String readDatafile () throws IOException {
         return Util.readFile(OfflineAuth.varInstanceClient.datafile);

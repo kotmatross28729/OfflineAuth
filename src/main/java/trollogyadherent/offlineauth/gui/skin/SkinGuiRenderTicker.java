@@ -42,8 +42,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @SideOnly(Side.CLIENT)
-public class SkinGuiRenderTicker
-{
+public class SkinGuiRenderTicker {
     private static Minecraft mcClient;
     private static boolean isRegistered = false;
     private World world;

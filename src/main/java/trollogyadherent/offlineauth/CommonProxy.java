@@ -23,7 +23,7 @@ import java.security.cert.CertificateException;
 public class CommonProxy {
 
     // preInit "Run before anything else. Read your config, create blocks, items,
-    // etc, and register them with the GameRegistry."
+    // etc., and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         if (Util.isServer()) {
             OfflineAuth.varInstanceServer = new VarInstanceServer();

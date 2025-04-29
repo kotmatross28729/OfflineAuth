@@ -8,7 +8,6 @@ import io.netty.buffer.ByteBuf;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
-
 public class DeletePlayerFromClientRegPacket implements IMessageHandler<DeletePlayerFromClientRegPacket.SimpleMessage, IMessage>  {
 
     /* Server to Client: reset your caches */

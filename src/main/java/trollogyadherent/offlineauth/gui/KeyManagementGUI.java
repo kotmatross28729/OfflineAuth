@@ -12,8 +12,8 @@ import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.Util;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

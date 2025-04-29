@@ -1,7 +1,9 @@
 package trollogyadherent.offlineauth.request.objects;
 
+import trollogyadherent.offlineauth.misc.Unused;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 
+@Unused
 public class UploadCapeRequestBodyObject {
     private String identifier;
     private String password;

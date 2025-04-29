@@ -1,7 +1,6 @@
 package trollogyadherent.offlineauth.request.objects;
 
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
-import trollogyadherent.offlineauth.util.RsaKeyUtil;
 
 public class DeleteAccountRequestBodyObject {
     private String identifier;

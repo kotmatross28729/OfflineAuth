@@ -7,15 +7,14 @@ import net.minecraft.client.multiplayer.ServerData;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.CmmErrorConfirmationGUI;
-import trollogyadherent.offlineauth.gui.ConfirmKeyOverwriteGUI;
-import trollogyadherent.offlineauth.gui.KeyManagementGUI;
 import trollogyadherent.offlineauth.rest.OAServerData;
 import trollogyadherent.offlineauth.util.Util;
 
-import java.awt.*;
+import java.awt.Color;
 
 @Optional.Interface(iface = "lumien.custommainmenu.lib.actions.IAction", modid = "CustomMainMenu", striprefs = true)
 public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IAction {
+    
     @Optional.Method(modid = "CustomMainMenu")
     @Override
     public void perform(Object source, lumien.custommainmenu.gui.GuiCustom parent) {

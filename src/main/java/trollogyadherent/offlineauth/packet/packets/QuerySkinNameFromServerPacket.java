@@ -13,8 +13,7 @@ import trollogyadherent.offlineauth.registry.data.ServerPlayerData;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
-public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinNameFromServerPacket.SimpleMessage, IMessage>
-{
+public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinNameFromServerPacket.SimpleMessage, IMessage> {
     /* Client to Server: what is the skin filename for this uuid? */
     /* Server to Client: the filename is X. in case there is none, it returns "0". */
     @Override

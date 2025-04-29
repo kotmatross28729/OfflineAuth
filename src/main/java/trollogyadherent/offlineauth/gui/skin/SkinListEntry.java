@@ -2,7 +2,6 @@ package trollogyadherent.offlineauth.gui.skin;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.matthiasmann.twl.utils.PNGDecoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,16 +12,15 @@ import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class SkinListEntry {
+    
     protected final String skinName;
     protected final Minecraft mc;
 

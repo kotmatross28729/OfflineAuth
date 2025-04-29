@@ -28,7 +28,7 @@ import trollogyadherent.offlineauth.util.Util;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;

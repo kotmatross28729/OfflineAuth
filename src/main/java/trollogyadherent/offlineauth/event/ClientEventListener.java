@@ -35,6 +35,7 @@ import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventListener {
+    
     /* Clears OfflineAuth.playerRegistry List. Otherwise, the SkinData would persist, but so, when changing worlds, the old textures are unloaded */
     /* Triggers when we join */
     @SuppressWarnings("unused")

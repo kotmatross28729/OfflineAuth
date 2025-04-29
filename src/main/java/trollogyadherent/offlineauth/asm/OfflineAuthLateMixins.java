@@ -23,8 +23,8 @@ public class OfflineAuthLateMixins implements ILateMixinLoader {
 		}
 		
 		if (loadedMods.contains("tabfaces")) {
-			mixins.add("tabfaces.MixinClientRegistry"); //Tab menu | Chat : ✅
-			mixins.add("tabfaces.MixinClientUtil"); 	//Server menu     : 🟧
+			mixins.add("tabfaces.MixinClientRegistry"); //Tab menu | Chat : ✅ (dynamic)
+			mixins.add("tabfaces.MixinClientUtil"); 	//Server menu     : ✅ (cached)
 		}
 		
 		return mixins;

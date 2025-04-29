@@ -11,6 +11,7 @@ import trollogyadherent.offlineauth.util.Util;
 
 @Optional.Interface(iface = "lumien.custommainmenu.lib.actions.IAction", modid = "CustomMainMenu", striprefs = true)
 public class ActionOpenGuiLogin implements lumien.custommainmenu.lib.actions.IAction {
+    
     @Optional.Method(modid = "CustomMainMenu")
     @Override
     public void perform(Object source, lumien.custommainmenu.gui.GuiCustom parent) {

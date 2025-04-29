@@ -3,11 +3,11 @@ package trollogyadherent.offlineauth.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-public class ConfirmKeyOverwriteGUI extends DialogGui{
+public class ConfirmKeyOverwriteGUI extends DialogGui {
     ConfirmKeyOverwriteGUI(KeyManagementGUI prev) {
         super(prev);
     }

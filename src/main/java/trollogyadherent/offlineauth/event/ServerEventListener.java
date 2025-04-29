@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.event;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -23,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ServerEventListener {
+    
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent e) throws IllegalAccessException {
         OfflineAuth.info("Player joined server: " + e.player.getDisplayName());

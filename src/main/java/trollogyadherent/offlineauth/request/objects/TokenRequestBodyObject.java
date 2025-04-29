@@ -1,5 +1,8 @@
 package trollogyadherent.offlineauth.request.objects;
 
+import trollogyadherent.offlineauth.misc.Unused;
+
+@Unused
 public class TokenRequestBodyObject {
     private String identifier;
     private String encryptedChallenge;

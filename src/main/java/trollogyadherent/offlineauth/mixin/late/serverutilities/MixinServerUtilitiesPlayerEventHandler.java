@@ -10,6 +10,7 @@ import trollogyadherent.offlineauth.Config;
 
 @Mixin(value = ServerUtilitiesPlayerEventHandler.class, priority = 999)
 public class MixinServerUtilitiesPlayerEventHandler {
+	
 	@Inject(
 			method = "onNameFormat",
 			at = @At(value = "HEAD"),

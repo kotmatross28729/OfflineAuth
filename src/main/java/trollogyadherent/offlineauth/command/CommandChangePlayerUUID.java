@@ -2,10 +2,12 @@ package trollogyadherent.offlineauth.command;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import trollogyadherent.offlineauth.misc.Unused;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Unused
 public class CommandChangePlayerUUID implements ICommand {
     private final List aliases;
 

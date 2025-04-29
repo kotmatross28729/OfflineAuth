@@ -3,7 +3,7 @@ package trollogyadherent.offlineauth.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class NameChangeGUI extends DialogGui{
 

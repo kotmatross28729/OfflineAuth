@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.command;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;

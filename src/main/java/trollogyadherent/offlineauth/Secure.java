@@ -17,6 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import net.minecraftforge.common.config.Configuration;
+import trollogyadherent.offlineauth.misc.Unused;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Unused
 @SideOnly(Side.CLIENT)
 public
 class Secure {

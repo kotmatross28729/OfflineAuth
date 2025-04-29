@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
+import trollogyadherent.offlineauth.misc.Unused;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,6 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Unused
 public class CommandSetRestPassword implements ICommand {
 
     private final List aliases;

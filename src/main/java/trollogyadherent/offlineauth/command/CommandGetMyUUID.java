@@ -5,12 +5,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.util.Util;
+import trollogyadherent.offlineauth.misc.Unused;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+@Unused
 public class CommandGetMyUUID implements ICommand {
     private final List aliases;
 
