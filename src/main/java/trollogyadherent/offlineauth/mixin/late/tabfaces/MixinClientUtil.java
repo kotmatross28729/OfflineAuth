@@ -46,6 +46,8 @@ public class MixinClientUtil {
 		
 		if(VarInstanceClient.minecraftRef.theWorld != null) {
 			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(VarInstanceClient.minecraftRef, profile.getName(), true);
+			if(oaSkin == null)
+				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName());
 		} else {
 			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName());
 		}
@@ -73,7 +75,7 @@ public class MixinClientUtil {
 	 * @author
 	 * @reason
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public static void drawHoveringTextWithFaces(GuiScreen screen, GameProfile[] profiles, List<String> textLines,
 												 int x, int y) {
 		if (!textLines.isEmpty()) {
