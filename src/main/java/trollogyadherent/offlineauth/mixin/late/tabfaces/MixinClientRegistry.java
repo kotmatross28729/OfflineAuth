@@ -17,6 +17,8 @@ public class MixinClientRegistry {
 	 */
 	@Overwrite(remap = false)
 	public ResourceLocation getTabMenuResourceLocation(String displayName, boolean removeAfterTTL, int ttl) {
+		displayName = displayName.contains(" ") ? displayName.trim() : displayName; //In 1.0.8 displayName has a space at the end, probably a bug?
+		
 		if (VarInstanceClient.minecraftRef.thePlayer != null
 				&& VarInstanceClient.minecraftRef.thePlayer.getDisplayName()
 				.equals(displayName)) {
@@ -33,7 +35,6 @@ public class MixinClientRegistry {
 			}
 		} else {
 			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(displayName);
-
 		}
 		
 		if (oaSkin != null) {

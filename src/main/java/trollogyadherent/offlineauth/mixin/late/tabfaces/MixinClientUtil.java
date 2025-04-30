@@ -37,19 +37,21 @@ public class MixinClientUtil {
 			return;
 		}
 		
+		String profileName = profile.getName().contains(" ") ? profile.getName().trim() : profile.getName();
+		
 		if (VarInstanceClient.minecraftRef.thePlayer != null
 				&& VarInstanceClient.minecraftRef.thePlayer.getDisplayName()
-				.equals(profile.getName())) {
+				.equals(profileName)) {
 			cir.setReturnValue(VarInstanceClient.minecraftRef.thePlayer.getLocationSkin());
 		}
 		ResourceLocation oaSkin;
 		
 		if(VarInstanceClient.minecraftRef.theWorld != null) {
-			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(VarInstanceClient.minecraftRef, profile.getName(), true);
+			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(VarInstanceClient.minecraftRef, profileName, true);
 			if(oaSkin == null)
-				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName());
+				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
 		} else {
-			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName());
+			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
 		}
 		
 		if (oaSkin != null) {
@@ -240,8 +242,5 @@ public class MixinClientUtil {
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		}
 	}
-	
-	
-	
 	
 }
