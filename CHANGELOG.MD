@@ -10,7 +10,7 @@
 
 * [ServerUtilities] Disable use of "nick", as it may lead to an actual "ban" of the account (configurable - `blockServerUtilitiesDisplayNameChange`, IT'S NOT RECOMMENDED TO DISABLE!)
 
-* MUCH improved Legacy Conversion / Now Legacy Conversion is much more optimized
+* Legacy Conversion is now much more optimized
 
 * Improved compatibility with TabFaces (avoiding Overwrite in `ClientUtil.drawHoveringTextWithFaces`, `MixinClientUtil`)
 

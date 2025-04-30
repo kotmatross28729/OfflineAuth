@@ -74,7 +74,9 @@ public class MixinClientRegistry {
 			remap = false
 			)
 	public void insert(String displayName, UUID id, ResourceLocation skinResourceLocation, boolean removeAfterTTL, int ttl, CallbackInfo ci) {
-		this.getByDisplayName(displayName).foundRealSkin = true; //Required to bypass check in ClientUtil.drawHoveringTextWithFaces
+		ClientRegistry.Data data = this.getByDisplayName(displayName);
+		if(data != null)
+			data.foundRealSkin = true; //Required to bypass check in ClientUtil.drawHoveringTextWithFaces
 	}
 	
 }
