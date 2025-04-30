@@ -35,7 +35,15 @@ public class SkinUtil {
 			OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
 			OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, mc.theWorld.getPlayerEntityByName(displayName), null, displayName);
 		}
-		return nullable ? null : Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
+		return nullable ? null : SkinUtil.getDefaultIcon();
+	}
+	
+	public static ResourceLocation getDefaultIcon() {
+		if(Config.useLegacyConversion) {
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation : SkinManager.field_152793_a;
+		} else {
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation64 : SkinManager.field_152793_a; //todo
+		}
 	}
 	
 	public static void drawPlayerFaceAuto(float xPos, float yPos, float width, float height) {

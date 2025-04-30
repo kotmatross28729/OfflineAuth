@@ -49,9 +49,8 @@ public class VarInstanceClient {
     public CapeObject singlePlayerCapeObject = null;
     public ResourceLocation singlePlayerSkinResourceLocation = null;
     public String displayNameBeforeServerJoin = null;
-    
-    //TODO: 1:1 version
-    public ResourceLocation defaultResourceLocation = new ResourceLocation(Tags.MODID, "textures/gui/default.png");
+    public ResourceLocation questionMarkResourceLocation = new ResourceLocation(Tags.MODID, "textures/gui/questionMark.png");
+    public ResourceLocation questionMarkResourceLocation64 = new ResourceLocation(Tags.MODID, "textures/gui/questionMark64.png");
 
     /* Reflection fields */
     public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");

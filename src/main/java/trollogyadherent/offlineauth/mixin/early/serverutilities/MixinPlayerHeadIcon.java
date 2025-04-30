@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiPlayerInfo;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +18,6 @@ import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
-import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -71,9 +69,9 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$getOASkin() {
-		if(uuid == null) 
-			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
-
+		if(uuid == null)
+			return SkinUtil.getDefaultIcon();
+	
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityClientPlayerMP thePlayer = mc.thePlayer;
 		UUID dynamicUUID = uuid.equals(ClientUtils.localPlayerHead.uuid)
@@ -111,7 +109,7 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 		if (oaSkin != null) {
 			return oaSkin;
 		} else {
-			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
+			return SkinUtil.getDefaultIcon();
 		}
 	}
 	
