@@ -21,6 +21,7 @@ import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
+import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.util.List;
@@ -70,7 +71,8 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$getOASkin() {
-		if(uuid == null) return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
+		if(uuid == null) 
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
 
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityClientPlayerMP thePlayer = mc.thePlayer;
@@ -92,6 +94,8 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 		NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
 		List<GuiPlayerInfo> players = handler.playerInfoList;
 		
+		ResourceLocation oaSkin = null;
+		
 		if(!SkinUtil.uuidToName.containsKey(dynamicUUID)) {
 			for(GuiPlayerInfo player : players) {
 				if(Util.offlineUUID2(player.name).equals(dynamicUUID)) {
@@ -99,10 +103,16 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 				}
 			}
 		} else {
-			return SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID), false);
+			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID), true);
+			if(oaSkin == null)
+				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(SkinUtil.uuidToName.get(dynamicUUID));
 		}
-
-		return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
+		
+		if (oaSkin != null) {
+			return oaSkin;
+		} else {
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.defaultResourceLocation : SkinManager.field_152793_a;
+		}
 	}
 	
 }

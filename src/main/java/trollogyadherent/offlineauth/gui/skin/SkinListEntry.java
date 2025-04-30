@@ -3,11 +3,11 @@ package trollogyadherent.offlineauth.gui.skin;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -74,71 +74,14 @@ public class SkinListEntry {
     {
         this.bindIcon();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int l2 = 8;
-        int i3 = 8;
-
-        Gui.func_152125_a(p_148279_2_, p_148279_3_, 8.0F, (float) l2, 8, i3, 32/*8*/, /*8*/32, 64.0F, 64.0F);
+        SkinUtil.drawPlayerFaceAuto(p_148279_2_, p_148279_3_, 32, 32);
+        
         int i2;
-
-        if ((this.mc.gameSettings.touchscreen || p_148279_9_) && this.func_148310_d())
-        {
-            /*this.mc.getTextureManager().bindTexture(temp);
-            Gui.drawRect(p_148279_2_, p_148279_3_, p_148279_2_ + 32, p_148279_3_ + 32, -1601138544);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            int l1 = p_148279_7_ - p_148279_2_;
-            i2 = p_148279_8_ - p_148279_3_;
-
-            if (this.func_148309_e())
-            {
-                if (l1 < 32)
-                {
-                    Gui.func_146110_a(p_148279_2_, p_148279_3_, 0.0F, 32.0F, 32, 32, 256.0F, 256.0F);
-                }
-                else
-                {
-                    Gui.func_146110_a(p_148279_2_, p_148279_3_, 0.0F, 0.0F, 32, 32, 256.0F, 256.0F);
-                }
-            }
-            else
-            {
-                if (this.func_148308_f())
-                {
-                    if (l1 < 16)
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 32.0F, 32.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                    else
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 32.0F, 0.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                }
-
-                if (this.func_148314_g())
-                {
-                    if (l1 < 32 && l1 > 16 && i2 < 16)
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 96.0F, 32.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                    else
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 96.0F, 0.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                }
-
-                if (this.func_148307_h())
-                {
-                    if (l1 < 32 && l1 > 16 && i2 > 16)
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 64.0F, 32.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                    else
-                    {
-                        Gui.func_146110_a(p_148279_2_, p_148279_3_, 64.0F, 0.0F, 32, 32, 256.0F, 256.0F);
-                    }
-                }
-            } */
+    
+        if ((this.mc.gameSettings.touchscreen || p_148279_9_)) {
+            this.func_148310_d();
         }
-
+    
         String s = this.getSkinName();
         i2 = this.mc.fontRenderer.getStringWidth(s);
 

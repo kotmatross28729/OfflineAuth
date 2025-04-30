@@ -50,6 +50,7 @@ public class VarInstanceClient {
     public ResourceLocation singlePlayerSkinResourceLocation = null;
     public String displayNameBeforeServerJoin = null;
     
+    //TODO: 1:1 version
     public ResourceLocation defaultResourceLocation = new ResourceLocation(Tags.MODID, "textures/gui/default.png");
 
     /* Reflection fields */

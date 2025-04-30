@@ -15,8 +15,7 @@ import java.util.List;
 
 public class CommandConfig implements ICommand {
     private final List<String> aliases;
-    public CommandConfig()
-    {
+    public CommandConfig() {
         aliases = new ArrayList<>();
         aliases.add("oacfg");
     }

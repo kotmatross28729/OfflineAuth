@@ -16,6 +16,12 @@
 
 * (Potentially (need testing)) fixed an issue where the player would sometimes not render in the skin selection menu
 
+* Added several default skins
+
+* Skin selection menu now displays 2nd layer correctly
+
+* Added command `/myname`. Displays all possible name variables in the chat
+
 ---
 
 # v0.3.04

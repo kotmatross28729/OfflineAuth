@@ -41,32 +41,26 @@ public class ServerSkinUtil {
             return temp2;
         }
     }
-
+    
     public static void transferDefaultSkins() throws IOException {
+        //TODO: server config?
         InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png");
         if (is == null) {
             OfflineAuth.error("Default skin resource not found!");
             return;
         }
+        //DO NOT USE "is" VARIABLE, THIS METHOD WILL EAT IT -> ImageIO.read -> null
         if (!Util.pngIsSane(ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png"))) {
             OfflineAuth.error("Default skin resource not sane!");
             return;
         }
         BufferedImage img = ImageIO.read(is);
         File output = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath + File.separator + "default.png");
-        ImageIO.write(img, "png", output);
-
-        /*for (int i = 0; i < 8; i ++) {
-            String imageName = "default" + i + ".png";
-            InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/" + imageName);
-            if (is == null) {
-                OfflineAuth.error("Default skin resource " + i + " not found!");
-                return;
-            }
-            BufferedImage img = ImageIO.read(is);
-            File output = new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath + File.separator + imageName);
+        if(img != null) {
             ImageIO.write(img, "png", output);
-        }*/
+        } else {
+            OfflineAuth.error("[ServerSkinUtil]: ImageIO failed to read InputStream!"/* + " Failed skin: " + skin*/);
+        }
     }
 
     public static void saveBytesToSkinCache(byte[] skinBytes, String displayname) {

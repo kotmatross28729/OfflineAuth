@@ -21,7 +21,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-
 ///
 /* TODO: password reset tokens */   //See how registration tokens work
 /* TODO: spam prevention, lock registration if mass registration detected*/ //Not sure about implementation

@@ -106,10 +106,13 @@ public class GuiLogin extends GuiScreen {
                 break;
             case 10:
                 actionTogglePWvisibility();
+                break;
             case 11:
                 actionClearSkinCache();
-            case 12:
-                actionClearServerPubKey();
+                break;
+//            case 12:
+//                actionClearServerPubKey();
+//                break;
         }
     }
 

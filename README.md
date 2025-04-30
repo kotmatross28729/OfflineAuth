@@ -39,7 +39,6 @@ If you are a player:
 * Integration with [Server Utilities](https://github.com/GTNewHorizons/ServerUtilities) (skin in the GUIs)
 * Integration with [TabFaces](https://github.com/JackOfNoneTrades/TabFaces) (skin)
 
-
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
 * `/deleteplayer <identifier> (alias: delplayer)` - Delete a player account

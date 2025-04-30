@@ -23,6 +23,7 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
+import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -148,7 +149,7 @@ public class GameOverlayGuiHandler extends GuiIngame {
                             }
                             mc.getTextureManager().bindTexture(OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName));
                             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                            Gui.func_152125_a(xPos, yPos, 8.0F, (float) 8, 8, 8, 8, 8, 64.0F, 64.0F);
+                            SkinUtil.drawPlayerFaceAuto(xPos, yPos, 8, 8);
                         }
                     }
 
@@ -184,7 +185,7 @@ public class GameOverlayGuiHandler extends GuiIngame {
             }
         }
     }
-
+    
     /*@SubscribeEvent
     public void draw(DrawScreenEvent.Post e) {
         if (e.gui instanceof GuiOptions) {

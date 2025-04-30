@@ -238,23 +238,50 @@ public class ClientSkinUtil {
         }
         return res;
     }
-
-
+    
     public static void transferDefaultSkins() throws IOException {
-        String[] skins = {"dream", "popbob", "herobrine", "chuck", "rezi", "popularmmos"};
-        for (String skin : skins) {
+        //TODO: client config?
+        String[] defaultSkins = {
+                "ZT_64x32_test",
+                "ZT_64x64_test",
+                "bandit1",
+                "bandit2",
+                "bandit3",
+                "knight1",
+                "knight2",
+                "knight3",
+                "knight4",
+                "mage",
+                "darthVader",
+                "guardian",
+                "L0ki_", //...
+                "honeydew",
+                "jackBlack",
+                "unknown",
+                "dream",
+                "rezi",
+                "popularmmos",
+        };
+        for (String skin : defaultSkins) {
             InputStream is = ClientSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/client/" + skin + ".png");
+            
             if (is == null) {
                 OfflineAuth.error("Default skin '" + skin + "' resource not found!");
                 continue;
             }
+
+            //DO NOT USE "is" VARIABLE, THIS METHOD WILL EAT IT -> ImageIO.read -> null
             if (!Util.pngIsSane(ClientSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/client/" + skin + ".png"))) {
                 OfflineAuth.error("Default skin '" + skin + "' is not sane!");
                 continue;
             }
             BufferedImage img = ImageIO.read(is);
             File output = new File(OfflineAuth.varInstanceClient.clientSkinsPath + File.separator + skin + ".png");
-            ImageIO.write(img, "png", output);
+            if(img != null) {
+                ImageIO.write(img, "png", output);
+            } else {
+                OfflineAuth.error("[ClientSkinUtil]: ImageIO failed to read InputStream!" + " Failed skin: " + skin);
+            }
         }
     }
 
@@ -263,11 +290,11 @@ public class ClientSkinUtil {
         for (String cape : capes) {
             InputStream is = ClientSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultcapes/client/" + cape);
             if (is == null) {
-                OfflineAuth.error("Default skin '" + cape + "' resource not found!");
+                OfflineAuth.error("Default cape '" + cape + "' resource not found!");
                 continue;
             }
             if (!Util.imageIsSane(is)) {
-                OfflineAuth.error("Default skin '" + cape + "' is not sane!");
+                OfflineAuth.error("Default cape '" + cape + "' is not sane!");
                 continue;
             }
             saveBytesToCapes(is, cape);

@@ -130,7 +130,8 @@ public class CommonProxy {
             event.registerServerCommand(new CommandDeleteCape());
             event.registerServerCommand(new CommandChangePlayerDisplayname());
         }
-
+        event.registerServerCommand(new CommandGetMyName());
+        event.registerServerCommand(new CommandGetMyUUID());
     }
 
     public void serverStarted(FMLServerStartedEvent event) {

@@ -20,32 +20,27 @@ import java.util.List;
 public class CommandTest implements ICommand {
     private final List<String> aliases;
 
-    public CommandTest()
-    {
+    public CommandTest() {
         aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(@Nonnull Object o)
-    {
+    public int compareTo(@Nonnull Object o) {
         return 0;
     }
 
     @Override
-    public String getCommandName()
-    {
+    public String getCommandName() {
         return "test";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
-    {
+    public String getCommandUsage(ICommandSender var1) {
         return "/test";
     }
 
     @Override
-    public List<String> getCommandAliases()
-    {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -218,8 +213,7 @@ public class CommandTest implements ICommand {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender var1)
-    {
+    public boolean canCommandSenderUseCommand(ICommandSender var1) {
         return true;
     }
 
@@ -229,8 +223,7 @@ public class CommandTest implements ICommand {
     }
 
     @Override
-    public boolean isUsernameIndex(String[] var1, int var2)
-    {
+    public boolean isUsernameIndex(String[] var1, int var2) {
         return false;
     }
 }

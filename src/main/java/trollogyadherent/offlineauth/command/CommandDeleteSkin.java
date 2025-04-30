@@ -27,26 +27,22 @@ public class CommandDeleteSkin implements ICommand {
     }
 
     @Override
-    public int compareTo(Object o)
-    {
+    public int compareTo(Object o) {
         return 0;
     }
 
     @Override
-    public String getCommandName()
-    {
+    public String getCommandName() {
         return "deleteskin";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
-    {
+    public String getCommandUsage(ICommandSender var1) {
         return "/deleteskin <identifier> (alias: delskin)";
     }
 
     @Override
-    public List<String> getCommandAliases()
-    {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -86,20 +82,17 @@ public class CommandDeleteSkin implements ICommand {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender var1)
-    {
+    public boolean canCommandSenderUseCommand(ICommandSender var1) {
         return true;
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 
     @Override
-    public boolean isUsernameIndex(String[] var1, int var2)
-    {
+    public boolean isUsernameIndex(String[] var1, int var2) {
         return false;
     }
 }
