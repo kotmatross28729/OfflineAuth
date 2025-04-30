@@ -111,7 +111,7 @@ public class KeyManagementGUI extends GuiScreen {
         this.back = new GuiButton(3, this.basex + 300, this.basey + 180, 50, 20, I18n.format("offlineauth.keygui.back"));
         this.buttonList.add(this.back);
 
-        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
+        OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
         if (oasd != null) {
             this.privateKeyPath.setText(oasd.getPrivateKeyPath());
             this.publicKeyPath.setText(oasd.getPublicKeyPath());
@@ -156,7 +156,7 @@ public class KeyManagementGUI extends GuiScreen {
 
         /* Looping through cache list, if found, updating the entry */
         boolean found = false;
-        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (oasd.getIp().equals(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData)) && oasd.getPort().equals(Util.getPort(OfflineAuth.varInstanceClient.selectedServerData))) {
                 found = true;
                 oasd.setPrivateKeyPath(privateKeyPath.getText());

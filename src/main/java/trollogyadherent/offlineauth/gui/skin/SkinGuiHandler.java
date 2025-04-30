@@ -54,7 +54,7 @@ public class SkinGuiHandler {
         if (e.gui instanceof GuiOptions) {
 
             if (reflectedBtnLst != null) {
-                for (Object gb : ((List) reflectedBtnLst)) {
+                for (Object gb : ((List<?>) reflectedBtnLst)) {
                     if (((GuiButton) gb).id == 69) {
                         return;
                     }

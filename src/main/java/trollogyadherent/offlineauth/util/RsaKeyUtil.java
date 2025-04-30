@@ -51,24 +51,22 @@ public class RsaKeyUtil {
     }
 
     /* https://stackoverflow.com/questions/52384809/public-key-to-string-and-then-back-to-public-key-java */
-    /* One can't do key -> bytes -> string -> bytes -> key, because new String(bytes) does not suport some characters */
-    /* Base64 werks */
+    /* One can't do key -> bytes -> string -> bytes -> key, because new String(bytes) does not support some characters */
+    /* Base64 works */
     public static PublicKey loadPublicKey(String path) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         File publicKeyFile = new File(path);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Files.readAllBytes(publicKeyFile.toPath()));
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(keySpec);
-
-        return publicKey;
+    
+        return keyFactory.generatePublic(keySpec);
     }
 
     public static PrivateKey loadPrivateKey(String path) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         File privateKeyFile = new File(path);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Files.readAllBytes(privateKeyFile.toPath()));
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-
-        return privateKey;
+    
+        return keyFactory.generatePrivate(keySpec);
     }
 
     public static PublicKey pubKeyFromString(String pubKeyStr) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
@@ -76,9 +74,8 @@ public class RsaKeyUtil {
         X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encodedPublicKey);
         //KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(pubKeySpec);
-
-        return publicKey;
+    
+        return keyFactory.generatePublic(pubKeySpec);
     }
 
     public static PrivateKey privKeyFromString(String privKeyStr) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
@@ -86,9 +83,8 @@ public class RsaKeyUtil {
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
         //KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
-
-        return privateKey;
+    
+        return keyFactory.generatePrivate(privateKeySpec);
     }
 
     /* Signing requires a DSA keypair btw, you can't sign and encrypt with the same algorithm. */
@@ -103,9 +99,8 @@ public class RsaKeyUtil {
         byte[] strBytes = str.getBytes();
         sig.update(strBytes);
         byte[] signedStrBytes = sig.sign();
-
-        String signedStrString = Base64.getEncoder().encodeToString(signedStrBytes);
-        return signedStrString;
+    
+        return Base64.getEncoder().encodeToString(signedStrBytes);
     }
 
     /* https://www.tutorialspoint.com/java_cryptography/java_cryptography_verifying_signature.htm */

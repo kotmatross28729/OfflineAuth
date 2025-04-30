@@ -52,7 +52,7 @@ public class SkinGuiRenderTicker {
     private static List<ItemStack> playerItems = new ArrayList<>();
     private static Random random = new Random();
 
-    private static Set entities;
+    private static Set<String> entities;
     private static Object[] entStrings;
     private static int id;
 
@@ -234,7 +234,7 @@ public class SkinGuiRenderTicker {
         {
             if (++id >= entStrings.length)
                 id = 0;
-            clazz = (Class) EntityList.stringToClassMapping.get(entStrings[id]);
+            clazz = EntityList.stringToClassMapping.get(entStrings[id]);
         }
         while (!EntityLivingBase.class.isAssignableFrom(clazz) && (++tries <= 5));
 
@@ -294,7 +294,7 @@ public class SkinGuiRenderTicker {
         }
 
         // Get a COPY dumbass!
-        entities = new TreeSet(EntityList.stringToClassMapping.keySet());
+        entities = new TreeSet<>(EntityList.stringToClassMapping.keySet());
         entStrings = entities.toArray(new Object[] {});
         id = -1;
     }

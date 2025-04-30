@@ -21,7 +21,7 @@ public class ClientData {
     /* Used to write the json file to disk */
     public static boolean saveData() {
         OfflineAuth.info("Saving data...");
-        OAServerData[] oaServerDataArray = OfflineAuth.varInstanceClient.OAserverDataCache.toArray(new OAServerData[0]);
+        OAServerData[] oaServerDataArray = OfflineAuth.varInstanceClient.OAServerDataCache.toArray(new OAServerData[0]);
         return Util.writeFile(OfflineAuth.varInstanceClient.datafile, JsonUtil.objectToJsonList(oaServerDataArray));
     }
 
@@ -30,18 +30,18 @@ public class ClientData {
         OfflineAuth.info("Loading data...");
         if (!OfflineAuth.varInstanceClient.datafile.exists()) {
             OfflineAuth.info("Data file does not exist");
-            OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>();
+            OfflineAuth.varInstanceClient.OAServerDataCache = new ArrayList<>();
         } else {
             try {
                 // Basically parses the content of offlineauth.json to an ArrayList of OAServerData objects
-                OfflineAuth.varInstanceClient.OAserverDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
+                OfflineAuth.varInstanceClient.OAServerDataCache = new ArrayList<>(Arrays.asList(((OAServerData[]) JsonUtil.jsonToObjectList(readDatafile(), OAServerData[].class))));
             } catch (IOException e) {
                 OfflineAuth.error(e.getMessage());
                 return false;
             }
         }
-        if (Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
-            OfflineAuth.varInstanceClient.OAserverDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
+        if (Util.getOAServerDataByIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
+            OfflineAuth.varInstanceClient.OAServerDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
         }
         return saveData();
     }

@@ -15,11 +15,7 @@ public class ServerKeyRegistry {
     public ServerKeyRegistry() {
         map = new HashMap<>();
         ipHostsUsagecount = new HashMap<>();
-        Runnable clearRegistryRunnable = new Runnable() {
-            public void run() {
-                clear();
-            }
-        };
+        Runnable clearRegistryRunnable = this::clear;
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(clearRegistryRunnable, 0, 5, TimeUnit.SECONDS);
     }

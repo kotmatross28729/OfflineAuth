@@ -46,8 +46,7 @@ public class AesKeyUtil {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        byte[] cipherText = cipher.doFinal(input.getBytes());
-        return cipherText;
+        return cipher.doFinal(input.getBytes());
     }
 
     public static byte[] encryptToBytes(byte[] input, SecretKey key, IvParameterSpec iv) throws NoSuchAlgorithmException,
@@ -56,8 +55,7 @@ public class AesKeyUtil {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        byte[] cipherText = cipher.doFinal(input);
-        return cipherText;
+        return cipher.doFinal(input);
     }
 
     public static byte[] decryptFromString(String cipherText, SecretKey key, IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
@@ -66,8 +64,7 @@ public class AesKeyUtil {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key, iv);
-        byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
-        return plainText;
+        return cipher.doFinal(Base64.getDecoder().decode(cipherText));
     }
 
     public static byte[] decryptFromBytes(byte[] cipherText, SecretKey key, IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
@@ -76,8 +73,7 @@ public class AesKeyUtil {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key, iv);
-        byte[] plainText = cipher.doFinal(cipherText);
-        return plainText;
+        return cipher.doFinal(cipherText);
     }
 
     public static class AesKeyPlusIv {

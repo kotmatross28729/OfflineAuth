@@ -17,10 +17,9 @@ public class ServerUtil {
         if (MinecraftServer.getServer() == null) {
             return;
         }
-        for (Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-            EntityPlayerMP epmp = (EntityPlayerMP) o;
-            if (epmp.getDisplayName().equals(name)) {
-                epmp.playerNetServerHandler.kickPlayerFromServer(reason);
+        for (EntityPlayerMP playerMP : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+            if (playerMP.getDisplayName().equals(name)) {
+                playerMP.playerNetServerHandler.kickPlayerFromServer(reason);
                 return;
             }
         }

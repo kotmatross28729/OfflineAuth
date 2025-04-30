@@ -53,6 +53,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Base64;
 
+@SuppressWarnings({"unused", "UnstableApiUsage"})
 public class Rest {
 
     public static void restStart() {
@@ -61,20 +62,20 @@ public class Rest {
         port(Config.port);
         //staticFiles.location("/public");
         staticFiles.expireTime(600L);
-        post("/register", (request, response) -> register(request, response));
-        post("/delete", (request, response) -> delete(request, response));
-        post("/change", (request, response) -> changePassword(request, response));
-        post("/changedisplay", ((request, response) -> changeDisplayName(request, response)));
-        post("/vibecheck", (request, response) -> vibecheck(request, response));
+        post("/register", Rest::register);
+        post("/delete", Rest::delete);
+        post("/change", Rest::changePassword);
+        post("/changedisplay", (Rest::changeDisplayName));
+        post("/vibecheck", Rest::vibecheck);
         /* Not secure, deprecated */ //get("/accounts", (request, response) -> listAccounts(request, response));
         /* Not secure, deprecated */ //get("/token", (request, response) -> handleToken(request, response));
-        get("/pubkey", (request, response) -> handlePubKey(request, response));
-        get("/temppubkey", (request, response) -> handleTempPubKey(request, response));
-        post("/tokenchallenge", (request, response) -> handleTokenChallenge(request, response));
-        post("/uploadskin", (request, response) -> handleSkinUpload(request, response));
-        post("/uploadcape", (request, response) -> handleCapeUpload(request, response));
-        post("/removeskin", (request, response) -> handleSkinRemoval(request, response));
-        post("/removecape", (request, response) -> handleCapeRemoval(request, response));
+        get("/pubkey", Rest::handlePubKey);
+        get("/temppubkey", Rest::handleTempPubKey);
+        post("/tokenchallenge", Rest::handleTokenChallenge);
+        post("/uploadskin", Rest::handleSkinUpload);
+        post("/uploadcape", Rest::handleCapeUpload);
+        post("/removeskin", Rest::handleSkinRemoval);
+        post("/removecape", Rest::handleCapeRemoval);
     }
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException {
@@ -156,7 +157,9 @@ public class Rest {
                 regResult = Database.registerPlayer(request.queryParams("identifier"), request.queryParams("displayname"), request.queryParams("password"), uuid,"", request.queryParams("publickey"), true, true);
             } else if (request.queryParams("restpassword") != null && !Database.restPasswordValid(request.queryParams("restpassword"))){
                 regResult = new StatusResponseObject("Rest password invalid or not set!", 500);
-            } else */if (Config.allowRegistration) {
+            } else */
+            
+            if (Config.allowRegistration) {
                 regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(),"", rbo.getPubKey(), new byte[1], new byte[1],false, false);
             } else if (!Config.allowRegistration && Config.allowTokenRegistration && Database.tokenIsValid(rbo.getToken())) {
                 regResult = Database.registerPlayer(rbo.getIdentifier(), rbo.getDisplayname(), rbo.getPassword(), rbo.getUuid(), rbo.getToken(), rbo.getPubKey(), new byte[1], new byte[1], false, false);
@@ -261,7 +264,8 @@ public class Rest {
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
         }
-
+        
+        //TODO: ???
         if (!Config.allowDisplayNameChange) {
             ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", false, 500);
         }
@@ -294,8 +298,7 @@ public class Rest {
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.change_displayname_error", 500);
-            String res = JsonUtil.objectToJson(statusResponseObject);
-            return res;
+            return JsonUtil.objectToJson(statusResponseObject);
         }
     }
 
@@ -324,14 +327,18 @@ public class Rest {
             String[] enhancedUserList = new String[userList.length];
             for (int i = 0; i < userList.length; i ++) {
                 DBPlayerData pd = Database.getPlayerDataByIdentifier(userList[i]);
-                enhancedUserList[i] = userList[i] + ":" + pd.getDisplayname() + ":" + pd.getUuid();
+                if (pd != null) {
+                    enhancedUserList[i] = userList[i] + ":" + pd.getDisplayname() + ":" + pd.getUuid();
+                }
             }
             return JsonUtil.objectToJson(new StatusResponseObject(enhancedUserList, 200));
         } else {
             StringBuilder sb = new StringBuilder();
             for (String s : userList) {
                 DBPlayerData pd = Database.getPlayerDataByIdentifier(s);
-                sb.append(s).append(": ").append(pd.getDisplayname()).append(": ").append(pd.getUuid()).append("<br>");
+                if (pd != null) {
+                    sb.append(s).append(": ").append(pd.getDisplayname()).append(": ").append(pd.getUuid()).append("<br>");
+                }
             }
             return sb.deleteCharAt(sb.length() - 1).toString();
         }
@@ -576,18 +583,18 @@ public class Rest {
                     return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.change_skin_error", 500));
                 }
                 String displayname = dbpd.getDisplayname();
-                for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    if (e.getDisplayName().equals(displayname)) {
                         OfflineAuth.debug("Ident " + identifier + ", displayname " + displayname + " is ingame, setting skin in player registry");
                         OfflineAuth.debug("Playerreg before operation: " + OfflineAuth.varInstanceServer.playerRegistry);
                         OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
                         OfflineAuth.debug("Playerreg after operation: " + OfflineAuth.varInstanceServer.playerRegistry);
                         ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
 
-                        for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                             OfflineAuth.debug("Sending skin invalidation packet to player " + displayname);
                             IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                            PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            PacketHandler.net.sendTo(msg, o);
                         }
                         break;
                     }
@@ -650,14 +657,14 @@ public class Rest {
                 DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
                 if (dbpd != null) {
                     String displayname = dbpd.getDisplayname();
-                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                    for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (e.getDisplayName().equals(displayname)) {
                             OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
                             ServerSkinUtil.removeCapeFromCache(dbpd.getDisplayname());
 
-                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                            for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                                 IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                                PacketHandler.net.sendTo(msg, o);
                             }
                             break;
                         }
@@ -707,14 +714,14 @@ public class Rest {
                 DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
                 if (dbpd != null) {
                     String displayname = dbpd.getDisplayname();
-                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                    for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (e.getDisplayName().equals(displayname)) {
                             OfflineAuth.varInstanceServer.playerRegistry.setSkin(dbpd.getDisplayname(), ServerSkinUtil.getRandomDefaultSkinName());
                             ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
 
-                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                            for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                                 IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                                PacketHandler.net.sendTo(msg, o);
                             }
                             break;
                         }
@@ -725,8 +732,7 @@ public class Rest {
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.remove_skin_error", 500);
-            String res = JsonUtil.objectToJson(statusResponseObject);
-            return res;
+            return JsonUtil.objectToJson(statusResponseObject);
         }
     }
 
@@ -765,14 +771,14 @@ public class Rest {
                 DBPlayerData dbpd = Database.getPlayerDataByIdentifier(identifier);
                 if (dbpd != null) {
                     String displayname = dbpd.getDisplayname();
-                    for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                        if (((EntityPlayerMP) e).getDisplayName().equals(displayname)) {
+                    for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        if (e.getDisplayName().equals(displayname)) {
                             //OfflineAuth.varInstanceServer.playerRegistry.setSkin(displayname, displayname);
                             ServerSkinUtil.removeCapeFromCache(dbpd.getDisplayname());
 
-                            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                            for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                                 IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                                PacketHandler.net.sendTo(msg, o);
                             }
                             break;
                         }
@@ -783,8 +789,7 @@ public class Rest {
         } catch (Exception e) {
             e.printStackTrace();
             StatusResponseObject statusResponseObject = new StatusResponseObject("offlineauth.rest.remove_cape_error", 500);
-            String res = JsonUtil.objectToJson(statusResponseObject);
-            return res;
+            return JsonUtil.objectToJson(statusResponseObject);
         }
     }
 }

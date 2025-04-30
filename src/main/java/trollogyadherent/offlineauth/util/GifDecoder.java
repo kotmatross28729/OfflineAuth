@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 /**
  * Class GifDecoder - Decodes a GIF file into one or more frames.
- *
+ * <p>
  * Example:
  *
  * <pre>
@@ -50,7 +50,7 @@ public class GifDecoder {
     public static final int STATUS_OK = 0;
 
     /**
-     * File read status: Error decoding file (may be partially decoded)
+     * File read status: Error decoding file (maybe partially decoded)
      */
     public static final int STATUS_FORMAT_ERROR = 1;
 
@@ -106,7 +106,7 @@ public class GifDecoder {
     protected byte[] pixelStack;
     protected byte[] pixels;
 
-    protected ArrayList frames; // frames read from current file
+    protected ArrayList<GifFrame> frames; // frames read from current file
     protected int frameCount;
 
     static class GifFrame {
@@ -128,7 +128,7 @@ public class GifDecoder {
         //
         delay = -1;
         if ((n >= 0) && (n < frameCount)) {
-            delay = ((GifFrame) frames.get(n)).delay;
+            delay = frames.get(n).delay;
         }
         return delay;
     }
@@ -152,7 +152,7 @@ public class GifDecoder {
 
     /**
      * Gets the "Netscape" iteration count, if any.
-     * A count of 0 means repeat indefinitiely.
+     * A count of 0 means repeat indefinitely.
      *
      * @return iteration count if one was specified, else 1.
      */
@@ -190,7 +190,7 @@ public class GifDecoder {
                 if (lastDispose == 2) {
                     // fill last image rect area with background color
                     Graphics2D g = image.createGraphics();
-                    Color c = null;
+                    Color c;
                     if (transparency) {
                         c = new Color(0, 0, 0, 0); 	// assume background is transparent
                     } else {
@@ -214,16 +214,15 @@ public class GifDecoder {
                 if (iline >= ih) {
                     pass++;
                     switch (pass) {
-                        case 2 :
-                            iline = 4;
-                            break;
-                        case 3 :
+                        case 2 -> iline = 4;
+                        case 3 -> {
                             iline = 2;
                             inc = 4;
-                            break;
-                        case 4 :
+                        }
+                        case 4 -> {
                             iline = 1;
                             inc = 2;
+                        }
                     }
                 }
                 line = iline;
@@ -259,7 +258,7 @@ public class GifDecoder {
     public BufferedImage getFrame(int n) {
         BufferedImage im = null;
         if ((n >= 0) && (n < frameCount)) {
-            im = ((GifFrame) frames.get(n)).image;
+            im = frames.get(n).image;
         }
         return im;
     }
@@ -294,9 +293,9 @@ public class GifDecoder {
             status = STATUS_OPEN_ERROR;
         }
         try {
-            is.close();
-        } catch (IOException e) {
-        }
+            if(is != null)
+                is.close();
+        } catch (IOException ignored) {}
         return status;
     }
 
@@ -323,9 +322,9 @@ public class GifDecoder {
             status = STATUS_OPEN_ERROR;
         }
         try {
-            is.close();
-        } catch (IOException e) {
-        }
+            if(is != null)
+                is.close();
+        } catch (IOException ignored) {}
         return status;
     }
 
@@ -346,9 +345,9 @@ public class GifDecoder {
             status = STATUS_OPEN_ERROR;
         }
         try {
-            is.close();
-        } catch (IOException e) {
-        }
+            if(is != null)
+             is.close();
+        } catch (IOException ignored) {}
         return status;
     }
 
@@ -363,7 +362,7 @@ public class GifDecoder {
         status = STATUS_OK;
         try {
             name = name.trim().toLowerCase();
-            if ((name.indexOf("file:") >= 0) ||
+            if ((name.contains("file:")) ||
                     (name.indexOf(":/") > 0)) {
                 URL url = new URL(name);
                 in = new BufferedInputStream(url.openStream());
@@ -525,7 +524,7 @@ public class GifDecoder {
     protected void init() {
         status = STATUS_OK;
         frameCount = 0;
-        frames = new ArrayList();
+        frames = new ArrayList<>();
         gct = null;
         lct = null;
     }
@@ -553,14 +552,14 @@ public class GifDecoder {
         int n = 0;
         if (blockSize > 0) {
             try {
-                int count = 0;
+                int count;
                 while (n < blockSize) {
                     count = in.read(block, n, blockSize - n);
                     if (count == -1)
                         break;
                     n += count;
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
 
             if (n < blockSize) {
@@ -583,7 +582,7 @@ public class GifDecoder {
         int n = 0;
         try {
             n = in.read(c);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         if (n < nbytes) {
             status = STATUS_FORMAT_ERROR;
@@ -618,25 +617,21 @@ public class GifDecoder {
                 case 0x21 : // extension
                     code = read();
                     switch (code) {
-                        case 0xf9 : // graphics control extension
-                            readGraphicControlExt();
-                            break;
-
-                        case 0xff : // application extension
+                        case 0xf9 -> // graphics control extension
+                                readGraphicControlExt();
+                        case 0xff -> { // application extension
                             readBlock();
-                            String app = "";
+                            StringBuilder app = new StringBuilder();
                             for (int i = 0; i < 11; i++) {
-                                app += (char) block[i];
+                                app.append((char) block[i]);
                             }
-                            if (app.equals("NETSCAPE2.0")) {
+                            if (app.toString().equals("NETSCAPE2.0")) {
                                 readNetscapeExt();
-                            }
-                            else
+                            } else
                                 skip(); // don't care
-                            break;
-
-                        default : // uninteresting extension
-                            skip();
+                        }
+                        default -> // uninteresting extension
+                                skip();
                     }
                     break;
 
@@ -668,25 +663,21 @@ public class GifDecoder {
                 case 0x21 : // extension
                     code = read();
                     switch (code) {
-                        case 0xf9 : // graphics control extension
-                            readGraphicControlExt();
-                            break;
-
-                        case 0xff : // application extension
+                        case 0xf9 -> // graphics control extension
+                                readGraphicControlExt();
+                        case 0xff -> { // application extension
                             readBlock();
-                            String app = "";
+                            StringBuilder app = new StringBuilder();
                             for (int i = 0; i < 11; i++) {
-                                app += (char) block[i];
+                                app.append((char) block[i]);
                             }
-                            if (app.equals("NETSCAPE2.0")) {
+                            if (app.toString().equals("NETSCAPE2.0")) {
                                 readNetscapeExt();
-                            }
-                            else
+                            } else
                                 skip(); // don't care
-                            break;
-
-                        default : // uninteresting extension
-                            skip();
+                        }
+                        default -> // uninteresting extension
+                                skip();
                     }
                     break;
 
@@ -723,11 +714,11 @@ public class GifDecoder {
      * Reads GIF file header information.
      */
     protected void readHeader() throws IOException {
-        String id = "";
+        StringBuilder id = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            id += (char) read();
+            id.append((char) read());
         }
-        if (!id.startsWith("GIF")) {
+        if (!id.toString().startsWith("GIF")) {
             status = STATUS_FORMAT_ERROR;
             return;
         }
@@ -822,7 +813,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads Netscape extenstion to obtain iteration count
+     * Reads Netscape extension to obtain iteration count
      */
     protected void readNetscapeExt() {
         do {

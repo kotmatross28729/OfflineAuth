@@ -9,20 +9,21 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandListUsers implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandListUsers()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("luser");
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -40,8 +41,7 @@ public class CommandListUsers implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
-    {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -54,7 +54,9 @@ public class CommandListUsers implements ICommand {
         String[] temp = Database.getRegisteredIdentifiers();
         for (String s : temp) {
             DBPlayerData pd = Database.getPlayerDataByIdentifier(s);
-            sender.addChatMessage(new ChatComponentText(s + ": " + pd.getDisplayname()));
+            if (pd != null) {
+                sender.addChatMessage(new ChatComponentText(s + ": " + pd.getDisplayname()));
+            }
         }
 
         OfflineAuth.info(sender.getCommandSenderName() + " issued listusers command");
@@ -67,8 +69,7 @@ public class CommandListUsers implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SuppressWarnings("UnusedReturnValue")
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ServerSkinUtil {
     public static boolean skinCachedOnServer(String name) {
         return (Util.fileExists(new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png")) || Util.fileExists(new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath, name + ".png")));
@@ -49,7 +49,7 @@ public class ServerSkinUtil {
             return;
         }
         if (!Util.pngIsSane(ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png"))) {
-            OfflineAuth.error("Default skin resoruce not sane!");
+            OfflineAuth.error("Default skin resource not sane!");
             return;
         }
         BufferedImage img = ImageIO.read(is);

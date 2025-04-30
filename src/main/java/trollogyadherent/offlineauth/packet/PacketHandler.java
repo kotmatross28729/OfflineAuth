@@ -8,8 +8,7 @@ import trollogyadherent.offlineauth.packet.packets.*;
 public class PacketHandler {
     public static SimpleNetworkWrapper net;
 
-    public static void initPackets()
-    {
+    public static void initPackets() {
         net = NetworkRegistry.INSTANCE.newSimpleChannel("OfflineAuth".toUpperCase());
         registerMessage(PlayerJoinPacket.class, PlayerJoinPacket.SimpleMessage.class);
         registerMessage(DownloadSkinPacket.class, DownloadSkinPacket.SimpleMessage.class);
@@ -23,8 +22,7 @@ public class PacketHandler {
 
     private static int nextPacketId = 0;
 
-    private static void registerMessage(Class packet, Class message)
-    {
+    private static void registerMessage(Class packet, Class message) {
         net.registerMessage(packet, message, nextPacketId, Side.CLIENT);
         net.registerMessage(packet, message, nextPacketId, Side.SERVER);
         nextPacketId++;

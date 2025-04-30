@@ -4,20 +4,21 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import trollogyadherent.offlineauth.misc.Unused;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @Unused
 public class CommandChangePlayerUUID implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandChangePlayerUUID()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -35,7 +36,7 @@ public class CommandChangePlayerUUID implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -85,7 +86,7 @@ public class CommandChangePlayerUUID implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2)
     {
         return null;
     }

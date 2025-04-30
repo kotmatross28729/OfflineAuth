@@ -4,21 +4,20 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import trollogyadherent.offlineauth.Config;
-import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CommandConfig implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
     public CommandConfig()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("oacfg");
     }
 
@@ -33,7 +32,7 @@ public class CommandConfig implements ICommand {
     }
 
     @Override
-    public List getCommandAliases() {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -53,7 +52,11 @@ public class CommandConfig implements ICommand {
                 sender.addChatMessage(new ChatComponentText("Config string not found. Use 'oaconfig list' to find valid config strings"));
                 return;
             }
-            sender.addChatMessage(new ChatComponentText(Config.getPropertyByString(argString[1]).comment));
+    
+            Property property = Config.getPropertyByString(argString[1]);
+            if(property != null) {
+                sender.addChatMessage(new ChatComponentText(property.comment));
+            }
         } else if (argString[0].equals("list")) {
             StringBuilder sb = new StringBuilder();
             if (Util.isServer()) {
@@ -71,30 +74,39 @@ public class CommandConfig implements ICommand {
                 sender.addChatMessage(new ChatComponentText("Please provide a valid config string"));
                 return;
             }
-
-            if (Config.getStringCategory(argString[1]) == null) {
+    
+            ConfigCategory category = Config.getStringCategory(argString[1]);
+            
+            if (category == null) {
                 sender.addChatMessage(new ChatComponentText("Config string not found. Use 'oaconfig list' to find valid config strings"));
                 return;
             }
-
-            if (Config.getStringCategory(argString[1]).toString().equals("general_server") && !Util.isServer()) {
+            
+            if (category.toString().equals("general_server") && !Util.isServer()) {
                 sender.addChatMessage(new ChatComponentText("Cannot do this in singleplayer"));
                 return;
             }
 
-            sender.addChatMessage(new ChatComponentText(argString[1] + ": " + Config.getPropertyByString(argString[1]).getString()));
+            Property property = Config.getPropertyByString(argString[1]);
+            
+            if(property != null) {
+                sender.addChatMessage(new ChatComponentText(argString[1] + ": " + property.getString()));
+            }
+            
         } else if (argString[0].equals("set")) {
             if (argString.length < 3) {
                 sender.addChatMessage(new ChatComponentText("Please provide a valid config string and value"));
                 return;
             }
-
-            if (Config.getStringCategory(argString[1]) == null) {
+    
+            ConfigCategory category = Config.getStringCategory(argString[1]);
+            
+            if (category == null) {
                 sender.addChatMessage(new ChatComponentText("Config string not found. Use 'oaconfig list' to find valid config strings"));
                 return;
             }
 
-            if (Config.getStringCategory(argString[1]).toString().equals("general_server") && !Util.isServer()) {
+            if (category.toString().equals("general_server") && !Util.isServer()) {
                 sender.addChatMessage(new ChatComponentText("You can only do this in the server console"));
                 return;
             }
@@ -107,43 +119,45 @@ public class CommandConfig implements ICommand {
 
             Property prop = Config.getPropertyByString(argString[1]);
             boolean succeeded = true;
-
-            switch (prop.getType()) {
-                case STRING:
-                    prop.set(value);
-                    break;
-                case INTEGER:
-                    try {
-                        prop.set(Integer.parseInt(value));
-                    } catch (NumberFormatException e) {
-                        sender.addChatMessage(new ChatComponentText("Invalid int value"));
-                        succeeded = false;
-                    }
-                    break;
-                case DOUBLE:
-                    try {
-                        prop.set(Double.parseDouble(value));
-                    } catch (NumberFormatException e) {
-                        sender.addChatMessage(new ChatComponentText("Invalid double value"));
-                        succeeded = false;
-                    }
-                    break;
-                case BOOLEAN:
-                    if (value.equalsIgnoreCase("true")) {
-                        prop.set(true);
-                    } else if (value.equalsIgnoreCase("false")) {
-                        prop.set(false);
-                    } else {
-                        sender.addChatMessage(new ChatComponentText("Invalid boolean value"));
-                        succeeded = false;
-                    }
-                    break;
+    
+            if (prop != null) {
+                switch (prop.getType()) {
+                    case STRING:
+                        prop.set(value);
+                        break;
+                    case INTEGER:
+                        try {
+                            prop.set(Integer.parseInt(value));
+                        } catch (NumberFormatException e) {
+                            sender.addChatMessage(new ChatComponentText("Invalid int value"));
+                            succeeded = false;
+                        }
+                        break;
+                    case DOUBLE:
+                        try {
+                            prop.set(Double.parseDouble(value));
+                        } catch (NumberFormatException e) {
+                            sender.addChatMessage(new ChatComponentText("Invalid double value"));
+                            succeeded = false;
+                        }
+                        break;
+                    case BOOLEAN:
+                        if (value.equalsIgnoreCase("true")) {
+                            prop.set(true);
+                        } else if (value.equalsIgnoreCase("false")) {
+                            prop.set(false);
+                        } else {
+                            sender.addChatMessage(new ChatComponentText("Invalid boolean value"));
+                            succeeded = false;
+                        }
+                        break;
+                }
             }
-
+    
             if (succeeded) {
                 Config.config.save();
-                Config.synchronizeConfigurationClient(Config.config.getConfigFile(), true, true);
-                Config.synchronizeConfigurationServer(Config.config.getConfigFile(), true);
+                Config.synchronizeConfigurationClient(true, true);
+                Config.synchronizeConfigurationServer(true);
                 sender.addChatMessage(new ChatComponentText("Updated config"));
             }
         } else {
@@ -157,7 +171,7 @@ public class CommandConfig implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_) {
+    public List<String> addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_) {
         return null;
     }
 
@@ -165,9 +179,10 @@ public class CommandConfig implements ICommand {
     public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_) {
         return false;
     }
+    
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(@Nonnull Object o) {
         return 0;
     }
 }

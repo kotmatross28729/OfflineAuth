@@ -80,11 +80,11 @@ public class Util {
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = factory.generateSecret(spec).getEncoded();
-        String res = "";
-        for (int i = 0; i < hash.length; i++) {
-            res += hash[i];
+        StringBuilder res = new StringBuilder();
+        for (byte b : hash) {
+            res.append(b);
         }
-        return res;
+        return res.toString();
     }
 
     public static boolean validUsername(String username) {
@@ -97,6 +97,7 @@ public class Util {
             for (int j = 0; j < allowedChars.length(); j ++) {
                 if (username.charAt(i) == allowedChars.charAt(j)) {
                     found = true;
+                    break;
                 }
             }
             if (!found) {
@@ -106,8 +107,8 @@ public class Util {
         return true;
     }
 
-    public static OAServerData getOAServerDatabyIP(String ip, String port) {
-        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+    public static OAServerData getOAServerDataByIP(String ip, String port) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (oasd.getIp().equals(ip) && oasd.getPort().equals(port)) {
                 return oasd;
             }
@@ -120,7 +121,7 @@ public class Util {
          * as the Session field in Minecraft.class is static final we have to
          * access it via reflection
          */
-        private static Field sessionField = ReflectionHelper.findField(Minecraft.class, "session", "S", "field_71449_j");
+        private static final Field sessionField = ReflectionHelper.findField(Minecraft.class, "session", "S", "field_71449_j");
 
         static Session get() throws IllegalArgumentException {
             return Minecraft.getMinecraft().getSession();
@@ -261,11 +262,11 @@ public class Util {
 
     public static String fileToByteString(File file) throws IOException {
         byte[] bytes = FileUtils.readFileToByteArray(file);
-        String res = "";
+        StringBuilder res = new StringBuilder();
         for (byte b : bytes) {
-            res += String.valueOf(b);
+            res.append(String.valueOf(b));
         }
-        return res;
+        return res.toString();
     }
 
     public static void byteStringToFile(String byteString) {
@@ -297,9 +298,7 @@ public class Util {
             return -1;
         }
         byte[] temp = new byte[4];
-        for (int i = 0; i < 4; i ++) {
-            temp[i] = array[i];
-        }
+        System.arraycopy(array, 0, temp, 0, 4);
         return ByteBuffer.wrap(temp).getInt();
     }
 
@@ -307,7 +306,7 @@ public class Util {
         if (file == null || !file.exists()) {
             return null;
         }
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
@@ -324,12 +323,12 @@ public class Util {
         }
         byte[] digest = md.digest();
 
-        String res = "";
+        StringBuilder res = new StringBuilder();
         for (byte b : digest) {
-            res += String.valueOf(b);
+            res.append(String.valueOf(b));
         }
 
-        return res;
+        return res.toString();
     }
 
     // https://gist.github.com/zeroleaf/6809843
@@ -339,7 +338,7 @@ public class Util {
      * @return sha1 hash code of this file
      */
     public static String sha1Code(File file) {
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
@@ -347,7 +346,7 @@ public class Util {
             e.printStackTrace();
             return null;
         }
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
@@ -366,16 +365,15 @@ public class Util {
                 e.printStackTrace();
                 return null;
             }
-            ;
         }
 
 //        digest = digestInputStream.getMessageDigest();
-        byte[] resultByteArry = digest.digest();
-        return bytesToHexString(resultByteArry);
+        byte[] resultByteArray = digest.digest();
+        return bytesToHexString(resultByteArray);
     }
 
     /**
-     * Convert a array of byte to hex String. <br/>
+     * Convert an array of byte to hex String. <br/>
      * Each byte is covert a two character of hex String. That is <br/>
      * if byte of int is less than 16, then the hex String will append <br/>
      * a character of '0'.
@@ -426,7 +424,7 @@ public class Util {
         if (OfflineAuth.varInstanceClient.selectedServerData == null) {
             return null;
         }
-        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (getIP(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getIp()) && getPort(OfflineAuth.varInstanceClient.selectedServerData).equals(oasd.getPort())) {
                 return oasd;
             }
@@ -440,14 +438,14 @@ public class Util {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public static enum Color {
+    public enum Color {
         GREY,
         GREEN,
         RED
     }
 
     public static String colorCode(Color color) {
-        Map<Color, String> colorMap = new HashMap<Color, String>() {{
+        Map<Color, String> colorMap = new HashMap<>() {{
             put(Color.GREY, "7");
             put(Color.GREEN, "a");
             put(Color.RED, "4");

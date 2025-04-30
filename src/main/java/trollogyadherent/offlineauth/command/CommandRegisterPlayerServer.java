@@ -9,6 +9,7 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -16,17 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandRegisterPlayerServer implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandRegisterPlayerServer()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("register");
         aliases.add("reg");
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -44,7 +45,7 @@ public class CommandRegisterPlayerServer implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -79,8 +80,7 @@ public class CommandRegisterPlayerServer implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

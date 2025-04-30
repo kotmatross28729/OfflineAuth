@@ -4,8 +4,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import java.io.File;
-
 public class Config {
 
     /* Instantiating a new config */
@@ -107,7 +105,7 @@ public class Config {
     }
 
     /* Sync for when config has changed, client */
-    public static void synchronizeConfigurationClient(File configFile, boolean force, boolean load) {
+    public static void synchronizeConfigurationClient(boolean force, boolean load) {
         if (!loaded || force) {
             if (load) {
                 config.load();
@@ -131,9 +129,9 @@ public class Config {
             Property useLegacyConversionProperty = config.get(Categories.generalClient, "useLegacyConversion", Defaults.useLegacyConversion, "Whether to convert the skin to the old format. If you don't have SSB or CPM installed, it's better to leave it true");
             useLegacyConversion = useLegacyConversionProperty.getBoolean();
             
-            //Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
-            //debugEnabled = debugEnabledProperty.getBoolean();
-
+//            Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
+//            debugEnabled = debugEnabledProperty.getBoolean();
+    
             Property manageAuthButtonIdProperty = config.get(Categories.generalClient, "manageAuthButtonId", Defaults.manageAuthButtonId, "Id of the Manage Auth button");
             manageAuthButtonId = manageAuthButtonIdProperty.getInt();
 
@@ -167,7 +165,7 @@ public class Config {
     }
 
     /* Sync for when config has changed, server */
-    public static void synchronizeConfigurationServer(File configFile, boolean force) {
+    public static void synchronizeConfigurationServer(boolean force) {
         if (!loaded || force) {
             config.load();
             loaded = true;
@@ -243,10 +241,8 @@ public class Config {
         String[] temp = new String[getServerConfigStrings().length + getClientConfigStrings().length];
         String[] server = getServerConfigStrings();
         String[] client = getClientConfigStrings();
-
-        for (int i = 0; i < server.length; i ++) {
-            temp[i] = server[i];
-        }
+    
+        System.arraycopy(server, 0, temp, 0, server.length);
 
         for (int i = server.length, j = 0; j < client.length; i ++, j ++) {
             temp[i] = client[j];
@@ -272,6 +268,12 @@ public class Config {
     }
 
     public static Property getPropertyByString(String str) {
-        return getStringCategory(str).get(str);
+        ConfigCategory category = getStringCategory(str);
+        
+        if(category != null) {
+            return category.get(str);
+        }
+        
+        return null;
     }
 }

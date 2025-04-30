@@ -90,7 +90,7 @@ public class GuiHandler {
         if (OfflineAuth.isCMMLoaded && (reflectedCMMbuttonList == null && reflectedCMMlabelList == null) && (/*e.gui instanceof lumien.custommainmenu.gui.GuiFakeMain ||*/ e.gui instanceof lumien.custommainmenu.gui.GuiCustom)) {
             try {
                 reflectedCMMbuttonList = btnlstField.get(e.gui);
-                if (reflectedCMMbuttonList == null || ((java.util.List) reflectedCMMbuttonList).size() == 0) {
+                if (reflectedCMMbuttonList == null || ((java.util.List<?>) reflectedCMMbuttonList).size() == 0) {
                     reflectedCMMbuttonList = null;
                 }
 
@@ -101,7 +101,7 @@ public class GuiHandler {
                 return;
             }
             if (reflectedCMMbuttonList != null) {
-                for (Object gb : ((java.util.List) reflectedCMMbuttonList)) {
+                for (Object gb : ((java.util.List<?>) reflectedCMMbuttonList)) {
                     if (((GuiButton) gb).id >= 6000) {
                         lumien.custommainmenu.gui.GuiCustomButton gb_ = (lumien.custommainmenu.gui.GuiCustomButton) gb;
 
@@ -114,10 +114,10 @@ public class GuiHandler {
                 }
             }
             if (reflectedCMMlabelList != null) {
-                for (Object label : ((java.util.List) reflectedCMMlabelList)) {
+                for (Object label : ((java.util.List<?>) reflectedCMMlabelList)) {
                     lumien.custommainmenu.gui.GuiCustomLabel label_ = (lumien.custommainmenu.gui.GuiCustomLabel) label;
 
-                    lumien.custommainmenu.configuration.elements.Text text = null;
+                    lumien.custommainmenu.configuration.elements.Text text;
                     try {
                         text = (lumien.custommainmenu.configuration.elements.Text) textField.get(label_);
                     } catch (IllegalAccessException ex) {
@@ -138,8 +138,7 @@ public class GuiHandler {
         }
 
         /* Attaching the "Auth" button to the multiplayer menu */
-        if (e.gui instanceof GuiMultiplayer) {
-            GuiMultiplayer multiplayerGui = (GuiMultiplayer) e.gui;
+        if (e.gui instanceof GuiMultiplayer multiplayerGui) {
             //System.out.println(multiplayerGui);
             if (multiplayerGui.field_146803_h.field_148197_o != OfflineAuth.varInstanceClient.selectedServerIndex) {
                 OfflineAuth.varInstanceClient.selectedServerIndex = multiplayerGui.field_146803_h.field_148197_o;
@@ -160,7 +159,7 @@ public class GuiHandler {
                     ex.printStackTrace();
                 }*/
 
-                OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
+                OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
                 if (oasd != null) {
                     try {
                         Util.offlineMode(oasd.getDisplayName());
@@ -175,54 +174,46 @@ public class GuiHandler {
                 validColor = Color.GRAY.getRGB();
 
 
-                OfflineAuth.varInstanceClient.serverStatusVibecheckThread = new Thread(new Runnable() {
-                    public void run() {
-                        ResponseObject stat = null;
-                        try {
-                            if (oasd == null) {
-                                validText = "\u2718";
-                                validColor = Color.RED.getRGB();
-                                return;
-                            }
-                            PublicKey clientPubKey = null;
-                            PrivateKey clientPriv = null;
-                            if (oasd.isUsingKey()) {
-                                clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
-                                clientPriv = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
-                            }
-                            stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getDisplayName(), oasd.getPassword(), clientPubKey, clientPriv);
-                        } catch (URISyntaxException | IOException | NoSuchAlgorithmException | InvalidKeySpecException |
-                                 InvalidAlgorithmParameterException | IllegalBlockSizeException |
-                                 NoSuchPaddingException | BadPaddingException | InvalidKeyException e) {
-                            setTick(oasd.getIp(), oasd.getPort(), false);
-                            //validText = "\u2718";
-                            //validColor = Color.RED.getRGB();
-                            OfflineAuth.error(e.getMessage());
+                OfflineAuth.varInstanceClient.serverStatusVibecheckThread = new Thread(() -> {
+                    ResponseObject stat;
+                    try {
+                        if (oasd == null) {
+                            validText = "\u2718";
+                            validColor = Color.RED.getRGB();
                             return;
-                        } catch (NoSuchProviderException ex) {
-                            throw new RuntimeException(ex);
                         }
-                        if (stat != null && stat.getStatusCode() == 200) {
-                            if (!stat.getDisplayName().equals("-")) {
-                                setTick(oasd.getIp(), oasd.getPort(), true);
-                                //validText = "\u2714";
-                                //validColor = Color.GREEN.getRGB();
-                            } else {
-                                setTick(oasd.getIp(), oasd.getPort(), false);
-                                //validText = "\u2718";
-                                //validColor = Color.RED.getRGB();
-                            }
-                        } else {
-                            setTick(oasd.getIp(), oasd.getPort(), false);
-                            //validText = "\u2718";
-                            //validColor = Color.RED.getRGB();
+                        PublicKey clientPubKey = null;
+                        PrivateKey clientPriv = null;
+                        if (oasd.isUsingKey()) {
+                            clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                            clientPriv = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                         }
+                        stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getDisplayName(), oasd.getPassword(), clientPubKey, clientPriv);
+                    } catch (URISyntaxException | IOException | NoSuchAlgorithmException | InvalidKeySpecException |
+                             InvalidAlgorithmParameterException | IllegalBlockSizeException |
+                             NoSuchPaddingException | BadPaddingException | InvalidKeyException e1) {
+                        setTick(oasd.getIp(), oasd.getPort(), false);
+                        //validText = "\u2718";
+                        //validColor = Color.RED.getRGB();
+                        OfflineAuth.error(e1.getMessage());
+                        return;
+                    } catch (NoSuchProviderException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    if (stat != null && stat.getStatusCode() == 200) {
+                        //validText = "\u2714";
+                        //validColor = Color.GREEN.getRGB();
+                        //validText = "\u2718";
+                        //validColor = Color.RED.getRGB();
+                        setTick(oasd.getIp(), oasd.getPort(), !stat.getDisplayName().equals("-"));
+                    } else {
+                        setTick(oasd.getIp(), oasd.getPort(), false);
+                        //validText = "\u2718";
+                        //validColor = Color.RED.getRGB();
                     }
                 });
 
                 OfflineAuth.varInstanceClient.serverStatusVibecheckThread.start();
-            } else {
-
             }
         } else if (!(e.gui instanceof ServerKeyAddGUI)){
             OfflineAuth.varInstanceClient.selectedServerIndex = -1;
@@ -230,7 +221,7 @@ public class GuiHandler {
     }
 
     private void setTick(String ip, String port, boolean registered) {
-        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
+        OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
         if (oasd == null) {
             if (registered) {
                 validText = "\u2714";
@@ -289,7 +280,7 @@ public class GuiHandler {
             e.gui.drawString(e.gui.mc.fontRenderer, registeredText, e.gui.width - validTextFinalWidth - registeredTextWidth, 10, Color.WHITE.getRGB());
 
             if (reflectedBtnLst != null) {
-                for (Object gb : ((java.util.List) reflectedBtnLst)) {
+                for (Object gb : ((java.util.List<?>) reflectedBtnLst)) {
                     if (((GuiButton) gb).id == Config.manageAuthButtonId) {
                         return;
                     }

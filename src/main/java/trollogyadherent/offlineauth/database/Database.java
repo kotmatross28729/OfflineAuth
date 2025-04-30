@@ -448,9 +448,7 @@ public class Database {
                 byte[] allBytes = OfflineAuth.varInstanceServer.levelDBStore.get(bytes("ID:" + identifier));
                 int dataLen = Util.fourFirstBytesToInt(allBytes);
                 byte[] data = new byte[dataLen];
-                for (int i = 0; i < dataLen; i ++) {
-                    data[i] = allBytes[i + 4];
-                }
+                System.arraycopy(allBytes, 4, data, 0, dataLen);
                 String dataStr = new String(data);
                 String[] dataSplit = dataStr.split(sep, -1); /* https://stackoverflow.com/a/14602089 */
 
@@ -462,13 +460,9 @@ public class Database {
                 int capeBytesStart = skinBytesStart + skinBytesLen;
 
                 byte[] skinBytes = new byte[skinBytesLen];
-                for (int i = skinBytesStart; i < skinBytesStart + skinBytesLen; i ++) {
-                    skinBytes[i - skinBytesStart] = allBytes[i];
-                }
+                System.arraycopy(allBytes, skinBytesStart, skinBytes, skinBytesStart - skinBytesStart, skinBytesStart + skinBytesLen - skinBytesStart);
                 byte[] capeBytes = new byte[capeBytesLen];
-                for (int i = capeBytesStart; i < capeBytesStart + capeBytesLen; i ++) {
-                    capeBytes[i - capeBytesStart] = allBytes[i];
-                }
+                System.arraycopy(allBytes, capeBytesStart, capeBytes, capeBytesStart - capeBytesStart, capeBytesStart + capeBytesLen - capeBytesStart);
 
                 return new DBPlayerData(dataSplit[0], dataSplit[1], dataSplit[2], dataSplit[3], dataSplit[4], dataSplit[5], skinBytes, capeBytes);
             } else {
@@ -612,13 +606,13 @@ public class Database {
 
         /* https://www.baeldung.com/java-file-to-arraylist */
         FileReader fr = new FileReader(f);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         ArrayList<String> result = new ArrayList<>();
         while (fr.ready()) {
             char c = (char) fr.read();
             if (c == '\n') {
                 result.add(sb.toString());
-                sb = new StringBuffer();
+                sb = new StringBuilder();
             } else {
                 sb.append(c);
             }

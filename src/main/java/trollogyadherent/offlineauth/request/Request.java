@@ -313,8 +313,7 @@ public class Request {
             }
 
             String encryptedToken = new String(encryptedTokenBytes);
-            String decryptedToken = RsaKeyUtil.decryptWithPrivateKey(encryptedToken, clientPrivKey);
-            return decryptedToken;
+            return RsaKeyUtil.decryptWithPrivateKey(encryptedToken, clientPrivKey);
         } catch (Exception e) {
             OfflineAuth.error(e.getMessage());
             //e.printStackTrace();

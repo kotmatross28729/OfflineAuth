@@ -12,20 +12,21 @@ import trollogyadherent.offlineauth.packet.packets.ResetCachesPacket;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandTest implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandTest()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -43,7 +44,7 @@ public class CommandTest implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -198,13 +199,11 @@ public class CommandTest implements ICommand {
 
             //String encryptedMsg = KeyUtil.encrypt("sneed", KeyUtil.loadPrivateKey(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "private.key"), KeyUtil.KeyType.PRIVATE);
 
-            if (argString.length == 0) {
-
-            }   else {
+            if (argString.length != 0) {
                 //System.out.println("sending delete caches packets");
-                for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                     IMessage msg = new ResetCachesPacket.SimpleMessage();
-                    PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                    PacketHandler.net.sendTo(msg, o);
                 }
             }
 
@@ -225,8 +224,7 @@ public class CommandTest implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

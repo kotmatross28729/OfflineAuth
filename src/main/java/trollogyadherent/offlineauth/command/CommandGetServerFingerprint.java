@@ -11,6 +11,7 @@ import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.util.RsaKeyUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -19,15 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandGetServerFingerprint implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandGetServerFingerprint()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -45,7 +46,7 @@ public class CommandGetServerFingerprint implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -74,8 +75,7 @@ public class CommandGetServerFingerprint implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

@@ -68,14 +68,14 @@ public class ServerPlayerRegistry {
             return "[empty]";
         }
 
-        String res = "[";
+        StringBuilder res = new StringBuilder("[");
         for (ServerPlayerData c : this.playerDataList) {
-            res += c;
-            res += ",";
+            res.append(c);
+            res.append(",");
         }
-        res = res.substring(0, res.length() - 1);
-        res += "]";
-        return res;
+        res = new StringBuilder(res.substring(0, res.length() - 1));
+        res.append("]");
+        return res.toString();
     }
 
     public String getIdentifierFromDisplayName(String displayName) {

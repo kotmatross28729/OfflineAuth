@@ -19,11 +19,11 @@ import java.util.List;
 public class AvailableCapesListGUI extends GuiListExtended {
     
     protected final Minecraft mc;
-    public final List capeEntries;
+    public final List<CapeListEntry> capeEntries;
 
     public int selectedIndex;
 
-    public AvailableCapesListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List capeEntries) {
+    public AvailableCapesListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List<CapeListEntry> capeEntries) {
         super(mc, listWidth, listHeight, 32, listHeight - 55 + 4 , entryHeight);
         this.mc = mc;
         this.capeEntries = capeEntries;
@@ -34,8 +34,8 @@ public class AvailableCapesListGUI extends GuiListExtended {
             String capeName = ClientSkinUtil.getLastUsedOfflineCapeName();
             if (capeName != null) {
                 for (int i = 0; i < capeEntries.size(); i++) {
-                    if (((CapeListEntry) capeEntries.get(i)).capeName.equals(capeName)) {
-                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setCape(((CapeListEntry) capeEntries.get(i)).capeName);
+                    if (capeEntries.get(i).capeName.equals(capeName)) {
+                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setCape(capeEntries.get(i).capeName);
                         selectedIndex = i;
                     }
                 }
@@ -61,8 +61,7 @@ public class AvailableCapesListGUI extends GuiListExtended {
     protected String getListHeader() {
         return I18n.format("offlineauth.skingui.available_capes");
     }
-    public List func_148201_l()
-    {
+    public List<CapeListEntry> func_148201_l() {
         return this.capeEntries;
     }
 
@@ -72,7 +71,7 @@ public class AvailableCapesListGUI extends GuiListExtended {
     }
 
     public CapeListEntry getListEntry_(int index) {
-        return (CapeListEntry) this.func_148201_l().get(index);
+        return this.func_148201_l().get(index);
     }
 
     public int getListWidth()

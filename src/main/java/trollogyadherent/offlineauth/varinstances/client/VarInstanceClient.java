@@ -14,14 +14,14 @@ import trollogyadherent.offlineauth.rest.OAServerData;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class VarInstanceClient {
     public ServerData selectedServerData;
     public File datafile;
-    public ArrayList<OAServerData> OAserverDataCache;
+    public ArrayList<OAServerData> OAServerDataCache;
     public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
     //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();

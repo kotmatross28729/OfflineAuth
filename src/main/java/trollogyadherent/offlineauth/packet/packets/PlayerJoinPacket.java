@@ -49,14 +49,12 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                 ClientSkinUtil.clearSkinCache();
             }
 
-            OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
+            OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
             if (oasd == null) {
                 OfflineAuth.error("OASD null!");
                 return message;
             }
-
-
-
+            
             try {
                 if (ClientUtil.getServerPublicKeyFromCache(oasd.getIp(), oasd.getRestPort()) == null) {
                     OfflineAuth.error("Public server key not in cache!");
@@ -199,7 +197,7 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
                             return null;
                         }
 
-                        if (OfflineAuth.varInstanceServer.DEBUGtamperWithUUID) {
+                        if (OfflineAuth.varInstanceServer.DEBUGTamperWithUUID) {
                             //ctx.getServerHandler().playerEntity.field_146106_i.id = dbpd.getUuid();
                             try {
                                 //OfflineAuth.varInstanceClient.uuidIdField.set(ctx.getServerHandler().playerEntity.field_146106_i, dbpd.getUuid());
@@ -232,9 +230,9 @@ public class PlayerJoinPacket implements IMessageHandler<PlayerJoinPacket.Simple
 
                         OfflineAuth.info("User " + entityPlayerMP.getDisplayName() + " successfully logged in");
 
-                        for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                        for (EntityPlayerMP playerMP : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                             IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                            PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                            PacketHandler.net.sendTo(msg, playerMP);
                         }
 
                         /* Marking user as authenticated */

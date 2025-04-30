@@ -46,9 +46,7 @@ public abstract class DialogGui extends GuiScreen {
             case 0:
                 try {
                     actionConfirm();
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
+                } catch (NoSuchAlgorithmException | IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;

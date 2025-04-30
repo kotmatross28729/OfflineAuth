@@ -17,11 +17,11 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class AvailableSkinsListGUI extends GuiListExtended {
     protected final Minecraft mc;
-    protected final List skinEntries;
+    protected final List<SkinListEntry> skinEntries;
 
     int selectedIndex;
 
-    public AvailableSkinsListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List skinEntries) {
+    public AvailableSkinsListGUI(Minecraft mc, int listWidth, int listHeight, int entryHeight, List<SkinListEntry> skinEntries) {
         super(mc, listWidth, listHeight, 32, listHeight - 55 + 4 , entryHeight);
         this.mc = mc;
         this.skinEntries = skinEntries;
@@ -32,8 +32,8 @@ public class AvailableSkinsListGUI extends GuiListExtended {
             String skinName = ClientSkinUtil.getLastUsedOfflineSkinName();
             if (skinName != null) {
                 for (int i = 0; i < skinEntries.size(); i++) {
-                    if (((SkinListEntry) skinEntries.get(i)).skinName.equals(skinName)) {
-                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(((SkinListEntry) skinEntries.get(i)).skinName);
+                    if (skinEntries.get(i).skinName.equals(skinName)) {
+                        OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(skinEntries.get(i).skinName);
                         selectedIndex = i;
                     }
                 }
@@ -61,8 +61,7 @@ public class AvailableSkinsListGUI extends GuiListExtended {
     protected String getListHeader() {
         return I18n.format("offlineauth.skingui.available_skins");
     }
-    public List func_148201_l()
-    {
+    public List<SkinListEntry> func_148201_l() {
         return this.skinEntries;
     }
 
@@ -72,7 +71,7 @@ public class AvailableSkinsListGUI extends GuiListExtended {
     }
 
     public SkinListEntry getListEntry_(int index) {
-        return (SkinListEntry) this.func_148201_l().get(index);
+        return this.func_148201_l().get(index);
     }
 
     public int getListWidth()

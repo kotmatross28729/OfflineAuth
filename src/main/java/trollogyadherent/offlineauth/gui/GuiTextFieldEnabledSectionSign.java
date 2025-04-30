@@ -160,15 +160,13 @@ public class GuiTextFieldEnabledSectionSign extends GuiTextField {
     }
 
     @Override
-    public void writeText(String str)
-    {
+    public void writeText(String str) {
         String s1 = "";
         String s2 = filerAllowedCharacters(str);
         int i = Math.min(this.getCursorPosition(), this.getSelectionEnd());
         int j = Math.max(this.getCursorPosition(), this.getSelectionEnd());
         int k = this.getMaxStringLength() - this.getText().length() - (i - this.getSelectionEnd());
-        boolean flag = false;
-
+    
         if (this.getText().length() > 0)
         {
             s1 = s1 + this.getText().substring(0, i);
@@ -200,14 +198,9 @@ public class GuiTextFieldEnabledSectionSign extends GuiTextField {
     {
         StringBuilder stringbuilder = new StringBuilder();
         char[] achar = str.toCharArray();
-        int i = achar.length;
-
-        for (int j = 0; j < i; ++j)
-        {
-            char c0 = achar[j];
-
-            if (isAllowedCharacter(c0))
-            {
+    
+        for (char c0 : achar) {
+            if (isAllowedCharacter(c0)) {
                 stringbuilder.append(c0);
             }
         }

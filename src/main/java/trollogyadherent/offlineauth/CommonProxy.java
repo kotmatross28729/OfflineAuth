@@ -32,9 +32,9 @@ public class CommonProxy {
         /* Config */
         OfflineAuth.confFile = event.getSuggestedConfigurationFile();
         if (Util.isServer()) {
-            Config.synchronizeConfigurationServer(event.getSuggestedConfigurationFile(), false);
+            Config.synchronizeConfigurationServer(false);
         } else {
-            Config.synchronizeConfigurationClient(event.getSuggestedConfigurationFile(), false, true);
+            Config.synchronizeConfigurationClient(false, true);
         }
 
         OfflineAuth.info("Debug Mode: " + OfflineAuth.isDebugMode());
@@ -43,7 +43,7 @@ public class CommonProxy {
         if (Util.isServer()) {
             if(!Database.initialize()) {
                 OfflineAuth.varInstanceServer = null;
-                OfflineAuth.info("Databse not initialized, returning from preinit...");
+                OfflineAuth.info("Database not initialized, returning from preinit...");
                 return;
             }
         }
@@ -80,7 +80,7 @@ public class CommonProxy {
         }
 
         /* Packets */
-        //OfflineAuth.simpleNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("offlineuath");
+        //OfflineAuth.simpleNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("offlineauth");
         //OfflineAuth.simpleNetworkWrapper.registerMessage(PacketS2C.PacketS2CHandler.class, PacketS2C.class, 0, Side.CLIENT);
         PacketHandler.initPackets();
 

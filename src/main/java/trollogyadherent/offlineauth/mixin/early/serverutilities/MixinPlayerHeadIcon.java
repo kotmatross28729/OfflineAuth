@@ -90,7 +90,7 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$loadOASkin(Minecraft mc, UUID dynamicUUID) {
 		NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
-		List<GuiPlayerInfo> players = (List<GuiPlayerInfo>)handler.playerInfoList;
+		List<GuiPlayerInfo> players = handler.playerInfoList;
 		
 		if(!SkinUtil.uuidToName.containsKey(dynamicUUID)) {
 			for(GuiPlayerInfo player : players) {

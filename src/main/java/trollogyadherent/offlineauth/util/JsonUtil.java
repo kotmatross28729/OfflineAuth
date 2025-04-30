@@ -29,7 +29,6 @@ public class JsonUtil {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         Gson gson = builder.create();
-        Object[] obj = (Object[]) gson.fromJson(json, class_);
-        return obj;
+        return (Object[]) gson.fromJson(json, class_);
     }
 }

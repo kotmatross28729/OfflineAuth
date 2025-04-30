@@ -27,7 +27,7 @@ public class SendAuthPortPacket implements IMessageHandler<SendAuthPortPacket.Si
 
             /* Trying to get privateKeyPath and publicServerKeyPath from previously saved data, since they can't be taken from this gui screen */
             OAServerData oaServerDataSaved = null;
-            for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+            for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
                 if (oasd.getIp().equals(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData)) && oasd.getPort().equals(Util.getPort(OfflineAuth.varInstanceClient.selectedServerData))) {
                     oaServerDataSaved = oasd;
                     break;

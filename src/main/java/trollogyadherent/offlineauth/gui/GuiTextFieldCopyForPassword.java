@@ -85,23 +85,21 @@ public class GuiTextFieldCopyForPassword extends Gui {
      */
     public String getSelectedText()
     {
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         return this.text.substring(i, j);
     }
 
     /**
      * replaces selected text, or inserts text at the position on the cursor
      */
-    public void writeText(String p_146191_1_)
-    {
+    public void writeText(String p_146191_1_) {
         String s1 = "";
         String s2 = ChatAllowedCharacters.filerAllowedCharacters(p_146191_1_);
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         int k = this.maxStringLength - this.text.length() - (i - this.selectionEnd);
-        boolean flag = false;
-
+    
         if (this.text.length() > 0)
         {
             s1 = s1 + this.text.substring(0, i);
@@ -149,7 +147,7 @@ public class GuiTextFieldCopyForPassword extends Gui {
     }
 
     /**
-     * delete the selected text, otherwsie deletes characters from either side of the cursor. params: delete num
+     * delete the selected text, otherwise deletes characters from either side of the cursor. params: delete num
      */
     public void deleteFromCursor(int p_146175_1_)
     {
@@ -755,7 +753,7 @@ public class GuiTextFieldCopyForPassword extends Gui {
     }
 
     /**
-     * Sets whether or not this textbox is visible
+     * Sets whether this textbox is visible
      */
     public void setVisible(boolean p_146189_1_)
     {

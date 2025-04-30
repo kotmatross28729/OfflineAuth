@@ -1,7 +1,6 @@
 package trollogyadherent.offlineauth.command;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,20 +12,21 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandDeletePlayer implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandDeletePlayer()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("deluser");
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -44,7 +44,7 @@ public class CommandDeletePlayer implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -68,9 +68,9 @@ public class CommandDeletePlayer implements ICommand {
             OfflineAuth.info(sender.getCommandSenderName() + " issued deleteuser command for player " + argString[0] + " with status " + responseObject.getStatus());
             if (responseObject.getStatusCode() == 200 && dbPlayerData != null) {
 
-                for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                    if (((EntityPlayerMP) e).getDisplayName().equals(dbPlayerData.getDisplayname())) {
-                        ((EntityPlayerMP) e).playerNetServerHandler.kickPlayerFromServer(Config.accountDeletionKickMessage);
+                for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                    if (e.getDisplayName().equals(dbPlayerData.getDisplayname())) {
+                        e.playerNetServerHandler.kickPlayerFromServer(Config.accountDeletionKickMessage);
                         break;
                     }
                 }
@@ -85,8 +85,7 @@ public class CommandDeletePlayer implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

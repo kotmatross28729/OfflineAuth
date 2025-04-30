@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class VarInstanceServer {
     public final String DB_NAME = new File(OfflineAuth.rootPath, "OfflineAuthDatabase").getPath();
     public DB levelDBStore;
@@ -30,10 +31,7 @@ public class VarInstanceServer {
     public ArrayList<String> authenticatedDisplaynames = new ArrayList<>();
 
     public Field displaynameField = ReflectionHelper.findField(net.minecraft.entity.player.EntityPlayer.class, "displayname", "field_178872_h");
-
-    public boolean changedUUID = false;
-
-    public boolean DEBUGtamperWithUUID = false;
+    public boolean DEBUGTamperWithUUID = false;
 
     public VarInstanceServer() {
         uuidIdField.setAccessible(true);

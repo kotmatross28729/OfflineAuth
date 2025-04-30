@@ -19,7 +19,7 @@ public class ActionJoinServer implements lumien.custommainmenu.lib.actions.IActi
     @Override
     public void perform(Object source, lumien.custommainmenu.gui.GuiCustom parent) {
         OfflineAuth.debug("Joining server from cmm");
-        OAServerData oasd = Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort));
+        OAServerData oasd = Util.getOAServerDataByIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort));
         if (oasd == null) {
             OfflineAuth.error("Failed to get Custom Main Menu server data!");
             Minecraft.getMinecraft().displayGuiScreen(new CmmErrorConfirmationGUI(Minecraft.getMinecraft().currentScreen, "offlineauth.confirm_text.cmm_no_data", "offlineauth.confirm.ok", Color.RED.getRGB()));

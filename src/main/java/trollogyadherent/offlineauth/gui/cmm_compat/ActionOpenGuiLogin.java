@@ -16,7 +16,7 @@ public class ActionOpenGuiLogin implements lumien.custommainmenu.lib.actions.IAc
     @Override
     public void perform(Object source, lumien.custommainmenu.gui.GuiCustom parent) {
         OfflineAuth.debug("Opening auth menu from cmm");
-        OAServerData oasd = Util.getOAServerDatabyIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort));
+        OAServerData oasd = Util.getOAServerDataByIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort));
         if (oasd == null) {
             OfflineAuth.error("Failed to get Custom Main Menu server data!");
             return;

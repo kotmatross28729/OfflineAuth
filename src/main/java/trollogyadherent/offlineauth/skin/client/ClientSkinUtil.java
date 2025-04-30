@@ -17,9 +17,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+@SuppressWarnings({"ResultOfMethodCallIgnored", "unused", "UnstableApiUsage"})
 public class ClientSkinUtil {
-    public static class OfflineTextureObject extends AbstractTexture
-    {
+    public static class OfflineTextureObject extends AbstractTexture {
 
         private final BufferedImage image;
 
@@ -34,8 +34,7 @@ public class ClientSkinUtil {
         }
 
         @Override
-        public void loadTexture(IResourceManager arg0)
-        {
+        public void loadTexture(IResourceManager arg0) {
             deleteGlTexture();
 
             TextureUtil.uploadTextureImageAllocate(getGlTextureId(), image, false, false);
@@ -43,10 +42,8 @@ public class ClientSkinUtil {
 
     }
 
-    public static BufferedImage bufferedImageFromskinCache(String name)
-    {
-        try
-        {
+    public static BufferedImage bufferedImageFromSkinCache(String name) {
+        try {
             //BufferedImage result = ImageIO.read(new File(new File(Minecraft.getMinecraft().mcDataDir, "cachedImages"), name));
             if (!Util.pngIsSane(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"))) {
                 OfflineAuth.error("Image not sane: " + name);
@@ -69,15 +66,13 @@ public class ClientSkinUtil {
             }
             return result;
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             OfflineAuth.error("Can't read image: " + name);
             return null;
         }
     }
     
-    
-    public static BufferedImage bufferedImageFromskinCacheQuiet(String name) {
+    public static BufferedImage bufferedImageFromSkinCacheQuiet(String name) {
         try {
             if (!Util.pngIsSane(new File(new File(OfflineAuth.varInstanceClient.clientSkinCachePath), name + ".png"))) {
                 return null;
@@ -117,7 +112,7 @@ public class ClientSkinUtil {
     }
 
     public static ResourceLocation loadSkinFromCache(String skinName) {
-        BufferedImage img = bufferedImageFromskinCache(skinName);
+        BufferedImage img = bufferedImageFromSkinCache(skinName);
         if (img == null) {
             return null;
         }
@@ -127,7 +122,7 @@ public class ClientSkinUtil {
     }
     
     public static ResourceLocation loadSkinFromCacheQuiet(String skinName) {
-        BufferedImage img = bufferedImageFromskinCacheQuiet(skinName);
+        BufferedImage img = bufferedImageFromSkinCacheQuiet(skinName);
         if (img == null) {
             return null;
         }
@@ -271,7 +266,7 @@ public class ClientSkinUtil {
                 OfflineAuth.error("Default skin '" + cape + "' resource not found!");
                 continue;
             }
-            if (!Util.imageIsSane(ClientSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultcapes/client/" + cape))) {
+            if (!Util.imageIsSane(is)) {
                 OfflineAuth.error("Default skin '" + cape + "' is not sane!");
                 continue;
             }

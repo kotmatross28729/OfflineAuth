@@ -8,24 +8,23 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class CommandDeleteRestPassword implements ICommand {
 
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandDeleteRestPassword()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("delpwd");
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -43,8 +42,7 @@ public class CommandDeleteRestPassword implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
-    {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -66,8 +64,7 @@ public class CommandDeleteRestPassword implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

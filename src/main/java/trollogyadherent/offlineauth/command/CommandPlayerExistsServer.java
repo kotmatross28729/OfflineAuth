@@ -9,20 +9,21 @@ import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandPlayerExistsServer implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandPlayerExistsServer()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
         aliases.add("playerex");
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -40,7 +41,7 @@ public class CommandPlayerExistsServer implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -78,8 +79,7 @@ public class CommandPlayerExistsServer implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

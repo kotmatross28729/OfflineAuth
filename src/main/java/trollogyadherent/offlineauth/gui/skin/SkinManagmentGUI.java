@@ -40,8 +40,8 @@ import java.util.List;
 public class SkinManagmentGUI extends GuiScreen {
     private GuiScreen previous;
 
-    private List availableSkins;
-    private List availableCapes;
+    private List<SkinListEntry> availableSkins;
+    private List<CapeListEntry> availableCapes;
 
     private String status;
 
@@ -102,8 +102,8 @@ public class SkinManagmentGUI extends GuiScreen {
             elytraItemStack = new ItemStack(GameRegistry.findItem("etfuturum", "elytra"), 1);
         }
 
-        this.availableSkins = new ArrayList();
-        this.availableCapes = new ArrayList();
+        this.availableSkins = new ArrayList<>();
+        this.availableCapes = new ArrayList<>();
         this.status = I18n.format("offlineauth.skingui.select_skin");
         SkinGuiRenderTicker.yaw = 1;
         //this.field_146969_h = new ArrayList();
@@ -206,21 +206,20 @@ public class SkinManagmentGUI extends GuiScreen {
     {
         return this.availableSkins.contains(skinListEntry);
     }
-    public boolean hasCapeEntry(CapeListEntry capeListEntry)
-    {
+    public boolean hasCapeEntry(CapeListEntry capeListEntry) {
         return this.availableCapes.contains(capeListEntry);
     }
 
-    public List probablyToRemove(SkinListEntry skinListEntry)
+    public List<SkinListEntry> probablyToRemove(SkinListEntry skinListEntry)
     {
         return this.hasSkinEntry(skinListEntry) ? this.availableSkins : null;
     }
 
-    public List getAvailableSkins()
+    public List<SkinListEntry> getAvailableSkins()
     {
         return this.availableSkins;
     }
-    public List getAvailableCapes()
+    public List<CapeListEntry> getAvailableCapes()
     {
         return this.availableCapes;
     }
@@ -696,7 +695,7 @@ public class SkinManagmentGUI extends GuiScreen {
         private String s;
         private List availableSkins;
 
-        public SkinListEntryRunnable(SkinManagmentGUI skinManagmentGUI, String s, List availableskins) {
+        public SkinListEntryRunnable(SkinManagmentGUI skinManagmentGUI, String s, List<SkinListEntry> availableskins) {
             this.skinManagmentGUI = skinManagmentGUI;
             this.s = s;
             this.availableSkins = availableskins;

@@ -12,19 +12,20 @@ import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandChangePlayerDisplayname implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandChangePlayerDisplayname()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -42,8 +43,7 @@ public class CommandChangePlayerDisplayname implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
-    {
+    public List<String> getCommandAliases() {
         return this.aliases;
     }
 
@@ -89,9 +89,9 @@ public class CommandChangePlayerDisplayname implements ICommand {
         StatusResponseObject res = Database.changePlayerDisplayName(identifier, "", argString[1], true);
         OfflineAuth.info(sender.getCommandSenderName() + " issued changeuuid command with status " + res.getStatus());
         if (res.getStatusCode() == 200) {
-            for (Object e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                if (((EntityPlayerMP) e).getDisplayName().equals(oldDisplayName)) {
-                    ((EntityPlayerMP) e).playerNetServerHandler.kickPlayerFromServer("Your displayname has been changed to \""+ argString[1] +"\" by a moderator.");
+            for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                if (e.getDisplayName().equals(oldDisplayName)) {
+                    e.playerNetServerHandler.kickPlayerFromServer("Your displayname has been changed to \""+ argString[1] +"\" by a moderator.");
                     break;
                 }
             }
@@ -105,8 +105,7 @@ public class CommandChangePlayerDisplayname implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

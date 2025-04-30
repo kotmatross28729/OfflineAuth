@@ -91,9 +91,9 @@ public class MixinClientUtil {
 	}
 	@Unique
 	private static void offlineAuth$addRectToBufferWithUV(Tessellator tessellator, float x, float y, float w, float h, double u0, double v0, double u1, double v1) {
-		tessellator.addVertexWithUV((double)x, (double)(y + h), 0.0, u0, v1);
-		tessellator.addVertexWithUV((double)(x + w), (double)(y + h), 0.0, u1, v1);
-		tessellator.addVertexWithUV((double)(x + w), (double)y, 0.0, u1, v0);
-		tessellator.addVertexWithUV((double)x, (double)y, 0.0, u0, v0);
+		tessellator.addVertexWithUV(x, y + h, 0.0, u0, v1);
+		tessellator.addVertexWithUV(x + w, y + h, 0.0, u1, v1);
+		tessellator.addVertexWithUV(x + w, y, 0.0, u1, v0);
+		tessellator.addVertexWithUV(x, y, 0.0, u0, v0);
 	}
 }

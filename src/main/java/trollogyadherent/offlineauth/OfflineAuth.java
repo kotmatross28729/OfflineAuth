@@ -53,7 +53,7 @@ public class OfflineAuth {
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
-    // etc, and register them with the GameRegistry."
+    // etc., and register them with the GameRegistry."
     public void preInit(FMLPreInitializationEvent event) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         isEFRLoaded = Loader.isModLoaded("etfuturum");
         isWitcheryLoaded = Loader.isModLoaded("witchery");

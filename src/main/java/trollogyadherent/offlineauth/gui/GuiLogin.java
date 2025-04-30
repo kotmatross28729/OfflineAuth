@@ -256,7 +256,7 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.manageKey);
         //this.buttonList.add(this.browsePrivateKey);
 
-        OAServerData oasd = Util.getOAServerDatabyIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
+        OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
         if (oasd != null) {
             if (oasd.getIdentifier() != null) {
                 this.identifier.setText(oasd.getIdentifier());
@@ -284,14 +284,13 @@ public class GuiLogin extends GuiScreen {
     }
 
     boolean isAnyTextFieldFocused() {
-        for (int i = 0; i < textFieldTabArray.length; i ++) {
-            if (textFieldTabArray[i] instanceof GuiTextField) {
-                GuiTextField textField = (GuiTextField) textFieldTabArray[i];
+        for (Object o : textFieldTabArray) {
+            if (o instanceof GuiTextField textField) {
                 if (textField.isFocused()) {
                     return true;
                 }
             } else {
-                GuiPasswordField pwField = (GuiPasswordField) textFieldTabArray[i];
+                GuiPasswordField pwField = (GuiPasswordField) o;
                 if (pwField.isFocused()) {
                     return true;
                 }
@@ -325,8 +324,7 @@ public class GuiLogin extends GuiScreen {
                 boolean previousWasFocused = false;
 
                 for (int i = 0; i < textFieldTabArray.length; i++) {
-                    if (textFieldTabArray[i] instanceof GuiTextField) {
-                        GuiTextField textField = (GuiTextField) textFieldTabArray[i];
+                    if (textFieldTabArray[i] instanceof GuiTextField textField) {
                         if (textField.isFocused()) {
                             textField.setFocused(false);
                             if (i == textFieldTabArray.length - 1) {
@@ -372,23 +370,21 @@ public class GuiLogin extends GuiScreen {
         if (OfflineAuth.varInstanceClient.checkingForKey) {
             return;
         }
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                OfflineAuth.varInstanceClient.checkingForKey = true;
-                String ip = Util.getIP(OfflineAuth.varInstanceClient.selectedServerData);
-                try {
-                    if (ClientUtil.getServerPublicKeyFromCache(ip, port.getText()) == null) {
-                        PublicKey pubKey = Request.getServerPubKey(ip, port.getText());
-                        if (pubKey == null) {
-                            OfflineAuth.varInstanceClient.checkingForKey = false;
-                            return;
-                        }
-                        Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port.getText(), pubKey));
+        Thread registerThread = new Thread(() -> {
+            OfflineAuth.varInstanceClient.checkingForKey = true;
+            String ip = Util.getIP(OfflineAuth.varInstanceClient.selectedServerData);
+            try {
+                if (ClientUtil.getServerPublicKeyFromCache(ip, port.getText()) == null) {
+                    PublicKey pubKey = Request.getServerPubKey(ip, port.getText());
+                    if (pubKey == null) {
+                        OfflineAuth.varInstanceClient.checkingForKey = false;
+                        return;
                     }
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    OfflineAuth.error("Failed to read public key for " + OfflineAuth.varInstanceClient.selectedServerData.serverIP);
-                    e.printStackTrace();
+                    Minecraft.getMinecraft().displayGuiScreen(new ServerKeyAddGUI(Minecraft.getMinecraft().currentScreen, ip, port.getText(), pubKey));
                 }
+            } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                OfflineAuth.error("Failed to read public key for " + OfflineAuth.varInstanceClient.selectedServerData.serverIP);
+                e.printStackTrace();
             }
         });
         registerThread.start();
@@ -419,7 +415,7 @@ public class GuiLogin extends GuiScreen {
         OAServerData oaServerDataSaved = null;
         String privateKeyPathSaved = ""; //setting default blank value
         String publicServerKeyPathSaved = ""; //setting default blank value
-        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (oasd.getIp().equals(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData)) && oasd.getPort().equals(Util.getPort(OfflineAuth.varInstanceClient.selectedServerData))) {
                 oaServerDataSaved = oasd;
                 break;
@@ -439,7 +435,7 @@ public class GuiLogin extends GuiScreen {
         boolean found = false;
 
         /* Looping through cache list, if found, updating the entry */
-        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAserverDataCache) {
+        for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (oasd == null) {
                 OfflineAuth.warn("(actionSave): oasd null");
                 continue;
@@ -460,7 +456,7 @@ public class GuiLogin extends GuiScreen {
 
         /* In case this server does not exist in the cache list, we add a new entry to it */
         if (!found) {
-            OfflineAuth.varInstanceClient.OAserverDataCache.add(oaServerDataTemp);
+            OfflineAuth.varInstanceClient.OAServerDataCache.add(oaServerDataTemp);
         }
 
         /* Actual part where the OfflineAuth.varInstanceClient.OAserverDataCache variable gets dumped into a json file */
@@ -487,26 +483,24 @@ public class GuiLogin extends GuiScreen {
             return;
         }
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.registering");
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    String clientPubKey = "";
-                    OAServerData oasd = Util.getCurrentOAServerData();
-                    if (oasd != null && Util.getCurrentOAServerData().isUsingKey()) {
-                        clientPubKey = Base64.getEncoder().encodeToString(RsaKeyUtil.loadPublicKey(Util.getCurrentOAServerData().getPublicKeyPath()).getEncoded());
-                    }
-                    String uuid = "";
-                    StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), uuid, token.getText(), clientPubKey);
-                    if (stat.getStatusCode() == 200) {
-                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
-                    }
-                } catch (NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException |
-                         InvalidKeyException | InvalidAlgorithmParameterException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_registering");
-                    e.printStackTrace();
+        Thread registerThread = new Thread(() -> {
+            try {
+                String clientPubKey = "";
+                OAServerData oasd = Util.getCurrentOAServerData();
+                if (oasd != null && Util.getCurrentOAServerData().isUsingKey()) {
+                    clientPubKey = Base64.getEncoder().encodeToString(RsaKeyUtil.loadPublicKey(Util.getCurrentOAServerData().getPublicKeyPath()).getEncoded());
                 }
+                String uuid = "";
+                StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), uuid, token.getText(), clientPubKey);
+                if (stat.getStatusCode() == 200) {
+                    message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+                } else {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
+                }
+            } catch (NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException |
+                     InvalidKeyException | InvalidAlgorithmParameterException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_registering");
+                e.printStackTrace();
             }
         });
         registerThread.start();
@@ -520,29 +514,27 @@ public class GuiLogin extends GuiScreen {
     public void proceedWithAccountDeletion() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.deleting");
 
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    OAServerData oasd = Util.getCurrentOAServerData();
-                    PublicKey clientPubKey = null;
-                    PrivateKey clientPrivKey = null;
-                    if (oasd != null && oasd.isUsingKey()) {
-                        clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
-                        clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
-                    }
-
-                    StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), clientPubKey, clientPrivKey);
-                    if (stat.getStatusCode() == 200) {
-                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
-                    }
-                } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
-                         NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
-                         InvalidKeyException | IOException e) {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_deleting");
-                    e.printStackTrace();
+        Thread registerThread = new Thread(() -> {
+            try {
+                OAServerData oasd = Util.getCurrentOAServerData();
+                PublicKey clientPubKey = null;
+                PrivateKey clientPrivKey = null;
+                if (oasd != null && oasd.isUsingKey()) {
+                    clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                    clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
+
+                StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), clientPubKey, clientPrivKey);
+                if (stat.getStatusCode() == 200) {
+                    message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+                } else {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
+                }
+            } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
+                     NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
+                     InvalidKeyException | IOException e) {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_deleting");
+                e.printStackTrace();
             }
         });
         registerThread.start();
@@ -550,24 +542,22 @@ public class GuiLogin extends GuiScreen {
 
     private void actionChangePW() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_password");
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    StatusResponseObject stat = Request.changePW(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), newPW.getPW());
-                    if (stat.getStatusCode() == 200) {
-                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
-                        pw.setText(newPW.getPW());
-                        newPW.setText("");
-                        actionSave(false, false);
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
-                    }
-                } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
-                         NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
-                         InvalidKeyException | IOException e) {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_password");
-                    e.printStackTrace();
+        Thread registerThread = new Thread(() -> {
+            try {
+                StatusResponseObject stat = Request.changePW(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), newPW.getPW());
+                if (stat.getStatusCode() == 200) {
+                    message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+                    pw.setText(newPW.getPW());
+                    newPW.setText("");
+                    actionSave(false, false);
+                } else {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                 }
+            } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
+                     NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException |
+                     InvalidKeyException | IOException e) {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_password");
+                e.printStackTrace();
             }
         });
         registerThread.start();
@@ -576,33 +566,31 @@ public class GuiLogin extends GuiScreen {
     private void actionCheckRegistration() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_registration");
         actionSave(true, false);
-        Thread vibeCheckThread = new Thread(new Runnable() {
-            public void run() {
-                ResponseObject stat = null;
-                try {
-                    OAServerData oasd = Util.getCurrentOAServerData();
-                    PublicKey clientPubKey = null;
-                    PrivateKey clientPrivKey = null;
-                    if (oasd != null && oasd.isUsingKey()) {
-                        clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
-                        clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
-                    }
-                    stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
-                         InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
-                         BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException e) {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
-                    e.printStackTrace();
+        Thread vibeCheckThread = new Thread(() -> {
+            ResponseObject stat = null;
+            try {
+                OAServerData oasd = Util.getCurrentOAServerData();
+                PublicKey clientPubKey = null;
+                PrivateKey clientPrivKey = null;
+                if (oasd != null && oasd.isUsingKey()) {
+                    clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                    clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
-                if (stat != null && stat.getStatusCode() == 200) {
-                    if (!stat.getDisplayName().equals("-")) {
-                        message = Util.colorCode(Util.Color.GREEN) + I18n.format("offlineauth.guilogin.status.registered");
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.not_registered");
-                    }
+                stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
+            } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
+                     InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
+                     BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException e) {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
+                e.printStackTrace();
+            }
+            if (stat != null && stat.getStatusCode() == 200) {
+                if (!stat.getDisplayName().equals("-")) {
+                    message = Util.colorCode(Util.Color.GREEN) + I18n.format("offlineauth.guilogin.status.registered");
                 } else {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.not_registered");
                 }
+            } else {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
             }
         });
         vibeCheckThread.start();
@@ -616,31 +604,29 @@ public class GuiLogin extends GuiScreen {
     private void actionChangeDisplayName() {
         actionSave(true, false);
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_name_change_allowed");
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    OAServerData oasd = Util.getCurrentOAServerData();
-                    PublicKey clientPubKey = null;
-                    PrivateKey clientPrivKey = null;
-                    if (oasd != null && oasd.isUsingKey()) {
-                        clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
-                        clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
-                    }
-                    ResponseObject ro = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
-                    if (ro.getStatusCode() == 200 && ro.isDisplayNameChangeAllowed()) {
-                        message = "";
-                        Minecraft.getMinecraft().displayGuiScreen(new NameChangeGUI((GuiLogin) Minecraft.getMinecraft().currentScreen));
-                    } else if (ro.getStatusCode() == 200 && !ro.isDisplayNameChangeAllowed()){
-                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.name_change_disallowed");
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_talking_server");
-                    }
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException  |
-                         InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
-                         BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException  e) {
-                    OfflineAuth.error(e.getMessage());
-                    e.printStackTrace();
+        Thread registerThread = new Thread(() -> {
+            try {
+                OAServerData oasd = Util.getCurrentOAServerData();
+                PublicKey clientPubKey = null;
+                PrivateKey clientPrivKey = null;
+                if (oasd != null && oasd.isUsingKey()) {
+                    clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                    clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
+                ResponseObject ro = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
+                if (ro.getStatusCode() == 200 && ro.isDisplayNameChangeAllowed()) {
+                    message = "";
+                    Minecraft.getMinecraft().displayGuiScreen(new NameChangeGUI((GuiLogin) Minecraft.getMinecraft().currentScreen));
+                } else if (ro.getStatusCode() == 200 && !ro.isDisplayNameChangeAllowed()){
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.status.name_change_disallowed");
+                } else {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_talking_server");
+                }
+            } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException  |
+                     InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
+                     BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException  e) {
+                OfflineAuth.error(e.getMessage());
+                e.printStackTrace();
             }
         });
         registerThread.start();
@@ -648,27 +634,25 @@ public class GuiLogin extends GuiScreen {
 
     public void proceedWithDisplayNameChange() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_displayname");
-        Thread registerThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    OAServerData oasd = Util.getCurrentOAServerData();
-                    PublicKey clientPubKey = null;
-                    PrivateKey clientPrivKey = null;
-                    if (oasd != null && oasd.isUsingKey()) {
-                        clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
-                        clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
-                    }
-                    StatusResponseObject stat = Request.changeDisplayName(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), displayname.getText(), clientPubKey, clientPrivKey);
-                    if (stat.getStatusCode() == 200) {
-                        message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
-                        actionSave(true, false);
-                    } else {
-                        message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
-                    }
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-                    message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_displayname");
-                    e.printStackTrace();
+        Thread registerThread = new Thread(() -> {
+            try {
+                OAServerData oasd = Util.getCurrentOAServerData();
+                PublicKey clientPubKey = null;
+                PrivateKey clientPrivKey = null;
+                if (oasd != null && oasd.isUsingKey()) {
+                    clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
+                    clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
+                StatusResponseObject stat = Request.changeDisplayName(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), displayname.getText(), clientPubKey, clientPrivKey);
+                if (stat.getStatusCode() == 200) {
+                    message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+                    actionSave(true, false);
+                } else {
+                    message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
+                }
+            } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+                message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_displayname");
+                e.printStackTrace();
             }
         });
         registerThread.start();

@@ -93,7 +93,7 @@ public class ClientEventListener {
         OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(displayName, true);
     }
 
-    /* Well, this does not trigger when other palyers leave lol */
+    /* Well, this does not trigger when other players leave lol */
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent e) {
@@ -209,11 +209,16 @@ public class ClientEventListener {
         if (Minecraft.getMinecraft().currentScreen instanceof SkinManagmentGUI) {
             return;
         }
+        
+        if (e.entityPlayer == null) {
+            return;
+        }
+        
         if (!e.entityPlayer.worldObj.isRemote) {
             return;
         }
 
-        if (e.isCanceled() || e.entityPlayer == null) {
+        if (e.isCanceled()) {
             return;
         }
 
@@ -227,18 +232,21 @@ public class ClientEventListener {
             if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
                 OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
             }
-            return;
         }
     }
 
     @SuppressWarnings("unused")
     @SubscribeEvent()
     public void render(RenderPlayerEvent.Pre e) throws IllegalAccessException, IOException {
+        if (e.entityPlayer == null) {
+            return;
+        }
+        
         if (!e.entityPlayer.worldObj.isRemote) {
             return;
         }
 
-        if (e.isCanceled() || e.entityPlayer == null) {
+        if (e.isCanceled()) {
             return;
         }
 

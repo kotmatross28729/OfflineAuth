@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandDeleteSkin implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
-    public CommandDeleteSkin()
-    {
-        aliases = new ArrayList();
+    public CommandDeleteSkin() {
+        aliases = new ArrayList<>();
         aliases.add("delskin");
     }
 
@@ -46,7 +45,7 @@ public class CommandDeleteSkin implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -70,12 +69,12 @@ public class CommandDeleteSkin implements ICommand {
             OfflineAuth.varInstanceServer.playerRegistry.setSkin(dbpd.getDisplayname(), ServerSkinUtil.getRandomDefaultSkinName());
             ServerSkinUtil.removeSkinFromCache(dbpd.getDisplayname());
 
-            for (Object o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
-                if (displayname != null &&  ((EntityPlayerMP)o).getDisplayName().equals(displayname)) {
-                    ((EntityPlayerMP)o).addChatMessage(new ChatComponentText((char) 167 + "cYour skin was deleted by a moderator"));
+            for (EntityPlayerMP o : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
+                if (displayname != null &&  o.getDisplayName().equals(displayname)) {
+                    o.addChatMessage(new ChatComponentText((char) 167 + "cYour skin was deleted by a moderator"));
                 }
                 IMessage msg = new DeletePlayerFromClientRegPacket.SimpleMessage(displayname);
-                PacketHandler.net.sendTo(msg, (EntityPlayerMP)o);
+                PacketHandler.net.sendTo(msg, o);
             }
             if (responseObject.getStatusCode() == 200) {
                 sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.GREEN) + "Success"));
@@ -93,7 +92,7 @@ public class CommandDeleteSkin implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2)
     {
         return null;
     }

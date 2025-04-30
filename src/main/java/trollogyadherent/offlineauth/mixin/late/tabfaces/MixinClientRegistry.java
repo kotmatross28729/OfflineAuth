@@ -21,7 +21,7 @@ import java.util.UUID;
 @Mixin(value = ClientRegistry.class, priority = 999)
 public class MixinClientRegistry {
 	@Shadow(remap = false)
-	private Map<String, ClientRegistry.Data> playerEntities = new HashMap();
+	private Map<String, ClientRegistry.Data> playerEntities = new HashMap<>();
 	@Shadow(remap = false)
 	private volatile boolean fetchingServerStatus = false;
 	
@@ -65,7 +65,7 @@ public class MixinClientRegistry {
 
 	@Shadow(remap = false)
 	public ClientRegistry.Data getByDisplayName(String displayName) {
-		return (ClientRegistry.Data)this.playerEntities.get(displayName);
+		return this.playerEntities.get(displayName);
 	}
 
 	@Inject(

@@ -7,20 +7,21 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.misc.Unused;
 import trollogyadherent.offlineauth.util.Util;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @Unused
 public class CommandUUID implements ICommand {
-    private final List aliases;
+    private final List<String> aliases;
 
     public CommandUUID()
     {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(@Nonnull Object o)
     {
         return 0;
     }
@@ -38,7 +39,7 @@ public class CommandUUID implements ICommand {
     }
 
     @Override
-    public List getCommandAliases()
+    public List<String> getCommandAliases()
     {
         return this.aliases;
     }
@@ -60,8 +61,7 @@ public class CommandUUID implements ICommand {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2)
-    {
+    public List<String> addTabCompletionOptions(ICommandSender var1, String[] var2) {
         return null;
     }
 

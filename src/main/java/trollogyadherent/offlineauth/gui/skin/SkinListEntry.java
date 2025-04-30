@@ -148,7 +148,7 @@ public class SkinListEntry {
         }
 
         this.mc.fontRenderer.drawStringWithShadow(s, p_148279_2_ + 32 + 2, p_148279_3_ + 1, 16777215);
-        List list = this.mc.fontRenderer.listFormattedStringToWidth(this.getSkinDescription(), 157);
+        List<String> list = this.mc.fontRenderer.listFormattedStringToWidth(this.getSkinDescription(), 157);
 
         for (int j2 = 0; j2 < 2 && j2 < list.size(); ++j2)
         {
@@ -185,16 +185,16 @@ public class SkinListEntry {
 
     protected boolean func_148314_g()
     {
-        List list = this.previous.probablyToRemove(this);
+        List<SkinListEntry> list = this.previous.probablyToRemove(this);
         int i = list.indexOf(this);
-        return i > 0 && ((SkinListEntry)list.get(i - 1)).func_148310_d();
+        return i > 0 && list.get(i - 1).func_148310_d();
     }
 
     protected boolean func_148307_h()
     {
-        List list = this.previous.probablyToRemove(this);
+        List<SkinListEntry> list = this.previous.probablyToRemove(this);
         int i = list.indexOf(this);
-        return i >= 0 && i < list.size() - 1 && ((SkinListEntry)list.get(i + 1)).func_148310_d();
+        return i >= 0 && i < list.size() - 1 && list.get(i + 1).func_148310_d();
     }
 
     /**
