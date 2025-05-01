@@ -487,6 +487,9 @@ public class ClientSkinUtil {
     }
 
     public static CapeObject getCapeObject(String name) {
+        if(!Config.enableCapes)
+            return null;
+        
         File capeFile = getCapeFile(name);
         if (capeFile == null || !capeFile.exists()) {
             return new CapeObject(new ResourceLocation[0], -1);

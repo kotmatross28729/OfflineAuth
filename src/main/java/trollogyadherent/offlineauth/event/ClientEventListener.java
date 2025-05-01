@@ -228,9 +228,11 @@ public class ClientEventListener {
         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() == null) {
             return;
         }
-        if (ClientUtil.isSinglePlayer()) {
-            if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
-                OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+        if(Config.enableCapes) {
+            if (ClientUtil.isSinglePlayer()) {
+                if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
+                    OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+                }
             }
         }
     }
@@ -254,11 +256,13 @@ public class ClientEventListener {
             return;
         }
 
-        if (ClientUtil.isSinglePlayer()) {
-            if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
-                OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+        if(Config.enableCapes) {
+            if (ClientUtil.isSinglePlayer()) {
+                if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
+                    OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
+                }
+                return;
             }
-            return;
         }
 
         if (OfflineAuth.varInstanceClient.textureManager == null) {
@@ -292,10 +296,12 @@ public class ClientEventListener {
             OfflineAuth.varInstanceClient.skinLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
         }
 
-        if (OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
-            OfflineAuth.varInstanceClient.capeLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
-        } else {
-            OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
+        if(Config.enableCapes) {
+            if (OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
+                OfflineAuth.varInstanceClient.capeLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
+            } else {
+                OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
+            }
         }
     }
 

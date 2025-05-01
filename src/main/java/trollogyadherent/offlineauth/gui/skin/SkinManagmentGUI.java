@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.AvailableCapesListGUI;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeListEntry;
@@ -64,12 +65,14 @@ public class SkinManagmentGUI extends GuiScreen {
         SkinGuiRenderTicker.skinResourceLocation = null;
         SkinGuiRenderTicker.capeResourceLocation = null;
         SkinGuiRenderTicker.capeObject = null;
-        try {
-            if (SkinGuiRenderTicker.clientPlayerMP != null) {
-                OfflineAuth.varInstanceClient.capeLocationField.set(SkinGuiRenderTicker.clientPlayerMP, null);
+        if(Config.enableCapes) {
+            try {
+                if (SkinGuiRenderTicker.clientPlayerMP != null) {
+                    OfflineAuth.varInstanceClient.capeLocationField.set(SkinGuiRenderTicker.clientPlayerMP, null);
+                }
+            } catch (IllegalAccessException e) {
+                OfflineAuth.error("Failed to reflect cape field");
             }
-        } catch (IllegalAccessException e) {
-            OfflineAuth.error("Failed to reflect cape field");
         }
         SkinGuiRenderTicker.yaw = 0;
         isShowingSkins = true;
@@ -154,9 +157,11 @@ public class SkinManagmentGUI extends GuiScreen {
         this.availableSkinsListGUI.setSlotXBoundsFromLeft(this.width / 2 - 4 - 200);
         this.availableSkinsListGUI.registerScrollButtons(7, 8);
 
-        this.availableCapesListGUI = new AvailableCapesListGUI(this.mc, 200, this.height, 36, this.availableCapes);
-        this.availableCapesListGUI.setSlotXBoundsFromLeft(this.width / 2 - 4 - 200);
-        this.availableCapesListGUI.registerScrollButtons(7, 8);
+        if(Config.enableCapes) {
+            this.availableCapesListGUI = new AvailableCapesListGUI(this.mc, 200, this.height, 36, this.availableCapes);
+            this.availableCapesListGUI.setSlotXBoundsFromLeft(this.width / 2 - 4 - 200);
+            this.availableCapesListGUI.registerScrollButtons(7, 8);
+        }
     }
 
     @Override
@@ -166,38 +171,35 @@ public class SkinManagmentGUI extends GuiScreen {
         if (SkinGuiRenderTicker.clientPlayerMP == null) {
             return;
         }
-        if (capeCheckbox.isChecked()) {
-            if (elytraCheckbox != null) {
-                elytraCheckbox.enabled = true;
-                if (!elytraCheckbox.isChecked()) {
-                    SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, null);
-
-                    //byte b0 = SkinGuiRenderTicker.clientPlayerMP.dataWatcher.getWatchableObjectByte(16);
-                    //SkinGuiRenderTicker.clientPlayerMP.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 1 << /*p_82239_1_*/ 1)));
-
-                    //this.dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 & ~(1 << p_82239_1_))));
-                } else {
-                    try {
-                        if (SkinGuiRenderTicker.capeObject != null) {
-                            OfflineAuth.varInstanceClient.capeLocationField.set(SkinGuiRenderTicker.clientPlayerMP, SkinGuiRenderTicker.capeObject.getCurrentFrame());
+        if(Config.enableCapes) {
+            if (capeCheckbox.isChecked()) {
+                if (elytraCheckbox != null) {
+                    elytraCheckbox.enabled = true;
+                    if (!elytraCheckbox.isChecked()) {
+                        SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, null);
+                    } else {
+                        try {
+                            if (SkinGuiRenderTicker.capeObject != null) {
+                                OfflineAuth.varInstanceClient.capeLocationField.set(SkinGuiRenderTicker.clientPlayerMP, SkinGuiRenderTicker.capeObject.getCurrentFrame());
+                            }
+                        } catch (IllegalAccessException e) {
+                            OfflineAuth.error("Reflection error on cape resource field");
+                            e.printStackTrace();
                         }
-                    } catch (IllegalAccessException e) {
-                        OfflineAuth.error("Reflection error on cape resource field");
-                        e.printStackTrace();
+                        SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, elytraItemStack);
                     }
-                    SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, elytraItemStack);
                 }
-            }
-        } else {
-            if (elytraCheckbox != null) {
-                elytraCheckbox.enabled = false;
-                SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, null);
+            } else {
+                if (elytraCheckbox != null) {
+                    elytraCheckbox.enabled = false;
+                    SkinGuiRenderTicker.clientPlayerMP.setCurrentItemOrArmor(3, null);
                 /*try {
                     OfflineAuth.varInstanceClient.capeLocationField.set(SkinGuiRenderTicker.clientPlayerMP, SkinGuiRenderTicker.capeObject.getCurrentFrame());
                 } catch (IllegalAccessException e) {
                     OfflineAuth.error("Reflection error on cape resource field");
                     e.printStackTrace();
                 }*/
+                }
             }
         }
     }
@@ -305,7 +307,7 @@ public class SkinManagmentGUI extends GuiScreen {
                         }
                         ClientSkinUtil.setLastUsedOfflineSkinName(((SkinListEntry) this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName);
                         //this.mc.displayGuiScreen(this.previous);
-                    } else {
+                    } else if (Config.enableCapes) {
                         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeResourceLocation() != null) {
                             try {
                                 OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeResourceLocation());
@@ -501,7 +503,7 @@ public class SkinManagmentGUI extends GuiScreen {
                             OfflineAuth.error("Fatal error while removing skin");
                             e.printStackTrace();
                         }
-                    } else {
+                    } else if (Config.enableCapes) {
                         OfflineAuth.varInstanceClient.singlePlayerCapeObject = null;
                         ClientSkinUtil.removeLastUsedOfflineCapeName();
                         SkinGuiRenderTicker.capeResourceLocation = null;

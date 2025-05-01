@@ -22,7 +22,6 @@ public class Config {
         public static final boolean showUseKey = true;
         public static final boolean showConfigInAuth = true;
         public static final boolean clearSkinCacheOnLogin = true;
-    
         public static final boolean useLegacyConversion = !OfflineAuth.isSSBLoaded && !OfflineAuth.isCPMLoaded;
 
         /* Client - Custom Main Menu integration */
@@ -38,6 +37,7 @@ public class Config {
         public static final boolean allowRegistration = true;
         public static final boolean allowTokenRegistration = true;
         public static final boolean allowSkinUpload = true;
+        public static final boolean enableCapes = false;
         public static final boolean allowCapeUpload = false;
         public static final String kickMessage = "You are not registered on this server!";
         public static final boolean userListPublic = false;
@@ -85,6 +85,7 @@ public class Config {
     public static boolean allowRegistration = Defaults.allowRegistration;
     public static boolean allowTokenRegistration = Defaults.allowTokenRegistration;
     public static boolean allowSkinUpload = Defaults.allowSkinUpload;
+    public static boolean enableCapes = Defaults.enableCapes;
     public static boolean allowCapeUpload = Defaults.allowCapeUpload;
     public static String kickMessage = Defaults.kickMessage;
     public static boolean userListPublic = Defaults.userListPublic;
@@ -125,7 +126,7 @@ public class Config {
     
             Property clearSkinCacheOnLoginProperty = config.get(Categories.generalClient, "clearSkinCacheOnLogin", Defaults.clearSkinCacheOnLogin, "Should clear skin cache when logging into the server. When false, useful for integration with TabFaces's server selection menu");
             clearSkinCacheOnLogin = clearSkinCacheOnLoginProperty.getBoolean();
-    
+            
             Property useLegacyConversionProperty = config.get(Categories.generalClient, "useLegacyConversion", Defaults.useLegacyConversion, "Whether to convert the skin to the old format. If you don't have SSB or CPM installed, it's better to leave it true");
             useLegacyConversion = useLegacyConversionProperty.getBoolean();
             
@@ -183,7 +184,10 @@ public class Config {
 
             Property allowSkinUploadProperty = config.get(Categories.generalServer, "allowSkinUpload", Defaults.allowSkinUpload, "Allow or disallow uploading of skins");
             allowSkinUpload = allowSkinUploadProperty.getBoolean();
-
+    
+            Property enableCapesProperty = config.get(Categories.generalServer, "enableCapes", Defaults.enableCapes, "");
+            enableCapes = enableCapesProperty.getBoolean();
+            
             Property allowCapeUploadProperty = config.get(Categories.generalServer, "allowCapeUpload", Defaults.allowSkinUpload, "Allow or disallow uploading of capes");
             allowCapeUpload = allowCapeUploadProperty.getBoolean();
 

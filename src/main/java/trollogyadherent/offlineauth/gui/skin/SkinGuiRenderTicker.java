@@ -137,28 +137,7 @@ public class SkinGuiRenderTicker {
                     if (xVelocity < -10) {
                         xVelocity = -10;
                     }
-
-                    /*if (capeResourceLocation != null) {
-                        OfflineAuth.varInstanceClient.capeLocationfield.set(clientPlayerMP, capeResourceLocation);
-                    }*/
-
-                    /*EntityUtil.drawEntityOnScreenFollowMouse(
-                            sr.getScaledWidth() - distanceToSide,
-                            (int) ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - 40,
-                            targetHeight,
-                            sr.getScaledWidth() - distanceToSide - mouseX,
-                            ((sr.getScaledHeight() / 2) + (clientPlayerMP.height * targetHeight)) - (clientPlayerMP.height * targetHeight * (clientPlayerMP.getEyeHeight() / clientPlayerMP.height)) - mouseY, clientPlayerMP);
-                     */
-
-                    /*clientPlayerMP.motionX = 0;
-                    clientPlayerMP.motionY = 0;
-                    clientPlayerMP.motionZ = 0;
-                    clientPlayerMP.moveForward = 0;
-                    clientPlayerMP.moveStrafing = 0;
-                    clientPlayerMP.setVelocity(0, 0, 0);*/
-
-                    //clientPlayerMP.mod
-
+                    
                     yaw += xVelocity;
 
                     EntityUtil.drawEntityOnScreen(
@@ -336,6 +315,9 @@ public class SkinGuiRenderTicker {
     }
 
     public void setCape(String capeName) {
+        if(!Config.enableCapes)
+            return;
+        
         File imageFile = ClientSkinUtil.getCapeFile(capeName);
         if (imageFile == null || !imageFile.exists()) {
             OfflineAuth.error("Error cape image does not exist: " + capeName);
@@ -359,11 +341,7 @@ public class SkinGuiRenderTicker {
                 return;
             }
         }
-        /*if (bufferedImage.getHeight() == 64) {
-            bufferedImage = new LegacyConversion().convert(bufferedImage);
-        }*/
-        //capeResourceLocation = new ResourceLocation("offlineauth", "tickercapes/" + capeName);
-        //ClientSkinUtil.loadTexture(bufferedImage, capeResourceLocation);
+
         capeObject = ClientSkinUtil.getCapeObject(capeName);
     }
 
@@ -372,8 +350,10 @@ public class SkinGuiRenderTicker {
     }
 
     public ResourceLocation getCapeResourceLocation() {
-        return capeResourceLocation;
+        return Config.enableCapes ? capeResourceLocation : null;
     }
 
-    public CapeObject getCapeObject() {return capeObject;}
+    public CapeObject getCapeObject() {
+        return Config.enableCapes ? capeObject : null;
+    }
 }
