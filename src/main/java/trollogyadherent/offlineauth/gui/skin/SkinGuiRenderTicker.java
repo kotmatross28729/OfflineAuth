@@ -315,9 +315,6 @@ public class SkinGuiRenderTicker {
     }
 
     public void setCape(String capeName) {
-        if(!Config.enableCapes)
-            return;
-        
         File imageFile = ClientSkinUtil.getCapeFile(capeName);
         if (imageFile == null || !imageFile.exists()) {
             OfflineAuth.error("Error cape image does not exist: " + capeName);
@@ -350,10 +347,10 @@ public class SkinGuiRenderTicker {
     }
 
     public ResourceLocation getCapeResourceLocation() {
-        return Config.enableCapes ? capeResourceLocation : null;
+        return capeResourceLocation;
     }
 
     public CapeObject getCapeObject() {
-        return Config.enableCapes ? capeObject : null;
+        return capeObject;
     }
 }

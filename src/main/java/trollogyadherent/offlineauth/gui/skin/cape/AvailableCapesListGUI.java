@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.SkinGuiRenderTicker;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
@@ -42,15 +41,14 @@ public class AvailableCapesListGUI extends GuiListExtended {
                 }
             }
         }
-        if(Config.enableCapes) {
-            if (!ClientUtil.isSinglePlayer()) {
-                if (Minecraft.getMinecraft().thePlayer != null && SkinGuiRenderTicker.clientPlayerMP != null) {
-                    try {
-                        SkinGuiRenderTicker.capeResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.capeLocationField.get(Minecraft.getMinecraft().thePlayer);
-                        SkinGuiRenderTicker.capeObject = OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(Minecraft.getMinecraft().thePlayer.getDisplayName());
-                    } catch (IllegalAccessException e) {
-                        OfflineAuth.error("Failed to get ingame skin");
-                    }
+        
+        if (!ClientUtil.isSinglePlayer()) {
+            if (Minecraft.getMinecraft().thePlayer != null && SkinGuiRenderTicker.clientPlayerMP != null) {
+                try {
+                    SkinGuiRenderTicker.capeResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.capeLocationField.get(Minecraft.getMinecraft().thePlayer);
+                    SkinGuiRenderTicker.capeObject = OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(Minecraft.getMinecraft().thePlayer.getDisplayName());
+                } catch (IllegalAccessException e) {
+                    OfflineAuth.error("Failed to get ingame cape");
                 }
             }
         }

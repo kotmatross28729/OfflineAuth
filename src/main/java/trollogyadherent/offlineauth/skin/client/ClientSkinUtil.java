@@ -487,9 +487,6 @@ public class ClientSkinUtil {
     }
 
     public static CapeObject getCapeObject(String name) {
-        if(!Config.enableCapes)
-            return null;
-        
         File capeFile = getCapeFile(name);
         if (capeFile == null || !capeFile.exists()) {
             return new CapeObject(new ResourceLocation[0], -1);
@@ -522,14 +519,7 @@ public class ClientSkinUtil {
             return new CapeObject(new ResourceLocation[0], -1);
         }
         ResourceLocation[] resourceLocations = new ResourceLocation[bufferedImages.length];
-        /*try {
-            if (bufferedImages.length > 0) {
-                File outputfile = new File(OfflineAuth.rootPath + File.separator + "test.png");
-                ImageIO.write(bufferedImages[0], "png", outputfile);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
         for (int i = 0; i < bufferedImages.length; i ++) {
             ResourceLocation location = new ResourceLocation("offlineauth", "capes/" + name + i);
             loadTexture(bufferedImages[i], location);

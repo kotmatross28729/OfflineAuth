@@ -2,9 +2,10 @@ package trollogyadherent.offlineauth.packet.packets;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.DBPlayerData;
 import trollogyadherent.offlineauth.database.Database;
@@ -68,8 +69,11 @@ public class QuerySkinNameFromServerPacket implements IMessageHandler<QuerySkinN
                 //OfflineAuth.varInstanceClient.skinRegistry.add(message.uuid, message.skinname);
                 IMessage msg = new DownloadSkinPacket.SimpleMessage(message.skinName, message.displayName);
                 PacketHandler.net.sendToServer(msg);
-                IMessage msg2 = new DownloadCapePacket.SimpleMessage(message.displayName, message.displayName);
-                PacketHandler.net.sendToServer(msg2);
+                
+                if(Config.enableCapes) {
+                    IMessage msg2 = new DownloadCapePacket.SimpleMessage(message.displayName, message.displayName);
+                    PacketHandler.net.sendToServer(msg2);
+                }
             }
             OfflineAuth.varInstanceClient.clientRegistry.setSkinName(message.displayName, message.skinName);
             OfflineAuth.varInstanceClient.clientRegistry.setSkinNameIsBeingQueried(message.displayName, false);

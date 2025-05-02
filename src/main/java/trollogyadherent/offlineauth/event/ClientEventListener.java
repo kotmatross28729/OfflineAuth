@@ -255,14 +255,14 @@ public class ClientEventListener {
         if (e.entityPlayer instanceof FakePlayer) {
             return;
         }
-
-        if(Config.enableCapes) {
-            if (ClientUtil.isSinglePlayer()) {
+        
+        if (ClientUtil.isSinglePlayer()) {
+            if(Config.enableCapes) {
                 if (OfflineAuth.varInstanceClient.singlePlayerCapeObject != null) {
                     OfflineAuth.varInstanceClient.capeLocationField.set(Minecraft.getMinecraft().thePlayer, OfflineAuth.varInstanceClient.singlePlayerCapeObject.getCurrentFrame(e.partialRenderTick));
                 }
-                return;
             }
+            return;
         }
 
         if (OfflineAuth.varInstanceClient.textureManager == null) {
@@ -295,13 +295,11 @@ public class ClientEventListener {
         if (OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName) != null) {
             OfflineAuth.varInstanceClient.skinLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
         }
-
-        if(Config.enableCapes) {
-            if (OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
-                OfflineAuth.varInstanceClient.capeLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
-            } else {
-                OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
-            }
+        
+        if (Config.enableCapes && OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
+            OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName).getCurrentFrame(e.partialRenderTick));
+        } else {
+            OfflineAuth.varInstanceClient.capeLocationField.set(entityPlayerMP, null);
         }
     }
 

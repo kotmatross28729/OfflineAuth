@@ -22,6 +22,8 @@
 
 * Added command `/myname`. Displays all possible name variables in the chat
 
+* Added `enableCapes` config option (client), if disabled (default), removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
+
 ---
 
 # v0.3.04
