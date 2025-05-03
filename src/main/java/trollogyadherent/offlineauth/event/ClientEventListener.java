@@ -169,7 +169,7 @@ public class ClientEventListener {
             return;
         }
         
-        if(e.player.worldObj.getTotalWorldTime() % 100 == 0) { //Every 5 seconds //TODO: configurable time
+        if(e.player.worldObj.getTotalWorldTime() % Config.clientUserDataCheckInterval == 0) { //Every 5 seconds by default
             UUID uuid = e.player.getUniqueID();
             String displayName = e.player.getDisplayName();
             if(!ClientUserData.containsUUID(uuid) && displayName != null) {

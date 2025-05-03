@@ -24,6 +24,7 @@ public class Config {
         public static final boolean clearSkinCacheOnLogin = true;
         public static final boolean useLegacyConversion = !OfflineAuth.isSSBLoaded && !OfflineAuth.isCPMLoaded;
         public static final boolean enableCapes = false;
+        public static final int clientUserDataCheckInterval = 100;
 
         /* Client - Custom Main Menu integration */
         public static final String cmmDefaultServerIp = "localhost";
@@ -73,6 +74,7 @@ public class Config {
     public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
     public static boolean useLegacyConversion = Defaults.useLegacyConversion;
     public static boolean enableCapes = Defaults.enableCapes;
+    public static int clientUserDataCheckInterval = Defaults.clientUserDataCheckInterval;
     
     /* Client - Custom Main Menu defaults */
     public static String cmmDefaultServerIp = Defaults.cmmDefaultServerIp;
@@ -130,8 +132,12 @@ public class Config {
             Property useLegacyConversionProperty = config.get(Categories.generalClient, "useLegacyConversion", Defaults.useLegacyConversion, "Whether to convert the skin to the old format. If you don't have SSB or CPM installed, it's better to leave it true");
             useLegacyConversion = useLegacyConversionProperty.getBoolean();
     
-            Property enableCapesProperty = config.get(Categories.generalClient, "enableCapes", Defaults.enableCapes, "");
+            Property enableCapesProperty = config.get(Categories.generalClient, "enableCapes", Defaults.enableCapes, "Client option to enable capes. If disabled, the button for selecting a cape in the skins menu is disabled, and capes aren't displayed on players. Needed to avoid the \"curse of the permanent cape\" in single player");
             enableCapes = enableCapesProperty.getBoolean();
+    
+            Property clientUserDataCheckIntervalProperty = config.get(Categories.generalClient, "clientUserDataCheckInterval", Defaults.clientUserDataCheckInterval, "Interval (in ticks) between which the UUID -> Username cache of the nearest players will be checked. The lower the value, the more frequent the checks, the higher the load on the CPU and disk (when writing)");
+            clientUserDataCheckInterval = clientUserDataCheckIntervalProperty.getInt();
+    
             
 //            Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
 //            debugEnabled = debugEnabledProperty.getBoolean();
