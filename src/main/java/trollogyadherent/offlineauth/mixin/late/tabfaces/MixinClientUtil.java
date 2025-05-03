@@ -1,14 +1,12 @@
 package trollogyadherent.offlineauth.mixin.late.tabfaces;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import org.fentanylsolutions.tabfaces.TabFaces;
 import org.fentanylsolutions.tabfaces.registries.ClientRegistry;
 import org.fentanylsolutions.tabfaces.util.ClientUtil;
 import org.fentanylsolutions.tabfaces.varinstances.VarInstanceClient;
@@ -73,68 +71,6 @@ public class MixinClientUtil {
 		}
 	}
 	
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//TODO: Bypass data check (without @Overwrite)
-	//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-	// AAAA
-	
 	@Shadow(remap = false)
 	public static FontRenderer fontRenderer = null;
 	
@@ -142,36 +78,54 @@ public class MixinClientUtil {
 	@Inject(
 			method = "drawHoveringTextWithFaces",
 			at = @At(
-					value = "FIELD",
-					target = "org/fentanylsolutions/tabfaces/registries/ClientRegistry$Data.foundRealSkin:Z",
+					value = "INVOKE_ASSIGN",
+					target = "org/fentanylsolutions/tabfaces/registries/ClientRegistry.getByDisplayName (Ljava/lang/String;)Lorg/fentanylsolutions/tabfaces/registries/ClientRegistry$Data;",
 					ordinal = 0,
-					shift = At.Shift.BEFORE
-			), remap = false
+					shift = At.Shift.AFTER
+			)
+			, remap = false
 	)
 	private static void drawHoveringTextWithFaces(
 			GuiScreen screen, GameProfile[] profiles, List<String> textLines, int x, int y,
-			CallbackInfo ci, @Local ClientRegistry.Data data, @Local String line, @Local LocalIntRef boxWidth) {
-		if(data == null || !data.foundRealSkin) {
-			int tmpWidth = fontRenderer.getStringWidth(line) + ClientUtil.faceWidth;
+			CallbackInfo ci,
+			//Me, when adding non LocalRef locals will lead to a fucking non-working injection:
+			@Local LocalRef<ClientRegistry.Data> data,
+			@Local LocalRef<String> line,
+			@Local(ordinal = 0) LocalIntRef boxWidth
+			//Also, how the fuck do ordinals even work here?
+			//	ClientRegistry.Data data should be ordinal 1, but if I do that, the injection just fucking stops working.
+			//	And boxWidth is assumed to be the first local, so it doesn't actually need ordinal, but fucking guess what?
+	) {
+		if(data.get() == null || !data.get().foundRealSkin) {
+			int tmpWidth = fontRenderer.getStringWidth(line.get()) + ClientUtil.faceWidth;
 			if (tmpWidth > boxWidth.get()) {
 				boxWidth.set(tmpWidth);
 			}
 		}
 	}
-
-	@WrapOperation(
+	
+	//Bypass data check
+	@Inject(
 			method = "drawHoveringTextWithFaces",
-			at = @At(value = "INVOKE", target = "net/minecraft/client/gui/FontRenderer.func_78261_a(Ljava/lang/String;III)I", ordinal = 1), remap = false
+			at = @At(
+					value = "INVOKE_ASSIGN",
+					target = "org/fentanylsolutions/tabfaces/registries/ClientRegistry.getByDisplayName (Ljava/lang/String;)Lorg/fentanylsolutions/tabfaces/registries/ClientRegistry$Data;",
+					ordinal = 1,
+					shift = At.Shift.AFTER
+			)
+			, remap = false
 	)
-	private static void drawHoveringTextWithFaces2(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original,
-												   @Local ClientRegistry.Data data, @Local String s1, @Local int boxOffsetX, @Local int boxOffsetY
+	private static void drawHoveringTextWithFaces2(
+			GuiScreen screen, GameProfile[] profiles, List<String> textLines, int x, int y,
+			CallbackInfo ci,
+			@Local LocalRef<ClientRegistry.Data> data
+			//So, it's been about 1.5 hours since I did @Inject above.
+			// I tried WrapWithCondition, WrapOperation, Redirect, and nothing worked.
+			// So I decided to do 2 injects again, and just force foundRealSkin = true, but that didn't work either.
+			// And it's all because of that Local, I STILL DON'T UNDERSTAND WHY IT'S NOT ordinal = 1???
 	) {
-		if(data == null || !data.foundRealSkin) {
-			fontRenderer.drawStringWithShadow(s1, boxOffsetX + ClientUtil.faceWidth, boxOffsetY, -1);
-			ResourceLocation rl = TabFaces.varInstanceClient.clientRegistry.getTabMenuResourceLocation(s1, true, ClientUtil.serverGuiTTL);
-			if(rl != null) {
-				drawPlayerFace(rl, (float)boxOffsetX, (float)boxOffsetY, 1.0F);
-			}
-		}
+		if(data.get() != null)
+			data.get().foundRealSkin = true;
 	}
+
 }

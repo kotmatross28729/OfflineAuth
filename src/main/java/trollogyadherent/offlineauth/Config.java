@@ -137,7 +137,6 @@ public class Config {
     
             Property clientUserDataCheckIntervalProperty = config.get(Categories.generalClient, "clientUserDataCheckInterval", Defaults.clientUserDataCheckInterval, "Interval (in ticks) between which the UUID -> Username cache of the nearest players will be checked. The lower the value, the more frequent the checks, the higher the load on the CPU and disk (when writing)");
             clientUserDataCheckInterval = clientUserDataCheckIntervalProperty.getInt();
-    
             
 //            Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
 //            debugEnabled = debugEnabledProperty.getBoolean();
