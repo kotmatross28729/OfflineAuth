@@ -19,7 +19,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-
 public class CommonProxy {
 
     // preInit "Run before anything else. Read your config, create blocks, items,

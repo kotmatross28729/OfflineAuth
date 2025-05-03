@@ -59,7 +59,7 @@ public class VarInstanceClient {
     public VarInstanceClient() {
         skinLocationField.setAccessible(true);
         capeLocationField.setAccessible(true);
-
+        
         /* Creating dirs */
         File clientSkinsFile = new File(clientSkinsPath);
         if (!clientSkinsFile.exists()) {

@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.clientdata.ClientUserData;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
@@ -32,6 +33,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventListener {
@@ -55,7 +57,7 @@ public class ClientEventListener {
         }
 
         String displayName = Minecraft.getMinecraft().thePlayer.getDisplayName();
-
+        
         //System.out.println("Detected player join event, we joined");
 
         OfflineAuth.varInstanceClient.clientRegistry.insert(null, null, (EntityPlayer) e.entity, null, displayName);
@@ -158,7 +160,15 @@ public class ClientEventListener {
         if (!e.player.worldObj.isRemote) {
             return;
         }
-
+        
+        if(e.player.worldObj.getTotalWorldTime() % 100 == 0) { //Every 5 seconds //TODO: configurable time
+            UUID uuid = e.player.getUniqueID();
+            if(!ClientUserData.containsUUID(uuid)) {
+                ClientUserData.setUsername(uuid, e.player.getDisplayName());
+            }
+        }
+    
+    
         if (ClientUtil.isSinglePlayer()) {
             if (!OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded) {
                 OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded = true;

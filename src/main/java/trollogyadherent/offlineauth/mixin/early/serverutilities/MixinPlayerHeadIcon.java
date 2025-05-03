@@ -18,6 +18,7 @@ import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.clientdata.ClientUserData;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -66,6 +67,7 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.125, 0.75, 0.25);
 		}
 	}
+	
 	@Unique
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$getOASkin() {
@@ -90,20 +92,28 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation offlineAuth$loadOASkin(Minecraft mc, UUID dynamicUUID) {
 		NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
-		List<GuiPlayerInfo> players = handler.playerInfoList;
+		List<GuiPlayerInfo> players = handler.playerInfoList; //Current online players (on server)
 		
 		ResourceLocation oaSkin = null;
+		String username = null;
 		
-		if(!SkinUtil.uuidToName.containsKey(dynamicUUID)) {
+		//Cached UUID -> name?
+		if(ClientUserData.containsUUID(dynamicUUID)) {
+			username = ClientUserData.getLastKnownUsername(dynamicUUID);
+		} else {
+			//Lookup in online players
 			for(GuiPlayerInfo player : players) {
 				if(Util.offlineUUID2(player.name).equals(dynamicUUID)) {
-					SkinUtil.uuidToName.put(dynamicUUID, player.name);
+					username = Util.offlineUUID(player.name);
 				}
 			}
-		} else {
-			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(mc, SkinUtil.uuidToName.get(dynamicUUID), true);
-			if(oaSkin == null)
-				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(SkinUtil.uuidToName.get(dynamicUUID));
+		}
+		
+		if(username != null) {
+			//Try requesting a skin from server
+			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(mc, username, true);
+			if (oaSkin == null)
+				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(username); //Server didn't provide the skin? Look in cache then
 		}
 		
 		if (oaSkin != null) {
