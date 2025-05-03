@@ -17,9 +17,7 @@ import java.util.UUID;
 
 public class SkinUtil {
 	
-	//For ServerUtilities compat
-	public static Map<UUID, String> uuidToName = new HashMap<>();
-
+	public static final Map<UUID, String> uuidFastCache = new HashMap<>(); //Destroyed when we exit the server
 	public static ResourceLocation getSkinResourceLocationByDisplayName(Minecraft mc, final String displayName, boolean nullable) {
 		if (ClientUtil.isSinglePlayer()) {
 			return OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation;

@@ -20,6 +20,7 @@ import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.clientdata.ClientUserData;
 import trollogyadherent.offlineauth.skin.SkinUtil;
+import static trollogyadherent.offlineauth.skin.SkinUtil.uuidFastCache;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -97,14 +98,23 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 		ResourceLocation oaSkin = null;
 		String username = null;
 		
-		//Cached UUID -> name?
-		if(ClientUserData.containsUUID(dynamicUUID)) {
+		//Cached UUID -> name in RAM?
+		if(uuidFastCache.containsKey(dynamicUUID)) {
+			username = uuidFastCache.get(dynamicUUID);
+		}
+		//Cached UUID -> name in file?
+		else if(ClientUserData.containsUUID(dynamicUUID)) {
 			username = ClientUserData.getLastKnownUsername(dynamicUUID);
-		} else {
-			//Lookup in online players
+			if(username != null) uuidFastCache.put(dynamicUUID, username);
+		}
+		//Lookup in online players
+		else {
 			for(GuiPlayerInfo player : players) {
-				if(Util.offlineUUID2(player.name).equals(dynamicUUID)) {
-					username = Util.offlineUUID(player.name);
+				UUID playerUUID = Util.offlineUUID2(player.name);
+				if(playerUUID.equals(dynamicUUID)) {
+					username = player.name;
+					ClientUserData.setUsername(playerUUID, username);
+					uuidFastCache.put(playerUUID, username);
 				}
 			}
 		}

@@ -24,6 +24,7 @@ import trollogyadherent.offlineauth.clientdata.ClientUserData;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
+import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.skin.client.LegacyConversion;
 import trollogyadherent.offlineauth.util.ClientUtil;
@@ -110,6 +111,7 @@ public class ClientEventListener {
 
         //System.out.println("We left a world");
         OfflineAuth.varInstanceClient.clientRegistry.clear();
+        SkinUtil.uuidFastCache.clear();
     }
 
     /* Clears OfflineAuth.skinCache List. Otherwise the SkinData would exist, but when changing worlds, the texture is unloaded */
@@ -119,6 +121,9 @@ public class ClientEventListener {
     public void onPlayerJoinFMLEvent(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         OfflineAuth.info("Clearing memory skin cache 4");
         OfflineAuth.varInstanceClient.clientRegistry.clear();
+    
+        OfflineAuth.debug("Clearing uuidFastCache 1");
+        SkinUtil.uuidFastCache.clear();
         //System.out.println("Joined MP world");
     }
 
@@ -140,6 +145,9 @@ public class ClientEventListener {
         OfflineAuth.debug("Clearing memory skin cache 5");
         //ClientSkinUtil.clearSkinCache();
         OfflineAuth.varInstanceClient.clientRegistry.clear();
+    
+        OfflineAuth.debug("Clearing uuidFastCache 2");
+        SkinUtil.uuidFastCache.clear();
         //System.out.println("Exited MP world");
         //OfflineAuth.varInstanceClient.onDedicatedServer = false;
     }
@@ -163,8 +171,9 @@ public class ClientEventListener {
         
         if(e.player.worldObj.getTotalWorldTime() % 100 == 0) { //Every 5 seconds //TODO: configurable time
             UUID uuid = e.player.getUniqueID();
-            if(!ClientUserData.containsUUID(uuid)) {
-                ClientUserData.setUsername(uuid, e.player.getDisplayName());
+            String displayName = e.player.getDisplayName();
+            if(!ClientUserData.containsUUID(uuid) && displayName != null) {
+                ClientUserData.setUsername(uuid, displayName);
             }
         }
     
