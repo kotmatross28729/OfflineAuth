@@ -26,6 +26,14 @@
 
 * [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if he is offline)
 
+* Fixed a MAJOR bug due to which the display name was case-sensitive when registering
+  - When registering, existing names/input MUST be compared in lowercase
+  - For example, "aaa" and "AAA" are the same display name. All Minecraft logic, all commands, etc. use lowercase names
+  - Also, this is how Mojang's account registration rules work - available names are compared in lowercase
+
+* Fixed a bug where UUID in offlineAuth was generating from lowercase username
+  - For example, if your username is `"Test" [444cf323-978c-3e83-9288-612345bfec67]`, offlineAuth generated a UUID for `"test" [530fa97a-357f-3c19-94d3-0c5c65c18fe8]`
+
 ---
 
 # v0.3.04

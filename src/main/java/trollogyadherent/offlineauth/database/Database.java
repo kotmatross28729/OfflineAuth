@@ -22,7 +22,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /* A lot was taken from https://github.com/samolego/SimpleAuth/blob/architectury/common/src/main/java/org/samo_lego/simpleauth/storage/database/LevelDB.java */
@@ -595,7 +594,14 @@ public class Database {
     }
 
     public static boolean isUserRegisteredByDisplayname(String displayname) {
-        return Arrays.asList(getRegisteredDisplaynames()).contains(displayname);
+        //All displaynames in checks MUST be lowercase
+        String[] registeredDisplayNames = getRegisteredDisplaynames();
+        for (String entry : registeredDisplayNames) {
+            if (entry.equalsIgnoreCase(displayname)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ArrayList<String> getTokenList() throws IOException {
