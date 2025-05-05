@@ -44,7 +44,6 @@ public class Config {
         public static final boolean userListPublic = false;
         public static final String accountDeletionKickMessage = "Your account has been terminated ;_;";
         public static final boolean allowOpsTokenGen = true;
-        public static final boolean blockServerUtilitiesDisplayNameChange = true;
         public static final boolean allowDisplayNameChange = true;
         public static final boolean allowOpsDisplayNameChange = false;
         public static final int maxSkinBytes = 500000;
@@ -94,7 +93,6 @@ public class Config {
     public static String accountDeletionKickMessage = Defaults.accountDeletionKickMessage;
     public static boolean allowOpsTokenGen = Defaults.allowOpsTokenGen;
     public static boolean allowOpsDisplayNameChange = Defaults.allowOpsDisplayNameChange;
-    public static boolean blockServerUtilitiesDisplayNameChange = Defaults.blockServerUtilitiesDisplayNameChange;
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
@@ -210,9 +208,6 @@ public class Config {
 
             Property allowOpsDisplayNameChangeProperty = config.get(Categories.generalServer, "allowOpsDisplayNameChange", Defaults.allowOpsDisplayNameChange, "Allow or disallow OP's to change user displaynames");
             allowOpsDisplayNameChange = allowOpsDisplayNameChangeProperty.getBoolean();
-    
-            Property blockServerUtilitiesDisplayNameChangeProperty = config.get(Categories.generalServer, "blockServerUtilitiesDisplayNameChange", Defaults.blockServerUtilitiesDisplayNameChange, "Disables the use of nicknames in the Server Utilities, as changing the display name will result in an actual account \"ban\".");
-            blockServerUtilitiesDisplayNameChange = blockServerUtilitiesDisplayNameChangeProperty.getBoolean();
             
             Property allowDisplayNameChangeProperty = config.get(Categories.generalServer, "allowDisplayNameChange", Defaults.allowDisplayNameChange, "Allow or disallow users to change displaynames");
             allowDisplayNameChange = allowDisplayNameChangeProperty.getBoolean();

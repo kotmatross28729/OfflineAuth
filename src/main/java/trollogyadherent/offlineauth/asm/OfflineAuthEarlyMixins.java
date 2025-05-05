@@ -2,7 +2,10 @@ package trollogyadherent.offlineauth.asm;
 
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraft.launchwrapper.Launch;
+import trollogyadherent.offlineauth.ConfigMixins;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +22,18 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 	
 	@Override
 	public List<String> getMixins(Set<String> loadedCoreMods) {
+		String configFolder = "config" + File.separator;
+		ConfigMixins.loadMixinConfig(new File(Launch.minecraftHome, configFolder + "offlineauthMixins.cfg"));
+		
 		List<String> mixins = new ArrayList<>();
 		
-		if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
-			mixins.add("serverutilities.MixinPlayerHeadIcon");
+		if(ConfigMixins.profileCacheOfflineMode)
+			mixins.add("minecraft.MixinPlayerProfileCache");
+		
+		if(ConfigMixins.blockServerUtilitiesDisplayNameChange) {
+			if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
+				mixins.add("serverutilities.MixinPlayerHeadIcon");
+			}
 		}
 		
 		return mixins;

@@ -24,7 +24,7 @@
 
 * Added `enableCapes` config option (client), if disabled (default), removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
 
-* [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if he is offline)
+* [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if the player isn't on the server)
 
 * Fixed a MAJOR bug due to which the display name was case-sensitive when registering
   - When registering, existing names/input MUST be compared in lowercase
@@ -33,6 +33,12 @@
 
 * Fixed a bug where UUID in offlineAuth was generating from lowercase username
   - For example, if your username is `"Test" [444cf323-978c-3e83-9288-612345bfec67]`, offlineAuth generated a UUID for `"test" [530fa97a-357f-3c19-94d3-0c5c65c18fe8]`
+
+* Fixed vanilla Minecraft server logic that caused whitelist, ban, etc. commands to still refer to Mojang servers to find accounts even when server was in offline mode
+  - For example, I want to add a player `“tesT” [3246a81f-3e88-38d1-ad3d-607c386b62dd]` to the whitelist (offline), but the server accessed the Mojang API, and added a player `“Test” [d8d5a923-7b20-43d8-883b-1150148d6955]`
+
+* Fixed server always added offline players in lower case
+  - For example, I wanted to add a player `"ShfdyiS” [3f2b777f-c94a-3788-8674-71c2b1e423b2]` to the whitelist, but the server was adding the player `"shfdyis” [d16a5134-2815-3253-b486-ed9bb1108f2d]`
 
 ---
 
