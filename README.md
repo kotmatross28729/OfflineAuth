@@ -47,7 +47,7 @@ If you are a player:
 * `/gentoken` - Generates a one time use account creation token
 * `/fingerprint` - Displays the fingerprint of the public key of the server (if users know it in advance, this can tell them if someone is performing a man in the middle attack on them)
 * `/deleteskin <identifier> (alias: delskin)` - Deletes the skin of a user
-* `/deletecape <identifier> (alias: delcape)` - Deletes the cape of a user
+* **[DEPRECATED: use [CPM](https://modrinth.com/plugin/custom-player-models) for capes]** `/deletecape  <identifier> (alias: delcape)` - Deletes the cape of a user 
 * `/oaconfig <list|help|get|set> [config_string] [value]` - Changes given config option, only usable in the server console (more granular permissions might be added)
 
 ### Credits
