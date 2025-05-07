@@ -30,6 +30,9 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 		if(ConfigMixins.profileCacheOfflineMode)
 			mixins.add("minecraft.MixinPlayerProfileCache");
 		
+		if(ConfigMixins.skullPatch)
+			mixins.add("minecraft.MixinTileEntitySkullRenderer");
+		
 		if(ConfigMixins.blockServerUtilitiesDisplayNameChange) {
 			if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
 				mixins.add("serverutilities.MixinPlayerHeadIcon");

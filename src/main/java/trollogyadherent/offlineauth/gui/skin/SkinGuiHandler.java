@@ -11,6 +11,7 @@ import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.util.ClientUtil;
 
@@ -80,6 +81,9 @@ public class SkinGuiHandler {
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Specials.Pre e) {
         //TODO: if cape disabled (config) -> return
+        if(!Config.enableCapes) {
+            return;
+        }
         
         if (!(Minecraft.getMinecraft().currentScreen instanceof SkinManagmentGUI)) {
             return;

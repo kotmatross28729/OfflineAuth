@@ -59,10 +59,20 @@ public class Util {
     }
     
     public static void clearServerPubKey(String ip, String port) {
-        try {
-            FileUtils.forceDelete(new File(ClientUtil.getServerKeyPath(ip, port)));
-        } catch (IOException e) {
-            OfflineAuth.error("Failed to clear server public key cache");
+        String keyPath = ClientUtil.getServerKeyPath(ip, port);
+        File keyFile = new File(keyPath);
+    
+        OfflineAuth.debug("Trying to delete server's public key, ip: " + ip + ", port: " + port);
+        OfflineAuth.debug("Cached key path: " + keyPath);
+        
+        if (keyFile.exists()) {
+            try {
+                FileUtils.forceDelete(keyFile);
+            } catch (IOException e) {
+                OfflineAuth.error("Failed to clear server public key cache");
+            }
+        } else {
+            OfflineAuth.error("Server public key cache doesn't exist");
         }
     }
     
@@ -166,10 +176,6 @@ public class Util {
         }
     }
     
-    
-    
-    
-    
     //TODO: test this? (I don't have ipv6)
     // Also, mixins -> vanilla -> change to v6 compat
     // Also, need to tweak all rest classes
@@ -222,10 +228,6 @@ public class Util {
         return "";
     }
     //!IPv6 test ---END---
-    
-    
-    
-    
     
     /* Loads image from File to String, encoded inh base64 */
     public static String fileToBs64(File file) throws IOException {

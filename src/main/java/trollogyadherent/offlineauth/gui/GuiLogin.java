@@ -74,45 +74,19 @@ public class GuiLogin extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton b) {
         switch (b.id) {
-            case 0:
-                actionRegister();
-                break;
-            case 1:
-                actionCheckRegistration();
-                break;
-            case 2:
-                actionDelete();
-                break;
-            case 3:
-                actionChangePW();
-                break;
-            case 31:
-                actionChangeDisplayName();
-                break;
-            case 4:
-                actionUploadSkin();
-                break;
-            case 5:
-                actionSave(false, true);
-                break;
-            case 6:
-                actionCancel();
-                break;
-            case 7:
-                actionConfig();
-                break;
-            case 9:
-                actionManageKey();
-                break;
-            case 10:
-                actionTogglePWvisibility();
-                break;
-            case 11:
-                actionClearSkinCache();
-                break;
-//            case 12:
-//                actionClearServerPubKey();
-//                break;
+            case 0 -> actionRegister();
+            case 1 -> actionCheckRegistration();
+            case 2 -> actionDelete();
+            case 3 -> actionChangePW();
+            case 31 -> actionChangeDisplayName();
+            case 4 -> actionUploadSkin();
+            case 5 -> actionSave(false, true);
+            case 6 -> actionCancel();
+            case 7 -> actionConfig();
+            case 9 -> actionManageKey();
+            case 10 -> actionTogglePWvisibility();
+            case 11 -> actionClearSkinCache();
+            case 12 -> actionClearServerPubKey();
         }
     }
 
@@ -217,8 +191,7 @@ public class GuiLogin extends GuiScreen {
         this.token = new GuiTextField(this.fontRendererObj,this.width / 2 + 5, this.basey + 60, 150, 20);
         this.token.setText("");
         this.token.setMaxStringLength(512);
-
-
+        
         this.login = new GuiButton(0, this.width / 2 - 155, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.register"));
         this.offline = new GuiButton(1, this.width / 2 - 50, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.check_registration"));
         this.deleteAccount = new GuiButton(2, this.width / 2 + 55, this.basey + 135, 100, 20, I18n.format("offlineauth.guilogin.btn.delete_account"));
@@ -237,7 +210,7 @@ public class GuiLogin extends GuiScreen {
         //TODO: message if successful, like check registration?
         this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
     
-        //this.clearServerPubKey = new GuiButton(12, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn."));
+        this.clearServerPubKey = new GuiButton(12, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn."));
        
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
@@ -245,7 +218,7 @@ public class GuiLogin extends GuiScreen {
         if(!Config.clearSkinCacheOnLogin)
             this.buttonList.add(this.clearSkinCache);
     
-        //TODO
+        //TODO: clearServerPubKey
         //this.buttonList.add(this.clearServerPubKey);
         
         this.buttonList.add(this.config);
@@ -678,8 +651,8 @@ public class GuiLogin extends GuiScreen {
     
     public void actionClearServerPubKey() {
         OAServerData oasd = Util.getCurrentOAServerData();
-        if(oasd != null && oasd.getIp() != null && oasd.getPort() != null) {
-            Util.clearServerPubKey(oasd.getIp(), oasd.getPort());
+        if(oasd != null) {
+            Util.clearServerPubKey(oasd.getIp(), oasd.getRestPort());
         }
     }
     

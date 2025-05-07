@@ -36,7 +36,7 @@ public class MixinPlayerProfileCache {
 		}
 		return original.call(instance, locale);
 	}
-	
+
 	//Fixed: server always added offline players in lower case
 	@WrapOperation(
 			method = "func_152655_a",

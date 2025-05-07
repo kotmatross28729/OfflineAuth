@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.UUID;
 
-/* Straight up copy of UsernameCache, but client-side */
+/** Straight up copy of {@link net.minecraftforge.common.UsernameCache}, but client-side */
 public class ClientUserData {
 	private static Map<UUID, String> map = Maps.newHashMap();
 	private static final Charset charset = Charsets.UTF_8;
