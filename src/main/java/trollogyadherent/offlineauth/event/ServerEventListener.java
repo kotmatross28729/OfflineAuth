@@ -20,7 +20,6 @@ import trollogyadherent.offlineauth.packet.packets.SendAuthPortPacket;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-
 public class ServerEventListener {
     
     @SubscribeEvent

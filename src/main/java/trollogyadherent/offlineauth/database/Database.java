@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.database;
 
+import net.minecraft.server.MinecraftServer;
 import org.iq80.leveldb.DBException;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
@@ -64,8 +65,14 @@ public class Database {
 
     /* Registers a player. isCommand serves as an override for most checks (except things like null/invalid values) */
     /* overrideUser re-registers the user (used during password change) */
-    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, byte[] capeBytes, boolean isCommand, boolean overrideUser) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-
+    public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, byte[] capeBytes, boolean isCommand, boolean overrideUser, String ip) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        //ip == null if force registers/changes password
+        if(Config.IPBanRefuseRegistration && ip != null) {
+            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip)) {
+                return new StatusResponseObject("offlineauth.db.ip_banned", 500);
+            }
+        }
+        
         if (!Util.validUsername(displayname)) {
             return new StatusResponseObject("offlineauth.db.invalid_displayname", 500);
         }
@@ -160,7 +167,7 @@ public class Database {
         }
     }
 
-    public static StatusResponseObject changePlayerPassword(String identifier, String password, String newPassword) {
+    public static StatusResponseObject changePlayerPassword(String identifier, String password, String newPassword, String ip) {
         if (identifier == null || password == null || newPassword == null) {
             return new StatusResponseObject("offlineauth.db.identifier_pw_newpw_null", 500);
         }
@@ -175,7 +182,7 @@ public class Database {
                 if (pd == null) {
                     return new StatusResponseObject("offlineauth.db.user_not_found", 500);
                 }
-                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, pd.capeBytes ,true, true);
+                StatusResponseObject registerData = registerPlayer(identifier, pd.displayname, newPassword, pd.getUuid(),"", pd.publicKey, pd.skinBytes, pd.capeBytes ,true, true, ip);
                 if (registerData.getStatusCode() == 200) {
                     return new StatusResponseObject("offlineauth.db.success_update_pw", 200);
                 } else {

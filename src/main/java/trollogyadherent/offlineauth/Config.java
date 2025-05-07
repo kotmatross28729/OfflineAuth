@@ -48,6 +48,8 @@ public class Config {
         public static final boolean allowOpsDisplayNameChange = false;
         public static final int maxSkinBytes = 500000;
         public static final int maxCapeBytes = 1300000;
+        public static final boolean IPBanRefuseRegistration = true;
+        public static final boolean IPBanFullBlock = false;
         public static final boolean debugEnabled = false;
         public static final int secondsBeforeKick = 5;
         public static final boolean secureEachEntityEvent = true;
@@ -96,6 +98,8 @@ public class Config {
     public static boolean allowDisplayNameChange = Defaults.allowDisplayNameChange;
     public static int maxSkinBytes = Defaults.maxSkinBytes;
     public static int maxCapeBytes = Defaults.maxCapeBytes;
+    public static boolean IPBanRefuseRegistration = Defaults.IPBanRefuseRegistration;
+    public static boolean IPBanFullBlock = Defaults.IPBanFullBlock;
     public static boolean debugEnabled = Defaults.debugEnabled;
     public static int secondsBeforeKick = Defaults.secondsBeforeKick;
     public static boolean secureEachEntityEvent = Defaults.secureEachEntityEvent;
@@ -217,7 +221,13 @@ public class Config {
 
             Property maxCapeBytesProperty = config.get(Categories.generalServer, "maxCapeBytes", Defaults.maxSkinBytes, "Maximum amount of bytes allowed in incoming cape upload request");
             maxCapeBytes = maxCapeBytesProperty.getInt();
-
+    
+            Property IPBanRefuseRegistrationProperty = config.get(Categories.generalServer, "IPBanRefuseRegistration", Defaults.IPBanRefuseRegistration, "Prevent users with banned IP addresses from registering accounts");
+            IPBanRefuseRegistration = IPBanRefuseRegistrationProperty.getBoolean();
+    
+            Property IPBanFullBlockProperty = config.get(Categories.generalServer, "IPBanFullBlock", Defaults.IPBanFullBlock, "Completely ignores any requests from blocked IPs");
+            IPBanFullBlock = IPBanFullBlockProperty.getBoolean();
+            
             Property secondsBeforeKickProperty = config.get(Categories.generalServer, "secondsBeforeKick", Defaults.secondsBeforeKick, "How much seconds should elapse before the server kicks unauthenticated players (if the modpack is large, you might need to increase this)");
             secondsBeforeKick = secondsBeforeKickProperty.getInt();
 

@@ -576,6 +576,7 @@ public class Util {
     }
 
     public static String hideIP(String ip) {
+//        return ip;
         if (/*ip.equals("localhost") || */ip.length() <= 3) {
             return ip;
         } else {
@@ -584,12 +585,12 @@ public class Util {
     }
 
     /* Reads any file to string */
-    public static String readFile (File file) throws IOException {
+    public static String readFile(File file) throws IOException {
         return new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
     }
 
     /* Writes any string to file */
-    public static boolean writeFile (File file, String text) {
+    public static boolean writeFile(File file, String text) {
         try {
             if (!file.exists()) {
                 if (!file.createNewFile()) {

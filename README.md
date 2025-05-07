@@ -41,9 +41,9 @@ If you are a player:
 
 ### Commands
 * `/changename <player> <displayname>` - Changes the username of a player (warning: this resets the user's progress)
-* `/deleteplayer <identifier> (alias: delplayer)` - Delete a player account
+* `/deleteuser <identifier> (alias: deluser)` - Delete a player account
 * `/listusers (alias: luser)` - List registered users
-* `/playerexists <identifier/displayname>` - Display `username` and `displayname` of a user, if registered
+* `/playerexists <identifier/displayname> (alias: playerex)` - Display `username` and `displayname` of a user, if registered
 * `/gentoken` - Generates a one time use account creation token
 * `/fingerprint` - Displays the fingerprint of the public key of the server (if users know it in advance, this can tell them if someone is performing a man in the middle attack on them)
 * `/deleteskin <identifier> (alias: delskin)` - Deletes the skin of a user

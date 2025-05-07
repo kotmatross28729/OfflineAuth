@@ -56,7 +56,7 @@ public class CommandRegisterPlayerServer implements ICommand {
             return;
         }
         try {
-            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", new byte[1], new byte[1],true, false);
+            StatusResponseObject responseObject = Database.registerPlayer(argString[0], argString[0], argString[1], "", "", "", new byte[1], new byte[1],true, false, null);
             if (responseObject.getStatusCode() == 200) {
                 sender.addChatMessage(new ChatComponentText(Util.colorCode(Util.Color.GREEN) + "Success"));
             } else {

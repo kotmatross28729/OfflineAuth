@@ -40,6 +40,12 @@
 * Fixed server always added offline players in lower case
   - For example, I wanted to add a player `"ShfdyiS” [3f2b777f-c94a-3788-8674-71c2b1e423b2]` to the whitelist, but the server was adding the player `"shfdyis” [d16a5134-2815-3253-b486-ed9bb1108f2d]`
 
+* Fixed server always added offline players in lower case
+  - For example, I wanted to add a player `"ShfdyiS” [3f2b777f-c94a-3788-8674-71c2b1e423b2]` to the whitelist, but the server was adding the player `"shfdyis” [d16a5134-2815-3253-b486-ed9bb1108f2d]`
+
+* Now users whose IPs are banned will not be able to register new accounts (configurable - `IPBanRefuseRegistration`)
+  - Also added option `IPBanFullBlock` (disabled by default) - prevents any requests to the offlineAuth server from a blocked IP
+
 - A small note for list-like commands:
   + IF (add) -> specify name in strict case
     + For example, to add the player "Test" to the list (whitelist, ban, op), you need to specify strictly in this register, not "test", not "TEST", not "TeSt", but specifically "Test"
