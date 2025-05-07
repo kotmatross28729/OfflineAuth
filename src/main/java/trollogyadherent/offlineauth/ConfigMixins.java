@@ -7,7 +7,6 @@ import java.io.File;
 public class ConfigMixins {
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
 	public static boolean profileCacheOfflineMode = true;
-	public static boolean skullPatch = true;
 	static final String categoryMixins = "Mixins";
 	
 	public static void loadMixinConfig(File configFile) {
@@ -24,12 +23,6 @@ public class ConfigMixins {
 				categoryMixins,
 				true,
 				"If server is in offline mode, switches PlayerProfileCache to permanent offline mode (whitelist, ban, etc. will use offline UUID).");
-		
-		skullPatch = config.getBoolean(
-				"skullPatch",
-				categoryMixins,
-				true,
-				"Modifies skull render code to display offlineAuth skins correctly.");
 		
 		if (config.hasChanged()) {
 			config.save();

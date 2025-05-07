@@ -34,11 +34,17 @@
 * Fixed a bug where UUID in offlineAuth was generating from lowercase username
   - For example, if your username is `"Test" [444cf323-978c-3e83-9288-612345bfec67]`, offlineAuth generated a UUID for `"test" [530fa97a-357f-3c19-94d3-0c5c65c18fe8]`
 
-* Fixed vanilla Minecraft server logic that caused whitelist, ban, etc. commands to still refer to Mojang servers to find accounts even when server was in offline mode
+* Fixed vanilla Minecraft server logic that caused whitelist, ban, and op commands to still refer to Mojang servers to find accounts even when server was in offline mode
   - For example, I want to add a player `“tesT” [3246a81f-3e88-38d1-ad3d-607c386b62dd]` to the whitelist (offline), but the server accessed the Mojang API, and added a player `“Test” [d8d5a923-7b20-43d8-883b-1150148d6955]`
 
 * Fixed server always added offline players in lower case
   - For example, I wanted to add a player `"ShfdyiS” [3f2b777f-c94a-3788-8674-71c2b1e423b2]` to the whitelist, but the server was adding the player `"shfdyis” [d16a5134-2815-3253-b486-ed9bb1108f2d]`
+
+- A small note for list-like commands:
+  + IF (add) -> specify name in strict case
+    + For example, to add the player "Test" to the list (whitelist, ban, op), you need to specify strictly in this register, not "test", not "TEST", not "TeSt", but specifically "Test"
+  + IF (delete) -> specify name in any case
+    + For example, to remove the player "Test" from the list (whitelist, ban, op), you can specify it in any case, "test", "TEST", "TeSt", "Test", it doesn't matter
 
 ---
 
