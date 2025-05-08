@@ -62,7 +62,6 @@ public class CommandDeletePlayer implements ICommand {
             }
             OfflineAuth.info(sender.getCommandSenderName() + " issued deleteuser command for player " + argString[0] + " with status " + responseObject.getStatus());
             if (responseObject.getStatusCode() == 200 && dbPlayerData != null) {
-
                 for (EntityPlayerMP e : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList) {
                     if (e.getDisplayName().equals(dbPlayerData.getDisplayname())) {
                         e.playerNetServerHandler.kickPlayerFromServer(Config.accountDeletionKickMessage);

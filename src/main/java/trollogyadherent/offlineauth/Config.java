@@ -24,6 +24,7 @@ public class Config {
         public static final boolean clearSkinCacheOnLogin = true;
         public static final boolean useLegacyConversion = !OfflineAuth.isSSBLoaded && !OfflineAuth.isCPMLoaded;
         public static final boolean enableCapes = false;
+        public static final boolean saveUserData = true;
         public static final int clientUserDataCheckInterval = 100;
 
         /* Client - Custom Main Menu integration */
@@ -58,6 +59,8 @@ public class Config {
         //YEAR | MONTH | WEEK | DAY | HOUR | MINUTE | SECOND
         public static final String registrationCooldownTimeType = "MINUTE";
         public static final boolean onlyOneAccountPerIP = false;
+    
+        public static final boolean hideIPInLog = false;
     }
 
     /* Basically an enum for different config categories */
@@ -80,6 +83,7 @@ public class Config {
     public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
     public static boolean useLegacyConversion = Defaults.useLegacyConversion;
     public static boolean enableCapes = Defaults.enableCapes;
+    public static boolean saveUserData = Defaults.saveUserData;
     public static int clientUserDataCheckInterval = Defaults.clientUserDataCheckInterval;
     
     /* Client - Custom Main Menu defaults */
@@ -112,6 +116,8 @@ public class Config {
     public static int registrationCooldownTimeValue = Defaults.registrationCooldownTimeValue;
     public static String registrationCooldownTimeType = Defaults.registrationCooldownTimeType;
     public static boolean onlyOneAccountPerIP = Defaults.onlyOneAccountPerIP;
+    
+    public static boolean hideIPInLog = Defaults.hideIPInLog;
 
     public static void synchronizeConfigurationCommon() {
             Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
@@ -146,6 +152,9 @@ public class Config {
             Property enableCapesProperty = config.get(Categories.generalClient, "enableCapes", Defaults.enableCapes, "Client option to enable capes. If disabled, the button for selecting a cape in the skins menu is disabled, and capes aren't displayed on players. Needed to avoid the \"curse of the permanent cape\" in single player");
             enableCapes = enableCapesProperty.getBoolean();
     
+            Property saveUserDataProperty = config.get(Categories.generalClient, "saveUserData", Defaults.saveUserData, "Whether to store username/UUID in `\\offlineauth\\userdata.json`. Required for Server Utilities compatibility");
+            saveUserData = saveUserDataProperty.getBoolean();
+            
             Property clientUserDataCheckIntervalProperty = config.get(Categories.generalClient, "clientUserDataCheckInterval", Defaults.clientUserDataCheckInterval, "Interval (in ticks) between which the UUID -> Username cache of the nearest players will be checked. The lower the value, the more frequent the checks, the higher the load on the CPU and disk (when writing)");
             clientUserDataCheckInterval = clientUserDataCheckIntervalProperty.getInt();
             
@@ -254,6 +263,9 @@ public class Config {
     
             Property onlyOneAccountPerIPProperty = config.get(Categories.generalServer, "onlyOneAccountPerIP", Defaults.onlyOneAccountPerIP, "Prevents registration for users whose IP already has an account registered");
             onlyOneAccountPerIP = onlyOneAccountPerIPProperty.getBoolean();
+    
+            Property hideIPInLogProperty = config.get(Categories.generalServer, "hideIPInLog", Defaults.hideIPInLog, "Replaces part of IP with \"XXX.XXX...\"");
+            hideIPInLog = hideIPInLogProperty.getBoolean();
         }
 
         if(config.hasChanged()) {

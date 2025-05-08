@@ -113,7 +113,8 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 				UUID playerUUID = Util.offlineUUID2(player.name);
 				if(playerUUID.equals(dynamicUUID)) {
 					username = player.name;
-					UsernameCacheClient.setUsername(playerUUID, username);
+					if(Config.saveUserData)
+						UsernameCacheClient.setUsername(playerUUID, username);
 					uuidFastCache.put(playerUUID, username);
 				}
 			}

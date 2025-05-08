@@ -49,6 +49,9 @@ If you are a player:
 * `/deleteskin <identifier> (alias: delskin)` - Deletes the skin of a user
 * **[DEPRECATED: use [CPM](https://modrinth.com/plugin/custom-player-models) for capes]** `/deletecape  <identifier> (alias: delcape)` - Deletes the cape of a user 
 * `/oaconfig <list|help|get|set> [config_string] [value]` - Changes given config option, only usable in the server console (more granular permissions might be added)
+* `/myname` - Displays all possible name variables in the chat
+* `/myuuid` - Displays all possible player UUID's in the chat
+* `/registrationCooldown <(<ip> <delete/del>)/(<clear>)> (alias: regCD)` - Remove IP from cooldown list / clear entire list
 
 ### Credits
 * [TechnicianLP](https://github.com/TechnicianLP) for his [ReAuth](https://github.com/TechnicianLP/ReAuth) mod. I ripped off the config and GUI to adapt them to my mods needs.

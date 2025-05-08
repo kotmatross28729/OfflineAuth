@@ -84,6 +84,17 @@ public class UserListDeobf {
 		}
 	}
 	
+	public void clear() {
+		this.values.clear();
+		
+		try {
+			this.writeChanges();
+		}
+		catch (IOException ioexception) {
+			logger.warn("Could not save the list after list clear.", ioexception);
+		}
+	}
+	
 	@SideOnly(Side.SERVER)
 	public File getSaveFile() {
 		return this.saveFile;

@@ -6,13 +6,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.database.Database;
+import trollogyadherent.offlineauth.misc.Unused;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Unused
 public class CommandDeleteRestPassword implements ICommand {
 
     private final List<String> aliases;

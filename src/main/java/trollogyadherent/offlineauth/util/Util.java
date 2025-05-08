@@ -595,7 +595,9 @@ public class Util {
     }
 
     public static String hideIP(String ip) {
-//        return ip;
+        if(!Config.hideIPInLog)
+            return ip;
+        
         if (/*ip.equals("localhost") || */ip.length() <= 3) {
             return ip;
         } else {

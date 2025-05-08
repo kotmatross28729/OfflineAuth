@@ -29,6 +29,9 @@
 * Added command `/myname`. Displays all possible name variables in the chat
 
 
+* Added command `/myuuid`. Displays all possible player UUID's in the chat
+
+
 * Added `enableCapes` config option (client), if disabled (default)
    - Removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
 
@@ -76,6 +79,9 @@
   - There is also an option `onlyOneAccountPerIP` (disabled by default).
     With it, each IP can have only 1 registered account
      - `lastRegCooldownEnd` in this case is equal to "never"
+
+
+* Added command `/registrationCooldown`. Removes IP from cooldown list / clears entire list
 
 ---
 

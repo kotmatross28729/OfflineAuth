@@ -169,14 +169,15 @@ public class ClientEventListener {
             return;
         }
         
-        if(e.player.worldObj.getTotalWorldTime() % Config.clientUserDataCheckInterval == 0) { //Every 5 seconds by default
-            UUID uuid = e.player.getUniqueID();
-            String displayName = e.player.getDisplayName();
-            if(!UsernameCacheClient.containsUUID(uuid) && displayName != null) {
-                UsernameCacheClient.setUsername(uuid, displayName);
+        if(Config.saveUserData) {
+            if (e.player.worldObj.getTotalWorldTime() % Config.clientUserDataCheckInterval == 0) { //Every 5 seconds by default
+                UUID uuid = e.player.getUniqueID();
+                String displayName = e.player.getDisplayName();
+                if (!UsernameCacheClient.containsUUID(uuid) && displayName != null) {
+                    UsernameCacheClient.setUsername(uuid, displayName);
+                }
             }
         }
-    
     
         if (ClientUtil.isSinglePlayer()) {
             if (!OfflineAuth.varInstanceClient.offlineSkinAndCapeLoaded) {
