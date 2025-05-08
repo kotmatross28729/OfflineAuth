@@ -243,19 +243,17 @@ public class Config {
 
             Property secureEachEntityEventProperty = config.get(Categories.generalServer, "secureEachEntityEvent", Defaults.secureEachEntityEvent, "Cancelling every single EntityEvent coming from a player who is not yet authenticated. Might be CPU intensive, so it can be turned off");
             secureEachEntityEvent = secureEachEntityEventProperty.getBoolean();
-    
-            //TODO: comments
             
-            Property enableRegistrationCooldownProperty = config.get(Categories.generalServer, "enableRegistrationCooldown", Defaults.enableRegistrationCooldown, "");
+            Property enableRegistrationCooldownProperty = config.get(Categories.generalServer, "enableRegistrationCooldown", Defaults.enableRegistrationCooldown, "Prevents registration for users who have registered an account recently (see registrationCooldownTimeValue/registrationCooldownTimeType)");
             enableRegistrationCooldown = enableRegistrationCooldownProperty.getBoolean();
     
-            Property registrationCooldownTimeValueProperty = config.get(Categories.generalServer, "registrationCooldownTimeValue", Defaults.registrationCooldownTimeValue, "");
+            Property registrationCooldownTimeValueProperty = config.get(Categories.generalServer, "registrationCooldownTimeValue", Defaults.registrationCooldownTimeValue, "Number of time units after which a new account registration is possible");
             registrationCooldownTimeValue = registrationCooldownTimeValueProperty.getInt();
             
-            Property registrationCooldownTimeTypeProperty = config.get(Categories.generalServer, "registrationCooldownTimeType", Defaults.registrationCooldownTimeType, "");
+            Property registrationCooldownTimeTypeProperty = config.get(Categories.generalServer, "registrationCooldownTimeType", Defaults.registrationCooldownTimeType, "Time unit type. Available values: \"YEAR\", \"MONTH\", \"WEEK\", \"DAY\", \"HOUR\", \"MINUTE\", \"SECOND\" ");
             registrationCooldownTimeType = registrationCooldownTimeTypeProperty.getString();
     
-            Property onlyOneAccountPerIPProperty = config.get(Categories.generalServer, "onlyOneAccountPerIP", Defaults.onlyOneAccountPerIP, "");
+            Property onlyOneAccountPerIPProperty = config.get(Categories.generalServer, "onlyOneAccountPerIP", Defaults.onlyOneAccountPerIP, "Prevents registration for users whose IP already has an account registered");
             onlyOneAccountPerIP = onlyOneAccountPerIPProperty.getBoolean();
         }
 

@@ -79,7 +79,7 @@ public class Database {
     
         CooldownList cooldownList = OfflineAuth.varInstanceServer.getCooldownList();
         
-        if(Config.enableRegistrationCooldown) {
+        if(Config.enableRegistrationCooldown && ip != null) {
             if (cooldownList.getCooldownEntry(ip) != null) {
                 if(Config.onlyOneAccountPerIP) {
                     return new StatusResponseObject("offlineauth.db.onlyOneAccountAllowed", 500);
@@ -159,7 +159,7 @@ public class Database {
                 consoomToken(token);
             }
     
-            if(Config.enableRegistrationCooldown) {
+            if(Config.enableRegistrationCooldown && ip != null) {
                 Date regTime = new Date();
                 Date cooldownEndTime = DateUtil.addTime(regTime, Config.registrationCooldownTimeValue, DateUtil.convertString(Config.registrationCooldownTimeType));
                 CooldownEntry cooldownEntry = new CooldownEntry(ip, regTime, Config.onlyOneAccountPerIP ? null : cooldownEndTime);

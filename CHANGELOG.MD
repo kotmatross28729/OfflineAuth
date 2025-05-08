@@ -10,44 +10,72 @@
 
 * [ServerUtilities] Disable use of "nick", as it may lead to an actual "ban" of the account (configurable - `blockServerUtilitiesDisplayNameChange`, IT'S NOT RECOMMENDED TO DISABLE!)
 
+
 * Legacy Conversion is now much more optimized
+
 
 * [TabFaces] Improved compatibility (avoiding Overwrite in `ClientUtil.drawHoveringTextWithFaces`, `MixinClientUtil`)
 
+
 * (Potentially (need testing)) fixed an issue where the player would sometimes not render in the skin selection menu
+
 
 * Added several default skins
 
+
 * Skin selection menu now displays 2nd layer correctly
+
 
 * Added command `/myname`. Displays all possible name variables in the chat
 
-* Added `enableCapes` config option (client), if disabled (default), removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
 
-* [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if the player isn't on the server)
+* Added `enableCapes` config option (client), if disabled (default)
+   - Removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
 
-* Fixed a MAJOR bug due to which the display name was case-sensitive when registering
+* [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client
+   - (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if the player isn't on the server)
+
+
+* **Fixed a MAJOR bug due to which the display name was case-sensitive when registering**
   - When registering, existing names/input MUST be compared in lowercase
   - For example, "aaa" and "AAA" are the same display name. All Minecraft logic, all commands, etc. use lowercase names
   - Also, this is how Mojang's account registration rules work - available names are compared in lowercase
 
-* Fixed a bug where UUID in offlineAuth was generating from lowercase username
+
+* **Fixed a bug where UUID in offlineAuth was generating from lowercase username**
   - For example, if your username is `"Test" [444cf323-978c-3e83-9288-612345bfec67]`, offlineAuth generated a UUID for `"test" [530fa97a-357f-3c19-94d3-0c5c65c18fe8]`
+
 
 * Fixed vanilla Minecraft server logic that caused whitelist, ban, and op commands to still refer to Mojang servers to find accounts even when server was in offline mode
   - For example, I want to add a player `“tesT” [3246a81f-3e88-38d1-ad3d-607c386b62dd]` to the whitelist (offline), but the server accessed the Mojang API, and added a player `“Test” [d8d5a923-7b20-43d8-883b-1150148d6955]`
 
+
 * Fixed server always added offline players in lower case
   - For example, I wanted to add a player `"ShfdyiS” [3f2b777f-c94a-3788-8674-71c2b1e423b2]` to the whitelist, but the server was adding the player `"shfdyis” [d16a5134-2815-3253-b486-ed9bb1108f2d]`
 
-* Now users whose IPs are banned will not be able to register new accounts (configurable - `IPBanRefuseRegistration`)
-  - Also added option `IPBanFullBlock` (disabled by default) - prevents any requests to the offlineAuth server from a blocked IP
 
 - A small note for list-like commands:
   + IF (add) -> specify name in strict case
     + For example, to add the player "Test" to the list (whitelist, ban, op), you need to specify strictly in this register, not "test", not "TEST", not "TeSt", but specifically "Test"
   + IF (delete) -> specify name in any case
     + For example, to remove the player "Test" from the list (whitelist, ban, op), you can specify it in any case, "test", "TEST", "TeSt", "Test", it doesn't matter
+
+
+* **Now users whose IPs are banned will not be able to register new accounts (configurable - `IPBanRefuseRegistration`)**
+  - Also added option `IPBanFullBlock` (disabled by default) - prevents any requests to the offlineAuth server from a blocked IP
+
+
+* **Added registration cooldown (configurable - `enableRegistrationCooldown`)**
+  - When a user registers, their IP is added to the `registration-cooldown.json` file, which has 2 more parameters: `lastReg` and `lastRegCooldownEnd` (the structure is the same as `banned-ips.json`).
+    `lastReg` - time of the last account registration.
+    `lastRegCooldownEnd` - time after which the user can create a new account.
+     If the user tries to register a new account while the current time < `lastRegCooldownEnd`, the registration will be refused.
+     - Cooldown time is configurable - `registrationCooldownTimeValue` and `registrationCooldownTimeType`.
+       `registrationCooldownTimeValue` - a numeric value, such as 1, 10, 150, etc.
+       `registrationCooldownTimeType` - a string that is a unit of time, such as "MINUTE", "HOUR", "DAY", etc.
+  - There is also an option `onlyOneAccountPerIP` (disabled by default).
+    With it, each IP can have only 1 registered account
+     - `lastRegCooldownEnd` in this case is equal to "never"
 
 ---
 
