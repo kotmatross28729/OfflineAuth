@@ -470,6 +470,8 @@ public class GuiLogin extends GuiScreen {
                 StatusResponseObject stat = Request.register(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), uuid, token.getText(), clientPubKey);
                 if (stat.getStatusCode() == 200) {
                     message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+                } else if (stat.getStatusCode() == 418){
+                    message = Util.colorCode(Util.Color.YELLOW) + I18n.format(stat.getStatusCooldownRemainedTime(0)) + I18n.format(stat.getStatusCooldownRemainedTime(1));
                 } else {
                     message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
                 }

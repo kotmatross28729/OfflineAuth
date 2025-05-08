@@ -1,5 +1,6 @@
 package trollogyadherent.offlineauth.rest;
 
+import java.util.ArrayList;
 public class StatusResponseObject {
     private final Object status;
     private final int statusCode;
@@ -23,6 +24,13 @@ public class StatusResponseObject {
         } else {
             return "Error: status is null";
         }
+    }
+    
+    public String getStatusCooldownRemainedTime(int part) {
+        if(status instanceof ArrayList<?> statusArray) {
+            return (String) statusArray.get(part);
+        }
+        return "Error: status is null ";
     }
 
     public int getStatusCode() {

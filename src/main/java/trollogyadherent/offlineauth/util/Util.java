@@ -443,7 +443,8 @@ public class Util {
     public enum Color {
         GREY,
         GREEN,
-        RED
+        RED,
+        YELLOW
     }
 
     public static String colorCode(Color color) {
@@ -451,6 +452,7 @@ public class Util {
             put(Color.GREY, "7");
             put(Color.GREEN, "a");
             put(Color.RED, "4");
+            put(Color.YELLOW, "6");
         }};
         return (char) 167 + colorMap.get(color);
     }

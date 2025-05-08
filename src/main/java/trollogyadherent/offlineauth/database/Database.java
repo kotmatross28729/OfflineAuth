@@ -9,6 +9,7 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.registry.cooldown.CooldownEntry;
+import trollogyadherent.offlineauth.registry.cooldown.CooldownList;
 import trollogyadherent.offlineauth.util.DateUtil;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.ServerUtil;
@@ -75,11 +76,18 @@ public class Database {
                 return new StatusResponseObject("offlineauth.db.ip_banned", 500);
             }
         }
+    
+        CooldownList cooldownList = OfflineAuth.varInstanceServer.getCooldownList();
         
-        if (OfflineAuth.varInstanceServer.getCooldownList().hasEntryInCooldownList(ip)) {
-            if(!OfflineAuth.varInstanceServer.getCooldownList().getCooldownEntry(ip).hasExpired()){
-                //TODO: LOCALIZATION
-                return new StatusResponseObject("offlineauth.db.cooldown", 500);
+        if(Config.enableRegistrationCooldown) {
+            if (cooldownList.getCooldownEntry(ip) != null) {
+                if(Config.onlyOneAccountPerIP) {
+                    return new StatusResponseObject("offlineauth.db.onlyOneAccountAllowed", 500);
+                }
+                else if (!cooldownList.getCooldownEntry(ip).hasExpired()) {
+                    String[] status = {"offlineauth.db.cooldown", cooldownList.getCooldownEntry(ip).remainedTime()};
+                    return new StatusResponseObject(status, 418);
+                }
             }
         }
         
@@ -150,12 +158,13 @@ public class Database {
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
-            
-            //TODO: configs 'n stuff
-            Date regTime = new Date();
-            Date cooldownEndTime = DateUtil.addTime(regTime, 1, DateUtil.DAY);
-            CooldownEntry cooldownEntry = new CooldownEntry(ip, regTime, cooldownEndTime);
-            OfflineAuth.varInstanceServer.getCooldownList().addEntry(cooldownEntry);
+    
+            if(Config.enableRegistrationCooldown) {
+                Date regTime = new Date();
+                Date cooldownEndTime = DateUtil.addTime(regTime, Config.registrationCooldownTimeValue, DateUtil.convertString(Config.registrationCooldownTimeType));
+                CooldownEntry cooldownEntry = new CooldownEntry(ip, regTime, Config.onlyOneAccountPerIP ? null : cooldownEndTime);
+                cooldownList.addEntry(cooldownEntry);
+            }
             
             return new StatusResponseObject("offlineauth.db.success_register", 200);
         } else {

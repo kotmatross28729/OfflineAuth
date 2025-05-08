@@ -19,7 +19,7 @@ public class VarInstanceServer {
     public DB levelDBStore;
     public ServerPlayerRegistry playerRegistry = new ServerPlayerRegistry();
     public static final File FILE_REG_COOLDOWN = new File("registration-cooldown.json");
-    private final CooldownList cooldownList;
+    private CooldownList cooldownList;
     public String tokenListPath = new File(OfflineAuth.rootPath, "tokens.txt").getPath();
     public String defaultServerSkinsPath = new File(OfflineAuth.rootPath, "DefaultServerSkins").getPath();
     public String serverSkinCachePath = Paths.get(OfflineAuth.rootPath, "ServerCache", "Skins").toString();
@@ -36,6 +36,8 @@ public class VarInstanceServer {
     public boolean DEBUGTamperWithUUID = false;
     
     public CooldownList getCooldownList() {
+        if(this.cooldownList == null)
+            this.cooldownList = new CooldownList(FILE_REG_COOLDOWN);
         return this.cooldownList;
     }
     

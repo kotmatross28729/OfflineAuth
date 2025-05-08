@@ -14,9 +14,26 @@ public class DateUtil {
 	public static final int SECOND = 13;
 	
 	public static Date addTime(Date date, int value, int timeField) {
+		if(timeField == 0)
+			return date;
+		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(timeField, value);
 		return calendar.getTime();
 	}
+	
+	public static int convertString(String timeField) {
+		switch (timeField) {
+			case "YEAR" -> {return YEAR;}
+			case "MONTH" -> {return MONTH;}
+			case "WEEK" -> {return WEEK;}
+			case "DAY" -> {return DAY;}
+			case "HOUR" -> {return HOUR;}
+			case "MINUTE" -> {return MINUTE;}
+			case "SECOND" -> {return SECOND;}
+			default -> {return 0;}
+		}
+	}
+	
 }

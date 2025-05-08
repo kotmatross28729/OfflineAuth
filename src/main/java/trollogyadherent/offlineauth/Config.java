@@ -53,6 +53,12 @@ public class Config {
         public static final boolean debugEnabled = false;
         public static final int secondsBeforeKick = 5;
         public static final boolean secureEachEntityEvent = true;
+    
+        public static final boolean enableRegistrationCooldown = true;
+        public static final int registrationCooldownTimeValue = 1;
+        //YEAR | MONTH | WEEK | DAY | HOUR | MINUTE | SECOND
+        public static final String registrationCooldownTimeType = "HOUR";
+        public static final boolean onlyOneAccountPerIP = false;
     }
 
     /* Basically an enum for different config categories */
@@ -103,6 +109,10 @@ public class Config {
     public static boolean debugEnabled = Defaults.debugEnabled;
     public static int secondsBeforeKick = Defaults.secondsBeforeKick;
     public static boolean secureEachEntityEvent = Defaults.secureEachEntityEvent;
+    public static boolean enableRegistrationCooldown = Defaults.enableRegistrationCooldown;
+    public static int registrationCooldownTimeValue = Defaults.registrationCooldownTimeValue;
+    public static String registrationCooldownTimeType = Defaults.registrationCooldownTimeType;
+    public static boolean onlyOneAccountPerIP = Defaults.onlyOneAccountPerIP;
 
     public static void synchronizeConfigurationCommon() {
             Property debugEnabledProperty = config.get(Categories.generalCommon, "debugEnabled", Defaults.debugEnabled, "Show debug info");
@@ -233,6 +243,20 @@ public class Config {
 
             Property secureEachEntityEventProperty = config.get(Categories.generalServer, "secureEachEntityEvent", Defaults.secureEachEntityEvent, "Cancelling every single EntityEvent coming from a player who is not yet authenticated. Might be CPU intensive, so it can be turned off");
             secureEachEntityEvent = secureEachEntityEventProperty.getBoolean();
+    
+            //TODO: comments
+            
+            Property enableRegistrationCooldownProperty = config.get(Categories.generalServer, "enableRegistrationCooldown", Defaults.enableRegistrationCooldown, "");
+            enableRegistrationCooldown = enableRegistrationCooldownProperty.getBoolean();
+    
+            Property registrationCooldownTimeValueProperty = config.get(Categories.generalServer, "registrationCooldownTimeValue", Defaults.registrationCooldownTimeValue, "");
+            registrationCooldownTimeValue = registrationCooldownTimeValueProperty.getInt();
+            
+            Property registrationCooldownTimeTypeProperty = config.get(Categories.generalServer, "registrationCooldownTimeType", Defaults.registrationCooldownTimeType, "");
+            registrationCooldownTimeType = registrationCooldownTimeTypeProperty.getString();
+    
+            Property onlyOneAccountPerIPProperty = config.get(Categories.generalServer, "onlyOneAccountPerIP", Defaults.onlyOneAccountPerIP, "");
+            onlyOneAccountPerIP = onlyOneAccountPerIPProperty.getBoolean();
         }
 
         if(config.hasChanged()) {

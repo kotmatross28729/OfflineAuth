@@ -6,6 +6,7 @@ import trollogyadherent.offlineauth.registry.cooldown.deobf.UserListEntryDeobf;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class CooldownEntry extends UserListEntryDeobf {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
@@ -55,6 +56,24 @@ public class CooldownEntry extends UserListEntryDeobf {
 	public Date getCooldownEndDate() {
 		return this.lastRegCooldownEnd;
 	}
+	
+	
+	public String remainedTime() {
+		if (this.lastRegCooldownEnd == null) {
+			return "offlineauth.db.cooldown.never";
+		}
+		long remainingMillis = this.lastRegCooldownEnd.getTime() - new Date().getTime();
+		if (remainingMillis > 0) {
+			long days = TimeUnit.MILLISECONDS.toDays(remainingMillis);
+			long hours = TimeUnit.MILLISECONDS.toHours(remainingMillis) % 24;
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis) % 60;
+			long seconds = TimeUnit.MILLISECONDS.toSeconds(remainingMillis) % 60;
+			
+			return String.format("%dD: %02dH: %02dM: %02dS ", days, hours, minutes, seconds);
+		}
+		return null;
+	}
+	
 	
 	@Override
 	public void onSerialization(JsonObject data) {
