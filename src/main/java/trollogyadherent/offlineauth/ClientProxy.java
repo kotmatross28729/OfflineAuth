@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.event.*;
 import trollogyadherent.offlineauth.clientdata.ClientData;
-import trollogyadherent.offlineauth.clientdata.ClientUserData;
+import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.event.ClientEventListener;
 import trollogyadherent.offlineauth.gui.GuiHandler;
 import trollogyadherent.offlineauth.gui.skin.GameOverlayGuiHandler;
@@ -52,7 +52,7 @@ public class ClientProxy extends CommonProxy {
 
         /* List containing all cached OAServerData objects */
         ClientData.loadData();
-        ClientUserData.load();
+        UsernameCacheClient.load();
 
         /*  */
         /*ClientListener clientListener = new ClientListener();

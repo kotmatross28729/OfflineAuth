@@ -21,14 +21,14 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Straight up copy of {@link net.minecraftforge.common.UsernameCache}, but client-side */
-public class ClientUserData {
+public class UsernameCacheClient {
 	private static Map<UUID, String> map = Maps.newHashMap();
 	private static final Charset charset = Charsets.UTF_8;
 	public static final File userdatafile = new File(new File(OfflineAuth.rootPath, "userdata.json").getPath());
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	private static final Logger log = LogManager.getLogger(ClientUserData.class);
+	private static final Logger log = LogManager.getLogger(UsernameCacheClient.class);
 	
-	private ClientUserData() {}
+	private UsernameCacheClient() {}
 	
 	/**
 	 * Set a player's current username
@@ -114,7 +114,7 @@ public class ClientUserData {
 	 * Save the cache to file
 	 */
 	private static void save() {
-		new ClientUserData.SaveThread(gson.toJson(map)).start();
+		new UsernameCacheClient.SaveThread(gson.toJson(map)).start();
 	}
 	
 	/**

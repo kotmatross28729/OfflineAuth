@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
-import trollogyadherent.offlineauth.clientdata.ClientUserData;
+import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
@@ -172,8 +172,8 @@ public class ClientEventListener {
         if(e.player.worldObj.getTotalWorldTime() % Config.clientUserDataCheckInterval == 0) { //Every 5 seconds by default
             UUID uuid = e.player.getUniqueID();
             String displayName = e.player.getDisplayName();
-            if(!ClientUserData.containsUUID(uuid) && displayName != null) {
-                ClientUserData.setUsername(uuid, displayName);
+            if(!UsernameCacheClient.containsUUID(uuid) && displayName != null) {
+                UsernameCacheClient.setUsername(uuid, displayName);
             }
         }
     

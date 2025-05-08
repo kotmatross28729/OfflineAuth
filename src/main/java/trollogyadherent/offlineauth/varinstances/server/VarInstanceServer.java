@@ -6,6 +6,7 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.registry.ServerKeyRegistry;
 import trollogyadherent.offlineauth.registry.ServerKeyTokenRegistry;
 import trollogyadherent.offlineauth.registry.ServerPlayerRegistry;
+import trollogyadherent.offlineauth.registry.cooldown.CooldownList;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -17,7 +18,8 @@ public class VarInstanceServer {
     public final String DB_NAME = new File(OfflineAuth.rootPath, "OfflineAuthDatabase").getPath();
     public DB levelDBStore;
     public ServerPlayerRegistry playerRegistry = new ServerPlayerRegistry();
-
+    public static final File FILE_REG_COOLDOWN = new File("registration-cooldown.json");
+    private final CooldownList cooldownList;
     public String tokenListPath = new File(OfflineAuth.rootPath, "tokens.txt").getPath();
     public String defaultServerSkinsPath = new File(OfflineAuth.rootPath, "DefaultServerSkins").getPath();
     public String serverSkinCachePath = Paths.get(OfflineAuth.rootPath, "ServerCache", "Skins").toString();
@@ -32,8 +34,14 @@ public class VarInstanceServer {
 
     public Field displaynameField = ReflectionHelper.findField(net.minecraft.entity.player.EntityPlayer.class, "displayname", "field_178872_h");
     public boolean DEBUGTamperWithUUID = false;
-
+    
+    public CooldownList getCooldownList() {
+        return this.cooldownList;
+    }
+    
     public VarInstanceServer() {
+        this.cooldownList = new CooldownList(FILE_REG_COOLDOWN);
+        
         uuidIdField.setAccessible(true);
         uuidIdField2.setAccessible(true);
         displaynameField.setAccessible(true);

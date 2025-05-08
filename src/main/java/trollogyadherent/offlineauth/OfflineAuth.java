@@ -22,8 +22,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 ///
+
 /* TODO: password reset tokens */   //See how registration tokens work
-/* TODO: spam prevention, lock registration if mass registration detected*/ //Not sure about implementation
+// | ===CONFIGS: 1)ALLOW_PASSWORD_RESET_TOKENS; 2)ALLOW_OPS_GEN_PASSWORD_RESET_TOKENS; === |
+
+/* TODO: registration cooldown, when registering an account, save the IP and date of registration.
+     If there is an attempt to register a new account from this IP before the time expires -> refuse registration*/
+// | ===CONFIGS: 1)ENABLE_COOLDOWN; 2)COOLDOWN_TIME; 3)ONLY_ONE_ACCOUNT_PER_IP; === |
+
+
+/* TODO: button to delete the server pubkey from the cache. The functionality is ready, but I don't know where to put it (there is no more room in the GUI for new buttons XD)*/
+// Probably a checkbox is needed for this, so that you don't accidentally delete it
+
 ///
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")

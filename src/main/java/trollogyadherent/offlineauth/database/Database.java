@@ -8,6 +8,8 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
+import trollogyadherent.offlineauth.registry.cooldown.CooldownEntry;
+import trollogyadherent.offlineauth.util.DateUtil;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
@@ -23,6 +25,7 @@ import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /* A lot was taken from https://github.com/samolego/SimpleAuth/blob/architectury/common/src/main/java/org/samo_lego/simpleauth/storage/database/LevelDB.java */
@@ -70,6 +73,13 @@ public class Database {
         if(Config.IPBanRefuseRegistration && ip != null) {
             if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip)) {
                 return new StatusResponseObject("offlineauth.db.ip_banned", 500);
+            }
+        }
+        
+        if (OfflineAuth.varInstanceServer.getCooldownList().hasEntryInCooldownList(ip)) {
+            if(!OfflineAuth.varInstanceServer.getCooldownList().getCooldownEntry(ip).hasExpired()){
+                //TODO: LOCALIZATION
+                return new StatusResponseObject("offlineauth.db.cooldown", 500);
             }
         }
         
@@ -136,11 +146,17 @@ public class Database {
             uuid = Util.genUUID();
         }
 
-
         if (putPlayerDataInDB(identifier, displayname, passwordHash, salt, uuid, publicKey, skinBytes, capeBytes)) {
             if (!Config.allowRegistration && Config.allowTokenRegistration) {
                 consoomToken(token);
             }
+            
+            //TODO: configs 'n stuff
+            Date regTime = new Date();
+            Date cooldownEndTime = DateUtil.addTime(regTime, 1, DateUtil.DAY);
+            CooldownEntry cooldownEntry = new CooldownEntry(ip, regTime, cooldownEndTime);
+            OfflineAuth.varInstanceServer.getCooldownList().addEntry(cooldownEntry);
+            
             return new StatusResponseObject("offlineauth.db.success_register", 200);
         } else {
             OfflineAuth.error("Registration error");

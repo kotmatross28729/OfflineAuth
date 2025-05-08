@@ -18,7 +18,7 @@ import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
-import trollogyadherent.offlineauth.clientdata.ClientUserData;
+import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import static trollogyadherent.offlineauth.skin.SkinUtil.uuidFastCache;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
@@ -103,8 +103,8 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 			username = uuidFastCache.get(dynamicUUID);
 		}
 		//Cached UUID -> name in file?
-		else if(ClientUserData.containsUUID(dynamicUUID)) {
-			username = ClientUserData.getLastKnownUsername(dynamicUUID);
+		else if(UsernameCacheClient.containsUUID(dynamicUUID)) {
+			username = UsernameCacheClient.getLastKnownUsername(dynamicUUID);
 			if(username != null) uuidFastCache.put(dynamicUUID, username);
 		}
 		//Lookup in online players
@@ -113,7 +113,7 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 				UUID playerUUID = Util.offlineUUID2(player.name);
 				if(playerUUID.equals(dynamicUUID)) {
 					username = player.name;
-					ClientUserData.setUsername(playerUUID, username);
+					UsernameCacheClient.setUsername(playerUUID, username);
 					uuidFastCache.put(playerUUID, username);
 				}
 			}
