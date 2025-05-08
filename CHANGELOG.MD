@@ -32,11 +32,12 @@
 * Added command `/myuuid`. Displays all possible player UUID's in the chat
 
 
-* Added `enableCapes` config option (client), if disabled (default)
-   - Removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
+* Added `enableCapes` config option (client)
+   - If disabled (default), removes cape selection button and also doesn't render capes on players (allows you to avoid the "curse of the permanent cape" in single player)
+
 
 * [ServerUtilities] Improved compatibility: OfflineAuth now creates a `userdata.json` file, similar to the server's  `usernamecache.json`, but on the client
-   - (now, if a player has cached in this file, you will be able to see his skin in the GUI's even if the player isn't on the server)
+   - (Now, if a player has cached in this file, you will be able to see his skin in the GUI's even if the player isn't on the server)
 
 
 * **Fixed a MAJOR bug due to which the display name was case-sensitive when registering**
