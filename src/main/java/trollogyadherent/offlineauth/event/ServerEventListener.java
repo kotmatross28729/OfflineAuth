@@ -167,7 +167,7 @@ public class ServerEventListener {
     }
 
     @SubscribeEvent()
-    public void onMessage (ServerChatEvent e) {
+    public void onMessage(ServerChatEvent e) {
         if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
             e.setCanceled(true);
             warnNotLoggedIn(e.player);

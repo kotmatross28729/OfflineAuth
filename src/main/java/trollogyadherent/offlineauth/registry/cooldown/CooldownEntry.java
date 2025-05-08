@@ -57,7 +57,6 @@ public class CooldownEntry extends UserListEntryDeobf {
 		return this.lastRegCooldownEnd;
 	}
 	
-	
 	public String remainedTime() {
 		if (this.lastRegCooldownEnd == null) {
 			return "offlineauth.db.cooldown.never";
@@ -69,7 +68,7 @@ public class CooldownEntry extends UserListEntryDeobf {
 			long minutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis) % 60;
 			long seconds = TimeUnit.MILLISECONDS.toSeconds(remainingMillis) % 60;
 			
-			return String.format("%dD: %02dH: %02dM: %02dS ", days, hours, minutes, seconds);
+			return String.format("%dD : %02dH : %02dM : %02dS", days, hours, minutes, seconds);
 		}
 		return null;
 	}

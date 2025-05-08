@@ -27,6 +27,9 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 		
 		List<String> mixins = new ArrayList<>();
 		
+		mixins.add("minecraft.MixinMinecraftServer");
+		mixins.add("minecraft.MixinDedicatedServer");
+		
 		if(ConfigMixins.profileCacheOfflineMode)
 			mixins.add("minecraft.MixinPlayerProfileCache");
 		

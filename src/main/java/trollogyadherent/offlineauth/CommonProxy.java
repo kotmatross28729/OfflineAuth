@@ -1,9 +1,31 @@
 package trollogyadherent.offlineauth;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraftforge.common.MinecraftForge;
-import trollogyadherent.offlineauth.command.*;
+import trollogyadherent.offlineauth.command.CommandChangePlayerDisplayname;
+import trollogyadherent.offlineauth.command.CommandConfig;
+import trollogyadherent.offlineauth.command.CommandDeleteCape;
+import trollogyadherent.offlineauth.command.CommandDeletePlayer;
+import trollogyadherent.offlineauth.command.CommandDeleteSkin;
+import trollogyadherent.offlineauth.command.CommandGenToken;
+import trollogyadherent.offlineauth.command.CommandGetMyName;
+import trollogyadherent.offlineauth.command.CommandGetMyUUID;
+import trollogyadherent.offlineauth.command.CommandGetServerFingerprint;
+import trollogyadherent.offlineauth.command.CommandListUsers;
+import trollogyadherent.offlineauth.command.CommandPlayerExistsServer;
+import trollogyadherent.offlineauth.command.CommandRegCooldown;
+import trollogyadherent.offlineauth.command.CommandRegisterPlayerServer;
+import trollogyadherent.offlineauth.command.CommandTest;
 import trollogyadherent.offlineauth.database.Database;
 import trollogyadherent.offlineauth.event.ServerEventListener;
 import trollogyadherent.offlineauth.packet.PacketHandler;
@@ -135,7 +157,20 @@ public class CommonProxy {
     }
 
     public void serverStarted(FMLServerStartedEvent event) {
-
+        //Annihilate online-mode
+        // (in fact, at this point online-mode is already disabled via mixins, this is just a visual fatality for server.properties)
+        if (Util.isServer() && MinecraftServer.getServer().isDedicatedServer()) {
+            DedicatedServer dedicatedServer = (DedicatedServer) MinecraftServer.getServer();
+            
+            if(dedicatedServer.getBooleanProperty("online-mode", false)) {
+                OfflineAuth.error("online-mode=true in server.properties, disabling...");
+                
+                if (dedicatedServer.getBooleanProperty("online-mode", false))
+                    dedicatedServer.setProperty("online-mode", false);
+                
+                OfflineAuth.info("online-mode was successfully disabled in server.properties");
+            }
+        }
     }
 
     public void serverStopping(FMLServerStoppingEvent event) {

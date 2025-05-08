@@ -64,8 +64,7 @@ public class OfflineAuth {
     public static boolean isSSBLoaded;
     public static boolean isTFLoaded;
     public static boolean isCPMLoaded;
-
-
+    
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items,
     // etc., and register them with the GameRegistry."
@@ -144,5 +143,9 @@ public class OfflineAuth {
 
     public static void error(String message) {
         LOG.error(message);
+    }
+    
+    public static void fatal(String message) {
+        LOG.fatal(message);
     }
 }
