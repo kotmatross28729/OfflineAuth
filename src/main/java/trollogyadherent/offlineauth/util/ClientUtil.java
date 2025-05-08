@@ -12,18 +12,13 @@ import java.security.spec.InvalidKeySpecException;
 
 public class ClientUtil {
     /*https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/modification-development/1424716-code-snippit-detect-if-world-is-single-player-or*/
-    public static boolean isSinglePlayer()
-    {
-        try
-        {
-            if(MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning())
-            {
+    public static boolean isSinglePlayer() {
+        try {
+            if(MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning()) {
                 return MinecraftServer.getServer().isSinglePlayer();
             }
             return false;
-        }
-        catch( Exception e ) // Server is null, not started
-        {
+        } catch(Exception e) { // Server is null, not started
             return false;
         }
     }

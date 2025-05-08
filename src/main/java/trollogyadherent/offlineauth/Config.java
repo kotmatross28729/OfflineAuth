@@ -53,11 +53,10 @@ public class Config {
         public static final boolean debugEnabled = false;
         public static final int secondsBeforeKick = 5;
         public static final boolean secureEachEntityEvent = true;
-    
         public static final boolean enableRegistrationCooldown = true;
-        public static final int registrationCooldownTimeValue = 1;
+        public static final int registrationCooldownTimeValue = 30;
         //YEAR | MONTH | WEEK | DAY | HOUR | MINUTE | SECOND
-        public static final String registrationCooldownTimeType = "HOUR";
+        public static final String registrationCooldownTimeType = "MINUTE";
         public static final boolean onlyOneAccountPerIP = false;
     }
 

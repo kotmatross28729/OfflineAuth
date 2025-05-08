@@ -4,7 +4,6 @@ import com.google.common.net.MediaType;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import spark.Request;
 import spark.Response;
 import static spark.Spark.get;
@@ -80,16 +79,14 @@ public class Rest {
     }
 
     public static String vibecheck(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform vibecheck, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to check my vibe, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
@@ -134,17 +131,15 @@ public class Rest {
     }
 
     public static String register(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform register, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+        
         //OfflineAuth.info("Someone tries to register an account, identifier: " + request.queryParams("identifier") + ", displayname: " + request.queryParams("displayname"));
         OfflineAuth.info("Someone tries to register an account, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
@@ -192,16 +187,14 @@ public class Rest {
     }
 
     public static String delete(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform delete, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+        
         OfflineAuth.info("Someone tries to delete an account, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
@@ -245,16 +238,14 @@ public class Rest {
     }
 
     public static String changePassword(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform changePassword, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to change a password, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
@@ -284,16 +275,14 @@ public class Rest {
     }
 
     public static String changeDisplayName(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform changeDisplayName, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to change a displayname, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
         
         //TODO: ???
@@ -335,12 +324,10 @@ public class Rest {
 
     /* Not secure, unused */
     public static String listAccounts(Request request, Response response) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform listAccounts, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to list all accounts");
         String restpassword = request.queryParams("restpassword");
         if (restpassword == null && !Config.userListPublic) {
@@ -383,12 +370,10 @@ public class Rest {
 
     /* Not secure, unused */
     public static String handleToken(Request request, Response response) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleToken, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         if (request.queryParams("action") == null) {
             return JsonUtil.objectToJson(new StatusResponseObject("Please specify an action: list, generate, delete, clear", 500));
         }
@@ -446,14 +431,12 @@ public class Rest {
     }
 
     public static Object handlePubKey(Request request, Response response) throws IOException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handlePubKey, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         File pubKeyFile = new File(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "public.key");
@@ -472,16 +455,14 @@ public class Rest {
     }
 
     public static Object handleTempPubKey(Request request, Response response) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleTempPubKey, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Ip " + Util.hideIP(request.raw().getRemoteAddr()) + " from host " + Util.hideIP(request.raw().getRemoteHost()) + " requests temporary public key");
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         AesKeyUtil.AesKeyPlusIv tempAesKeyPlusIv = OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
@@ -521,16 +502,14 @@ public class Rest {
     }
 
     public static String handleTokenChallenge(Request request, Response response) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleTokenChallenge, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to get a key token, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         if (!OfflineAuth.varInstanceServer.keyRegistry.ipHasKeyPair(request.raw().getRemoteAddr(), request.raw().getRemoteHost())) {
@@ -580,12 +559,10 @@ public class Rest {
     }
 
     public static String handleSkinUpload(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleSkinUpload, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to upload a skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
 
@@ -677,12 +654,10 @@ public class Rest {
     }
 
     public static String handleCapeUpload(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleCapeUpload, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to upload a cape, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
         OfflineAuth.info("Received " + request.bodyAsBytes().length + " bytes");
 
@@ -753,16 +728,14 @@ public class Rest {
     }
 
     public static String handleSkinRemoval(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleSkinRemoval, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to remove the skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);
@@ -816,16 +789,14 @@ public class Rest {
     }
 
     public static String handleCapeRemoval(Request request, Response response) throws NoSuchAlgorithmException {
-        if(Config.IPBanFullBlock) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(request.raw().getRemoteAddr())) {
-                OfflineAuth.debug("Blocked IP tried to perform handleCapeRemoval, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
-                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 500));
-            }
-        }
+        String blocked = Util.restRefuseIfIPFullyBlocked(request.raw().getRemoteAddr(), request.raw().getRemoteHost());
+        if(blocked != null)
+            return blocked;
+    
         OfflineAuth.info("Someone tries to remove the skin, ip: " + Util.hideIP(request.raw().getRemoteAddr()) + ", host: " + Util.hideIP(request.raw().getRemoteHost()));
 
         if (request.bodyAsBytes().length > Config.maxSkinBytes) {
-            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 500));
+            return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
 
         RemoveSkinOrCapeRequestBodyObject rbo = (RemoveSkinOrCapeRequestBodyObject) RestUtil.getRequestBodyObject(request.bodyAsBytes(), OfflineAuth.varInstanceServer.keyRegistry.getAesKeyPlusIv(request.raw().getRemoteAddr(), request.raw().getRemoteHost()), RemoveSkinOrCapeRequestBodyObject.class);

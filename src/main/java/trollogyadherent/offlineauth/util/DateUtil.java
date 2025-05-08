@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
-	
 	public static final int YEAR = 1;
 	public static final int MONTH = 2;
 	public static final int WEEK = 4;

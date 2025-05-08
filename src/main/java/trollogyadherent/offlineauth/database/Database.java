@@ -1,6 +1,5 @@
 package trollogyadherent.offlineauth.database;
 
-import net.minecraft.server.MinecraftServer;
 import org.iq80.leveldb.DBException;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
@@ -10,8 +9,8 @@ import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.registry.cooldown.CooldownEntry;
 import trollogyadherent.offlineauth.registry.cooldown.CooldownList;
-import trollogyadherent.offlineauth.util.DateUtil;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
+import trollogyadherent.offlineauth.util.DateUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -72,8 +71,8 @@ public class Database {
     public static StatusResponseObject registerPlayer(String identifier, String displayname, String password, String uuid, String token, String publicKey, byte[] skinBytes, byte[] capeBytes, boolean isCommand, boolean overrideUser, String ip) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         //ip == null if force registers/changes password
         if(Config.IPBanRefuseRegistration && ip != null) {
-            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip)) {
-                return new StatusResponseObject("offlineauth.db.ip_banned", 500);
+            if (Util.isIPBlocked(ip)) {
+                return new StatusResponseObject("offlineauth.db.ip_banned", 403);
             }
         }
     

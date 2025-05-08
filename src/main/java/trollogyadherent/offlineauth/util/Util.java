@@ -8,11 +8,14 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Session;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.rest.OAServerData;
+import trollogyadherent.offlineauth.rest.StatusResponseObject;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -74,6 +77,20 @@ public class Util {
         } else {
             OfflineAuth.error("Server public key cache doesn't exist");
         }
+    }
+    
+    public static boolean isIPBlocked(String ip)  {
+        return MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip);
+    }
+    
+    public static String restRefuseIfIPFullyBlocked(String ip, String host)  {
+        if(Config.IPBanFullBlock) {
+            if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip)) {
+                OfflineAuth.debug("Blocked IP tried to perform delete, ip: " + Util.hideIP(ip) + ", host: " + Util.hideIP(host));
+                return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 403));
+            }
+        }
+        return null;
     }
     
     public static String genSalt() {

@@ -29,6 +29,17 @@ import java.security.cert.CertificateException;
 /* TODO: button to delete the server pubkey from the cache. The functionality is ready, but I don't know where to put it (there is no more room in the GUI for new buttons XD)*/
 // Probably a checkbox is needed for this, so that you don't accidentally delete it
 
+/* TODO: REGISTRATION LOCKDOWN */
+// | ===CONFIGS: 1)ENABLE_LOCKDOWN; 
+//               2)LOCKDOWN_LEVEL_1_RPM;      3)LOCKDOWN_LEVEL_2_RPM;      4)LOCKDOWN_LEVEL_3_RPM;
+//               5)LOCKDOWN_LEVEL_1_DOWNTIME; 6)LOCKDOWN_LEVEL_2_DOWNTIME; 7)LOCKDOWN_LEVEL_3_DOWNTIME;
+// | ===
+// CODE: 429 Too Many Requests
+
+/* TODO: IND. IP SPAM BLOCK */
+// | ===CONFIGS: 1)ENABLE_IP_SPAM_BLOCK; 2)IP_SPAM_BLOCK_RPM; === |
+// CODE: 403 Forbidden
+
 ///
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")

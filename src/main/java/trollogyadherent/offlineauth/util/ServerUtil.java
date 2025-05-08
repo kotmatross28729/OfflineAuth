@@ -23,7 +23,6 @@ public class ServerUtil {
                 return;
             }
         }
-
     }
 
     public static void generateServerKeys() throws NoSuchAlgorithmException, IOException {
