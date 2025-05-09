@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
+import trollogyadherent.offlineauth.rest.StatusResponseObject;
 import trollogyadherent.offlineauth.util.GifDecoder;
 import trollogyadherent.offlineauth.util.Util;
 
@@ -185,11 +186,13 @@ public class ClientSkinUtil {
         }
     }
 
-    public static void clearSkinCache() {
+    public static StatusResponseObject clearSkinCache() {
         try {
             FileUtils.cleanDirectory(new File(OfflineAuth.varInstanceClient.clientSkinCachePath));
+            return new StatusResponseObject("offlineauth.offlineauth.guilogin.success.clearSkinCache", 200);
         } catch (IOException e) {
             OfflineAuth.error("Failed to clear client skin cache");
+            return new StatusResponseObject("offlineauth.offlineauth.guilogin.error.clearSkinCache", 500);
         }
     }
 

@@ -49,7 +49,9 @@ public class GuiLogin extends GuiScreen {
     private GuiButton changePW;
     private GuiButton changeDisplayName;
     private GuiButton uploadSkin;
+    private GuiCheckBox clearSkinCacheCheckBox;
     private GuiButton clearSkinCache;
+    private GuiCheckBox clearServerPubKeyCheckBox;
     private GuiButton clearServerPubKey;
     private GuiButton deleteAccount;
     private GuiButton save;
@@ -137,10 +139,6 @@ public class GuiLogin extends GuiScreen {
         this.port.drawTextBox();
 
         if (this.useKey.isChecked()) {
-            //this.identifier.setEnabled(false);
-            //this.identifier.setFocused(false);
-            //this.displayname.setEnabled(false);
-            //this.displayname.setFocused(false);
             this.pw.setEnabled(false);
             this.pw.setFocused(false);
             this.newPW.setEnabled(false);
@@ -148,7 +146,6 @@ public class GuiLogin extends GuiScreen {
             this.togglePWButton.enabled = false;
 
             this.manageKey.enabled = true;
-            //this.privateKeyPath.setEnabled(true);
         } else {
             this.identifier.setEnabled(true);
             this.displayname.setEnabled(true);
@@ -157,15 +154,18 @@ public class GuiLogin extends GuiScreen {
             this.togglePWButton.enabled = true;
 
             this.manageKey.enabled = false;
-            //this.privateKeyPath.setEnabled(false);
-            //this.privateKeyPath.setFocused(false);
         }
+    
+        this.clearServerPubKey.enabled = this.clearServerPubKeyCheckBox.isChecked();
+        this.clearSkinCache.enabled = this.clearSkinCacheCheckBox.isChecked();
     }
 
     @Override
     public void initGui() {
         super.initGui();
 
+        //Last button id: 14
+        
         Keyboard.enableRepeatEvents(true);
 
         this.basey = this.height / 2 - 200 / 2;//this.height / 2 - 110 / 2;
@@ -208,24 +208,31 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.togglePWButton);
         
         //TODO: message if successful, like check registration?
+        
+        this.clearSkinCacheCheckBox = new GuiCheckBox(13, this.width - 360, this.height - 18, "", false);
         this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
     
-        this.clearServerPubKey = new GuiButton(12, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn."));
+        this.clearServerPubKeyCheckBox = new GuiCheckBox(14, this.width / 2 + 5, this.basey + 110, "", false);
+        this.clearServerPubKey = new GuiButton(12, this.width / 2 + 20, this.basey + 105, 135, 20, I18n.format("offlineauth.guilogin.btn.clear_pub_key"));
        
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
         this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.config"));
-        if(!Config.clearSkinCacheOnLogin)
+       
+        if(!Config.clearSkinCacheOnLogin) {
+            this.buttonList.add(this.clearSkinCacheCheckBox);
             this.buttonList.add(this.clearSkinCache);
-    
-        //TODO: clearServerPubKey
-        //this.buttonList.add(this.clearServerPubKey);
+        }
+        
+        this.buttonList.add(this.clearServerPubKeyCheckBox);
+        this.buttonList.add(this.clearServerPubKey);
         
         this.buttonList.add(this.config);
         this.buttonList.add(this.cancel);
         this.buttonList.add(this.save);
 
         this.useKey = new GuiCheckBox(8, this.width / 2 - 145, this.basey + 105, "", false);
+        
         this.manageKey = new GuiButton(9, this.width / 2 - 110, this.basey + 105, 50, 20, I18n.format("offlineauth.guilogin.btn.manage"));
         //this.browsePrivateKey = new GuiButton(10, this.width / 2 - 55, this.basey + 60, 50, 20, "Browse");
         this.buttonList.add(this.useKey);
@@ -246,9 +253,7 @@ public class GuiLogin extends GuiScreen {
             if (oasd.getRestPort() != null) {
                 this.port.setText(oasd.getRestPort());
             }
-            //if (oasd.getUseKey() != null) {
             this.useKey.setIsChecked(oasd.isUsingKey());
-            //}
         }
 
         textFieldTabArray = new Object[]{identifier, pw, newPW, displayname, port, token};
@@ -648,15 +653,25 @@ public class GuiLogin extends GuiScreen {
     }
     
     public void actionClearSkinCache() {
-        ClientSkinUtil.clearSkinCache();
+        StatusResponseObject stat = ClientSkinUtil.clearSkinCache();
+        if (stat.getStatusCode() == 200) {
+            message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+        } else {
+            message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
+        }
     }
     
     public void actionClearServerPubKey() {
         OAServerData oasd = Util.getCurrentOAServerData();
         if(oasd != null) {
-            Util.clearServerPubKey(oasd.getIp(), oasd.getRestPort());
+            StatusResponseObject stat = Util.clearServerPubKey(oasd.getIp(), oasd.getRestPort());
+            if (stat.getStatusCode() == 200) {
+                message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
+            } else {
+                message = Util.colorCode(Util.Color.RED) + I18n.format(stat.getStatus());
+            }
+        } else {
+            message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.guilogin.error.oasd_is_null");
         }
     }
-    
-    
 }

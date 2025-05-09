@@ -61,7 +61,7 @@ public class Util {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(Charsets.UTF_8));
     }
     
-    public static void clearServerPubKey(String ip, String port) {
+    public static StatusResponseObject clearServerPubKey(String ip, String port) {
         String keyPath = ClientUtil.getServerKeyPath(ip, port);
         File keyFile = new File(keyPath);
     
@@ -71,11 +71,14 @@ public class Util {
         if (keyFile.exists()) {
             try {
                 FileUtils.forceDelete(keyFile);
+                return new StatusResponseObject("offlineauth.offlineauth.guilogin.success.clearServerPubKey", 200);
             } catch (IOException e) {
                 OfflineAuth.error("Failed to clear server public key cache");
+                return new StatusResponseObject("offlineauth.offlineauth.guilogin.error.clearServerPubKey", 500);
             }
         } else {
             OfflineAuth.error("Server public key cache doesn't exist");
+            return new StatusResponseObject("offlineauth.offlineauth.guilogin.error.key_does_not_exist", 500);
         }
     }
     
