@@ -23,11 +23,10 @@ import java.security.cert.CertificateException;
 
 ///
 
+////Not now...
+
 /* TODO: password reset tokens */   //See how registration tokens work
 // | ===CONFIGS: 1)ALLOW_PASSWORD_RESET_TOKENS; 2)ALLOW_OPS_GEN_PASSWORD_RESET_TOKENS; === |
-
-/* TODO: button to delete the server pubkey from the cache. The functionality is ready, but I don't know where to put it (there is no more room in the GUI for new buttons XD)*/
-// Probably a checkbox is needed for this, so that you don't accidentally delete it
 
 /* TODO: REGISTRATION LOCKDOWN */
 // | ===CONFIGS: 1)ENABLE_LOCKDOWN; 

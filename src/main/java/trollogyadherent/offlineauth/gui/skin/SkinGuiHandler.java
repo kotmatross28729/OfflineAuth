@@ -80,7 +80,6 @@ public class SkinGuiHandler {
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Specials.Pre e) {
-        //TODO: if cape disabled (config) -> return
         if(!Config.enableCapes) {
             return;
         }

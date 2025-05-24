@@ -84,6 +84,13 @@
 
 * Added command `/registrationCooldown`. Removes IP from cooldown list / clears entire list
 
+
+* Now online mode is completely disabled at startup
+
+
+* Added button "Delete server public key" - deletes the server's public key. It is worth using if for some reason the server's keys (public and private) were recreated
+  - This happens if the server configs have been damaged or if you try to access another server that has the same IP as the one you registered on
+
 ---
 
 # v0.3.04

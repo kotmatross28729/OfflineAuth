@@ -207,8 +207,6 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.deleteAccount);
         this.buttonList.add(this.togglePWButton);
         
-        //TODO: message if successful, like check registration?
-        
         this.clearSkinCacheCheckBox = new GuiCheckBox(13, this.width - 360, this.height - 18, "", false);
         this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
     
