@@ -91,6 +91,11 @@
 * Added button "Delete server public key" - deletes the server's public key. It is worth using if for some reason the server's keys (public and private) were recreated
   - This happens if the server configs have been damaged or if you try to access another server that has the same IP as the one you registered on
 
+
+* Patch from 26/05/2025:
+  * Fixed incorrect display of skins in the skin selection menu if `useLegacyConversion` was enabled
+  * Fixed honeydew skin not being transparent in skin selection menu
+
 ---
 
 # v0.3.04

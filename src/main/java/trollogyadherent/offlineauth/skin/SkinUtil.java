@@ -40,7 +40,7 @@ public class SkinUtil {
 		if(Config.useLegacyConversion) {
 			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation : SkinManager.field_152793_a;
 		} else {
-			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation64 : SkinManager.field_152793_a; //todo: default skin 64x64
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation64 : OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
 		}
 	}
 	

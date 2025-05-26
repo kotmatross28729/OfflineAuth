@@ -285,7 +285,6 @@ public class Rest {
             return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.data_too_large", 413));
         }
         
-        //TODO: ???
         if (!Config.allowDisplayNameChange) {
             ResponseObject responseObject = new ResponseObject(Config.allowRegistration, Config.allowTokenRegistration, Config.allowSkinUpload, "-", false, 500);
         }

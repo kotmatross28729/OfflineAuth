@@ -247,13 +247,8 @@ public class ClientSkinUtil {
         String[] defaultSkins = {
                 "ZT_64x32_test",
                 "ZT_64x64_test",
-                "bandit1",
-                "bandit2",
-                "bandit3",
                 "knight1",
                 "knight2",
-                "knight3",
-                "knight4",
                 "mage",
                 "darthVader",
                 "guardian",

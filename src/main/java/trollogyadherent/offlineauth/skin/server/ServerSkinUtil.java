@@ -43,7 +43,6 @@ public class ServerSkinUtil {
     }
     
     public static void transferDefaultSkins() throws IOException {
-        //TODO: server config?
         InputStream is = ServerSkinUtil.class.getResourceAsStream("/assets/offlineauth/textures/defaultskins/server/default.png");
         if (is == null) {
             OfflineAuth.error("Default skin resource not found!");
