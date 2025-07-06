@@ -17,6 +17,8 @@ public class MixinServerUtilitiesPlayerEventHandler {
 			, remap = false
 	)
 	private static void onNameFormat(PlayerEvent.NameFormat event, CallbackInfo ci) {
-		ci.cancel();
+        if (ci != null) {
+            ci.cancel();
+        }
 	}
 }

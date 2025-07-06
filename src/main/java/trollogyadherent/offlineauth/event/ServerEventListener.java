@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -33,7 +34,7 @@ public class ServerEventListener {
         executor.schedule(new Runnable() {
             @Override
             public void run() {
-                if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+                if (isNotAuthenticated(e.player.getDisplayName())) {
                     ((EntityPlayerMP)e.player).playerNetServerHandler.kickPlayerFromServer(Config.kickMessage);
                 }
             }
@@ -111,7 +112,7 @@ public class ServerEventListener {
 
     @SubscribeEvent
     public void onBlockPlaceEvent(BlockEvent.PlaceEvent e) {
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+        if (isNotFakePlayer(e.player) && isNotAuthenticated(e.player.getDisplayName())) {
             e.setCanceled(true);
             warnNotLoggedIn(e.player);
         }
@@ -119,7 +120,7 @@ public class ServerEventListener {
 
     @SubscribeEvent
     public void onMultiPlaceEvent(BlockEvent.MultiPlaceEvent e) {
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+        if (isNotFakePlayer(e.player) && isNotAuthenticated(e.player.getDisplayName())) {
             e.setCanceled(true);
             warnNotLoggedIn(e.player);
         }
@@ -127,7 +128,7 @@ public class ServerEventListener {
 
     @SubscribeEvent
     public void onBlockBreakEvent(BlockEvent.BreakEvent e) {
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.getPlayer().getDisplayName())) {
+        if (isNotFakePlayer(e.getPlayer()) && isNotAuthenticated(e.getPlayer().getDisplayName())) {
             e.setCanceled(true);
             warnNotLoggedIn(e.getPlayer());
         }
@@ -138,7 +139,7 @@ public class ServerEventListener {
         if (e.sender instanceof DedicatedServer) {
             return;
         }
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.sender.getCommandSenderName())) {
+        if (isNotAuthenticated(e.sender.getCommandSenderName())) {
             if (e.isCancelable()) {
                 e.setCanceled(true);
                 warnNotLoggedIn(e.sender);
@@ -158,7 +159,7 @@ public class ServerEventListener {
 //          Fucking forge, fucking mcp, AND FUCKING I, because I didn't find out about it before"
 //              - My attempt (torture) to remake everything on commandSenderName (this is fucking impossible), @Kotmatross28729 - 04.13.25
         String displayName = (String) OfflineAuth.varInstanceServer.displaynameField.get(e.entity);
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(displayName)) {
+        if (isNotAuthenticated(displayName)) {
             if (e.isCancelable()) {
                 e.setCanceled(true);
                 //warnNotLoggedIn((EntityPlayerMP)e.entity);
@@ -168,9 +169,17 @@ public class ServerEventListener {
 
     @SubscribeEvent()
     public void onMessage(ServerChatEvent e) {
-        if (!OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(e.player.getDisplayName())) {
+        if (isNotFakePlayer(e.player) && isNotAuthenticated(e.player.getDisplayName())) {
             e.setCanceled(true);
             warnNotLoggedIn(e.player);
         }
+    }
+
+    private boolean isNotFakePlayer(EntityPlayer player) {
+        return !(player instanceof FakePlayer);
+    }
+
+    private boolean isNotAuthenticated(String displayName) {
+        return !OfflineAuth.varInstanceServer.authenticatedDisplaynames.contains(displayName);
     }
 }
