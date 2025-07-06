@@ -105,7 +105,7 @@ public class SkinGuiHandler {
         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject() == null) {
             return;
         }
-        Minecraft.getMinecraft().getTextureManager().bindTexture(OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject().getCurrentFrame(e.partialRenderTick));
+        OfflineAuth.varInstanceClient.getTextureManager().bindTexture(OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeObject().getCurrentFrame(e.partialRenderTick));
         GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, 0.0F, 0.125F);
         GL11.glRotatef(SkinGuiRenderTicker.angle, SkinGuiRenderTicker.x, SkinGuiRenderTicker.y, SkinGuiRenderTicker.z);

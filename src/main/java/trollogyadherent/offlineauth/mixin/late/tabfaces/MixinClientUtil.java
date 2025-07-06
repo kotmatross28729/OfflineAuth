@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
@@ -65,7 +66,7 @@ public class MixinClientUtil {
 	@Overwrite(remap = false)
 	public static void drawPlayerFace(ResourceLocation rl, float xPos, float yPos, float alpha) {
 		if (rl != null) {
-			VarInstanceClient.minecraftRef.getTextureManager().bindTexture(rl);
+            OfflineAuth.varInstanceClient.getTextureManager().bindTexture(rl);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
 			SkinUtil.drawPlayerFaceAuto(xPos, yPos, 8, 8);
 		}

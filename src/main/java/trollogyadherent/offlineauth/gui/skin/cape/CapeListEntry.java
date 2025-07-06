@@ -106,7 +106,7 @@ public class CapeListEntry {
     }
 
     protected void bindIcon() {
-        this.mc.getTextureManager().bindTexture(capeResourceLocation); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
+        OfflineAuth.varInstanceClient.getTextureManager().bindTexture(capeResourceLocation); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
     }
 
     protected boolean func_148310_d()

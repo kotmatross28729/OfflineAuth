@@ -111,7 +111,7 @@ public class SkinListEntry {
     }
 
     protected void bindIcon() {
-        this.mc.getTextureManager().bindTexture(skinResourceLocation); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
+        OfflineAuth.varInstanceClient.getTextureManager().bindTexture(skinResourceLocation); //bindTexturePackIcon(this.field_148317_a.getTextureManager());
     }
 
     protected boolean func_148310_d()
