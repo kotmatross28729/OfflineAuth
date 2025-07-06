@@ -285,9 +285,7 @@ public class ClientEventListener {
             return;
         }
 
-        if (OfflineAuth.varInstanceClient.textureManager == null) {
-            OfflineAuth.varInstanceClient.textureManager = Minecraft.getMinecraft().getTextureManager();
-        }
+        OfflineAuth.varInstanceClient.getTextureManager();
 
         EntityPlayer entityPlayerMP = e.entityPlayer;
         String displayName = entityPlayerMP.getDisplayName();

@@ -147,7 +147,7 @@ public class GameOverlayGuiHandler extends GuiIngame {
                                     return;
                                 }
                             }
-                            mc.getTextureManager().bindTexture(OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName));
+                            OfflineAuth.varInstanceClient.getTextureManager().bindTexture(OfflineAuth.varInstanceClient.clientRegistry.getTabMenuResourceLocation(displayName));
                             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                             SkinUtil.drawPlayerFaceAuto(xPos, yPos, 8, 8);
                         }

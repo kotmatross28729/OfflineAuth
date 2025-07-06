@@ -18,6 +18,7 @@ import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import static trollogyadherent.offlineauth.skin.SkinUtil.uuidFastCache;
@@ -45,7 +46,7 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	@Overwrite(remap = false)
 	@SideOnly(Side.CLIENT)
 	public void bindTexture() {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(offlineAuth$getOASkin());
+        OfflineAuth.varInstanceClient.getTextureManager().bindTexture(offlineAuth$getOASkin());
 	}
 	
 	/**

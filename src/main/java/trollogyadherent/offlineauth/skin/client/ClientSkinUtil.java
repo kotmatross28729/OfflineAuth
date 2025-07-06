@@ -105,11 +105,8 @@ public class ClientSkinUtil {
             OfflineAuth.error("Error loading texture!");
             return;
         }
-        if (OfflineAuth.varInstanceClient.textureManager == null) {
-            OfflineAuth.varInstanceClient.textureManager = Minecraft.getMinecraft().getTextureManager();
-        }
         OfflineTextureObject offlineTextureObject = new ClientSkinUtil.OfflineTextureObject(bufferedImage);
-        OfflineAuth.varInstanceClient.textureManager.loadTexture(resourceLocation, offlineTextureObject);
+        OfflineAuth.varInstanceClient.getTextureManager().loadTexture(resourceLocation, offlineTextureObject);
     }
 
     public static ResourceLocation loadSkinFromCache(String skinName) {

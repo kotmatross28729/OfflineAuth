@@ -22,7 +22,7 @@ public class VarInstanceClient {
     public ServerData selectedServerData;
     public File datafile;
     public ArrayList<OAServerData> OAServerDataCache;
-    public TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+    private TextureManager textureManager;
 
     //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
     //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
@@ -84,5 +84,12 @@ public class VarInstanceClient {
         if (!keyPairFile.exists()) {
             keyPairFile.mkdirs();
         }
+    }
+
+    public TextureManager getTextureManager() {
+        if (this.textureManager == null) {
+            this.textureManager = Minecraft.getMinecraft().getTextureManager();
+        }
+        return this.textureManager;
     }
 }
