@@ -1,5 +1,7 @@
 package trollogyadherent.offlineauth.skin;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -11,13 +13,20 @@ import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
 import trollogyadherent.offlineauth.util.ClientUtil;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class SkinUtil {
 	
-	public static final Map<UUID, String> uuidFastCache = new HashMap<>(); //Destroyed when we exit the server
+	//	Destroyed when:
+	//	1) TTL expired
+	//	2) Player leaves the server
+	//	3) Player joins the server
+	public static final Cache<UUID, String> uuidFastCache = CacheBuilder.newBuilder()
+			.maximumSize(8000) // 8000 (UUID + String) ~= 1 MB
+			.expireAfterAccess(2, TimeUnit.MINUTES) //120 TTL
+			.build();
+	
 	public static ResourceLocation getSkinResourceLocationByDisplayName(Minecraft mc, final String displayName, boolean nullable) {
 		if (ClientUtil.isSinglePlayer()) {
 			return OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation;

@@ -96,6 +96,14 @@
   * Fixed incorrect display of skins in the skin selection menu if `useLegacyConversion` was enabled
   * Fixed honeydew skin not being transparent in skin selection menu
 
+* Patch from 06/07/2025 by Volodin-Denis:
+  * Fixed rare crash related to ServerUtilities
+  * Fixed multiple incompatibilities related to automatic farms and `secureEachEntityEvent` config
+  * Potentially fixed the issue where skins were not displayed
+
+* Patch from 07/07/2025:
+  * [ServerUtilities] Improved uuidFastCache (UUID -> username), now clears correctly
+
 ---
 
 # v0.3.04

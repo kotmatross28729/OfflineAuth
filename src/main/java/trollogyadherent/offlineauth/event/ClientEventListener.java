@@ -108,10 +108,13 @@ public class ClientEventListener {
         if (Util.isServer()) {
             return;
         }
-
-        //System.out.println("We left a world");
+        
         OfflineAuth.varInstanceClient.clientRegistry.clear();
-        SkinUtil.uuidFastCache.clear();
+        
+        //logUUIDCache("PlayerEvent.PlayerLoggedOutEvent - onPlayerLeave");
+        OfflineAuth.debug("Clearing uuidFastCache : PlayerLoggedOutEvent | Never called on client side");
+        SkinUtil.uuidFastCache.invalidateAll();
+
     }
 
     /* Clears OfflineAuth.skinCache List. Otherwise the SkinData would exist, but when changing worlds, the texture is unloaded */
@@ -121,10 +124,10 @@ public class ClientEventListener {
     public void onPlayerJoinFMLEvent(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         OfflineAuth.info("Clearing memory skin cache 4");
         OfflineAuth.varInstanceClient.clientRegistry.clear();
-    
-        OfflineAuth.debug("Clearing uuidFastCache 1");
-        SkinUtil.uuidFastCache.clear();
-        //System.out.println("Joined MP world");
+        
+        //logUUIDCache("FMLNetworkEvent.ClientConnectedToServerEvent - onPlayerJoinFMLEvent");
+        OfflineAuth.info("Clearing uuidFastCache : ClientConnectedToServerEvent");
+        SkinUtil.uuidFastCache.invalidateAll();
     }
 
     @SuppressWarnings("unused")
@@ -143,13 +146,12 @@ public class ClientEventListener {
         OfflineAuth.debug("Left server, clearing skin query status 2");
 
         OfflineAuth.debug("Clearing memory skin cache 5");
-        //ClientSkinUtil.clearSkinCache();
         OfflineAuth.varInstanceClient.clientRegistry.clear();
-    
-        OfflineAuth.debug("Clearing uuidFastCache 2");
-        SkinUtil.uuidFastCache.clear();
-        //System.out.println("Exited MP world");
-        //OfflineAuth.varInstanceClient.onDedicatedServer = false;
+        
+        
+        //logUUIDCache("FMLNetworkEvent.ClientDisconnectionFromServerEvent - onPlayerLeaveFMLEvent");
+        OfflineAuth.info("Clearing uuidFastCache : ClientDisconnectionFromServerEvent");
+        SkinUtil.uuidFastCache.invalidateAll();
     }
 
     /* This loads player's arms skin, if he doesn't switch to a view that forces the whole player to be rendered */
@@ -375,4 +377,20 @@ public class ClientEventListener {
             OfflineAuth.varInstanceClient.singlePlayerCapeObject = ClientSkinUtil.getCapeObject(capeName);
         }
     }
+    
+//  For debug
+//    public static void logUUIDCache(String event) {
+//        OfflineAuth.fatal(event);
+//        OfflineAuth.warn("CACHE BEFORE: ");
+//        for (java.util.Map.Entry<UUID, String> entry : SkinUtil.uuidFastCache.asMap().entrySet()) {
+//            OfflineAuth.info("UUID: " + entry.getKey() + ", Username: " + entry.getValue());
+//        }
+//        OfflineAuth.fatal("CLEARING");
+//        SkinUtil.uuidFastCache.invalidateAll();
+//        OfflineAuth.warn("CACHE AFTER");
+//        for (java.util.Map.Entry<UUID, String> entry : SkinUtil.uuidFastCache.asMap().entrySet()) {
+//            OfflineAuth.info("UUID: " + entry.getKey() + ", Username: " + entry.getValue());
+//        }
+//    }
+    
 }

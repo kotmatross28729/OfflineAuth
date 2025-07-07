@@ -97,26 +97,27 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 		List<GuiPlayerInfo> players = handler.playerInfoList; //Current online players (on server)
 		
 		ResourceLocation oaSkin = null;
-		String username = null;
+		String username;
 		
-		//Cached UUID -> name in RAM?
-		if(uuidFastCache.containsKey(dynamicUUID)) {
-			username = uuidFastCache.get(dynamicUUID);
-		}
-		//Cached UUID -> name in file?
-		else if(UsernameCacheClient.containsUUID(dynamicUUID)) {
-			username = UsernameCacheClient.getLastKnownUsername(dynamicUUID);
-			if(username != null) uuidFastCache.put(dynamicUUID, username);
-		}
-		//Lookup in online players
-		else {
-			for(GuiPlayerInfo player : players) {
-				UUID playerUUID = Util.offlineUUID2(player.name);
-				if(playerUUID.equals(dynamicUUID)) {
-					username = player.name;
-					if(Config.saveUserData)
-						UsernameCacheClient.setUsername(playerUUID, username);
-					uuidFastCache.put(playerUUID, username);
+		//Cached UUID -> name in Heap?
+		username = uuidFastCache.getIfPresent(dynamicUUID);
+		
+		if (username == null) {
+			//Cached UUID -> name in file?
+			if (UsernameCacheClient.containsUUID(dynamicUUID)) {
+				username = UsernameCacheClient.getLastKnownUsername(dynamicUUID);
+				if (username != null) uuidFastCache.put(dynamicUUID, username);
+			}
+			//Lookup in online players
+			else {
+				for (GuiPlayerInfo player : players) {
+					UUID playerUUID = Util.offlineUUID2(player.name);
+					if (playerUUID.equals(dynamicUUID)) {
+						username = player.name;
+						if (Config.saveUserData)
+							UsernameCacheClient.setUsername(playerUUID, username);
+						uuidFastCache.put(playerUUID, username);
+					}
 				}
 			}
 		}
