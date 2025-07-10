@@ -116,6 +116,7 @@ offlineauth.rest.apply_skin_error=Erreur lors de l'application de la skin
 offlineauth.rest.apply_cape_error=Erreur lors de l'application de la cape
 offlineauth.skingui.btn.capes=Capes
 offlineauth.skingui.btn.skins=Skins
+offlineauth.skingui.btn.render_reset=Réinitialiser le rendu
 offlineauth.set_skin=Appliquer Skin
 offlineauth.upload_skin=Mettre Skin
 offlineauth.key_or_connection_invalid=La connection a échoué

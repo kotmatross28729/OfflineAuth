@@ -52,6 +52,7 @@ public class SkinManagmentGUI extends GuiScreen {
     public GuiCheckBox capeCheckbox = null;
     public GuiCheckBox elytraCheckbox = null;
     private GuiButton capeSkinToggle;
+    private GuiButton renderReset;
     ItemStack elytraItemStack;
     private boolean switchingToCapesFirst = true;
 
@@ -87,10 +88,13 @@ public class SkinManagmentGUI extends GuiScreen {
         }
         this.buttonList.add(new GuiButton(2, this.width - 4 * ((this.width - 25) / 4 + 5), this.height - 48, (this.width - 25) / 4, 20, I18n.format("offlineauth.skingui.open_skin_folder")));
         capeSkinToggle = new GuiButton(4, this.width - 4 * ((this.width - 25) / 4 + 5), 5, 80, 20, I18n.format("offlineauth.skingui.btn.capes"));
-     
+        
         if(Config.enableCapes) {
             this.buttonList.add(capeSkinToggle);
         }
+        
+        renderReset = new GuiButton(6, this.width - 160, 5, 100, 20, I18n.format("offlineauth.skingui.btn.render_reset"));
+        this.buttonList.add(renderReset);
 
         String capeString = I18n.format("Cape");
         int capeStringLen = Minecraft.getMinecraft().fontRenderer.getStringWidth(capeString);
@@ -459,7 +463,7 @@ public class SkinManagmentGUI extends GuiScreen {
                     capeSkinToggle.displayString = I18n.format("offlineauth.skingui.btn.capes");
                 }
             } else if(button.id == 6) {
-
+                OfflineAuth.varInstanceClient.skinGuiRenderTicker.reset();
             } else if (button.id == 5) {
                 if (ClientUtil.isSinglePlayer()) {
                     if (isShowingSkins) {
@@ -546,7 +550,7 @@ public class SkinManagmentGUI extends GuiScreen {
             }
         }
     }
-
+    
     /**
      * Called when the mouse is clicked.
      */

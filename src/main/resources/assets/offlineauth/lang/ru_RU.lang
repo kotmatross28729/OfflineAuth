@@ -116,6 +116,7 @@ offlineauth.rest.apply_skin_error=Ошибка при примении скин�
 offlineauth.rest.apply_cape_error=Ошибка при примении плаща
 offlineauth.skingui.btn.capes=Плащи
 offlineauth.skingui.btn.skins=Скины
+offlineauth.skingui.btn.render_reset=Перезапустить рендер
 offlineauth.set_skin=Установить скин
 offlineauth.upload_skin=Установить скин
 offlineauth.key_or_connection_invalid=Ошибка подключения

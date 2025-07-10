@@ -92,17 +92,25 @@
   - This happens if the server configs have been damaged or if you try to access another server that has the same IP as the one you registered on
 
 
-* Patch from 26/05/2025:
+* **Patch from 26/05/2025:**
   * Fixed incorrect display of skins in the skin selection menu if `useLegacyConversion` was enabled
   * Fixed honeydew skin not being transparent in skin selection menu
 
-* Patch from 06/07/2025 by Volodin-Denis:
+
+* **Patch from 06/07/2025 by Volodin-Denis:**
   * Fixed rare crash related to ServerUtilities
   * Fixed multiple incompatibilities related to automatic farms and `secureEachEntityEvent` config
   * Potentially fixed the issue where skins were not displayed
 
-* Patch from 07/07/2025:
+
+* **Patch from 07/07/2025:**
   * [ServerUtilities] Improved uuidFastCache (UUID -> username), now clears correctly
+
+
+* **Patch from 10/07/2025:**
+  * Fixed player in skin selection menu not showing up with some mods (NullPointerException)
+  * Added button to reset render in skin selection menu
+    - Useful when using CPM to fix stuck models
 
 ---
 
