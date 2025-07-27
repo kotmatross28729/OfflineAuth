@@ -550,17 +550,22 @@ public class GuiLogin extends GuiScreen {
         Thread vibeCheckThread = new Thread(() -> {
             ResponseObject stat = null;
             try {
+                
                 OAServerData oasd = Util.getCurrentOAServerData();
+
                 PublicKey clientPubKey = null;
                 PrivateKey clientPrivKey = null;
                 if (oasd != null && oasd.isUsingKey()) {
                     clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
                     clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
+                
                 stat = Request.vibeCheck(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), clientPubKey, clientPrivKey);
+                
             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                      InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException |
                      BadPaddingException | InvalidKeyException | NoSuchProviderException | URISyntaxException e) {
+                
                 message = Util.colorCode(Util.Color.RED) + I18n.format("offlineauth.error_changing_registration");
                 e.printStackTrace();
             }

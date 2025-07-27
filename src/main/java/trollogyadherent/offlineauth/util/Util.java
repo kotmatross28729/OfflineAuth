@@ -213,9 +213,6 @@ public class Util {
         return getPortUniversal(serverData.serverIP);
     }
     
-    //TODO: test this? (I don't have ipv6)
-    
-    //!IPv6 test ---START---
     public static String getIPUniversal(String ipport) {
         if (ipport == null) {
             return null;
@@ -260,7 +257,6 @@ public class Util {
         }
         return "";
     }
-    //!IPv6 test ---END---
     
     /* Loads image from File to String, encoded inh base64 */
     public static String fileToBs64(File file) throws IOException {

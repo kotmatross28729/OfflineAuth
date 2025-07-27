@@ -1,7 +1,6 @@
 package trollogyadherent.offlineauth.request;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerAddress;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -34,10 +33,6 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class Request {
-    
-    //TODO: test for v6 | looks like it's not working
-    // 'Host name may not be blank'
-    
     public static ResponseObject vibeCheck(String ip, String port, String identifier, String displayname, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchProviderException {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
@@ -61,15 +56,10 @@ public class Request {
             clientKeyToken = tempToken;
         }
         
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "vibecheck";
-        
-        //todo: delete
-        
-        OfflineAuth.info("IP::RAW : " + ip);
-        OfflineAuth.info("IP::ADR : " + addr.getIP());
-        OfflineAuth.info("URL : " + baseUrl);
         
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
@@ -106,11 +96,12 @@ public class Request {
             return new StatusResponseObject("Please try again, if key fingerprint is correct", 500);
         }
         */
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "register";
-
+        
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
@@ -137,11 +128,12 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "delete";
-
+        
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
         String clientKeyToken = "";
@@ -176,11 +168,12 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "change";
-
+        
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
@@ -205,11 +198,12 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "changedisplay";
-
+        
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
         String clientKeyToken = "";
@@ -241,10 +235,13 @@ public class Request {
     }
 
     public static PublicKey getServerPubKey(String ip, String port) {
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "pubkey";
-
+        
         HttpGet get = new HttpGet(baseUrl + requestPath);
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(get)) {
@@ -265,11 +262,12 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return null;
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "temppubkey";
-
+        
         HttpGet get = new HttpGet(baseUrl + requestPath);
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(get)) {
@@ -304,9 +302,10 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return null;
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "tokenchallenge";
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
@@ -340,9 +339,10 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "uploadskin";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -380,9 +380,10 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "uploadcape";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -420,9 +421,10 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "removeskin";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
@@ -459,9 +461,10 @@ public class Request {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             return new StatusResponseObject("Could not find server public key in cache", 500);
         }
-
-        ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
-        String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
+        
+        String ipURLReady = ip.contains(":") ? "[" + ip + "]" : ip;
+        String baseUrl = "http://" + ipURLReady + ":" + port + "/";
+        
         String requestPath = "removecape";
 
         HttpPost post = new HttpPost(baseUrl + requestPath);
