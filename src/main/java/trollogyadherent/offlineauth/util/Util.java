@@ -89,7 +89,7 @@ public class Util {
     public static String restRefuseIfIPFullyBlocked(String ip, String host)  {
         if(Config.IPBanFullBlock) {
             if (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().func_152692_d(ip)) {
-                OfflineAuth.debug("Blocked IP tried to perform delete, ip: " + Util.hideIP(ip) + ", host: " + Util.hideIP(host));
+                OfflineAuth.debug("Blocked IP tried to perform action, ip: " + Util.hideIP(ip) + ", host: " + Util.hideIP(host));
                 return JsonUtil.objectToJson(new StatusResponseObject("offlineauth.rest.ip_banned", 403));
             }
         }
@@ -173,76 +173,89 @@ public class Util {
         OfflineAuth.info("Offline Username set to " + username);
     }
 
+    
+    public static void RUN_IP_PORT_TESTS() {
+        assert getIPUniversal("192.168.0.1:8080").equals("192.168.0.1");
+        assert getPortUniversal("192.168.0.1:8080").equals("8080");
+        assert getIPUniversal("192.168.0.1").equals("192.168.0.1");
+        assert getPortUniversal("192.168.0.1").equals("");
+        
+        assert getIPUniversal("[2001:db8::1]:443").equals("2001:db8::1");
+        assert getPortUniversal("[2001:db8::1]:443").equals("443");
+        assert getIPUniversal("[2001:db8::1]").equals("2001:db8::1");
+        assert getPortUniversal("[2001:db8::1]").equals("");
+        
+        assert getIPUniversal("example.com:1234").equals("example.com");
+        assert getPortUniversal("example.com:1234").equals("1234");
+        assert getIPUniversal("example.com").equals("example.com");
+        assert getPortUniversal("example.com").equals("");
+        
+        assert getIPUniversal("/192.168.0.1:8080").equals("192.168.0.1");
+        assert getPortUniversal("/192.168.0.1:8080").equals("8080");
+        assert getIPUniversal("/[2001:db8::1]:443").equals("2001:db8::1");
+        assert getPortUniversal("/[2001:db8::1]:443").equals("443");
+        
+        OfflineAuth.info("[DEV] IP:PORT CHECK PASSED - TRUE");
+    }
+    
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
     public static String getIP(ServerData serverData) {
-        //return getIPv6(serverData);
-        
         if (serverData == null) {
             return null;
         }
-        return serverData.serverIP.split(":")[0];
+        return getIPUniversal(serverData.serverIP);
     }
+    
     public static String getPort(ServerData serverData) {
-        //return getPortv6(serverData);
-        
         if (serverData == null) {
             return "";
         }
-        String[] spl = serverData.serverIP.split(":");
-        if (spl.length > 1) {
-            return spl[1];
-        } else {
-            return "";
-        }
+        return getPortUniversal(serverData.serverIP);
     }
     
     //TODO: test this? (I don't have ipv6)
-    // Also, mixins -> vanilla -> change to v6 compat
-    // Also, need to tweak all rest classes
     
     //!IPv6 test ---START---
-    public static String getIPv6(ServerData serverData) {
-        if (serverData == null) {
-            return null;
-        }
-        return getIPv6(serverData.serverIP);
-    }
-    public static String getIPv6(String ipport) {
+    public static String getIPUniversal(String ipport) {
         if (ipport == null) {
             return null;
         }
+        
+        if (ipport.startsWith("/")) {
+            ipport = ipport.substring(1);
+        }
+        
         if (ipport.startsWith("[")) { //V6
             int endIndex = ipport.indexOf("]");
             if (endIndex != -1) {
                 return ipport.substring(1, endIndex);
             }
         } else { //V4
-            int colonIndex = ipport.indexOf(":");
-            if (colonIndex != -1) {
-                return ipport.substring(0, colonIndex);
-            }
+            return ipport.split(":")[0];
         }
         return ipport;
     }
-    public static String getPortv6(ServerData serverData) {
-        if (serverData == null) {
-            return "";
-        }
-        return getPortv6(serverData.serverIP);
-    }
-    public static String getPortv6(String ipport) {
+    
+    public static String getPortUniversal(String ipport) {
         if (ipport == null) {
             return "";
         }
+        
+        if (ipport.startsWith("/")) {
+            ipport = ipport.substring(1);
+        }
+        
         if (ipport.startsWith("[")) { //V6
             int endIndex = ipport.indexOf("]");
-            if (endIndex != -1 && endIndex + 1 < ipport.length() && ipport.charAt(endIndex + 1) == ':') {
+            if (endIndex != -1 && ipport.length() > endIndex + 1 && ipport.charAt(endIndex + 1) == ':') { //Fucked up evil check
                 return ipport.substring(endIndex + 2);
             }
         } else { //V4
-            int colonIndex = ipport.indexOf(":");
-            if (colonIndex != -1) {
-                return ipport.substring(colonIndex + 1);
+            String[] spl = ipport.split(":");
+            if (spl.length > 1) {
+                return spl[1];
+            } else {
+                return "";
             }
         }
         return "";
@@ -290,11 +303,7 @@ public class Util {
         }
         return res.toString();
     }
-
-    public static void byteStringToFile(String byteString) {
-
-    }
-
+    
     public static byte[] concatByteArrays(byte[] a, byte[] b) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
         outputStream.write( a );

@@ -12,6 +12,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
+import trollogyadherent.offlineauth.util.Util;
 import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
 import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
 
@@ -80,6 +81,9 @@ public class OfflineAuth {
         String debugVar = System.getenv("MCMODDING_DEBUG_MODE");
         DEBUG_MODE = debugVar != null;
         proxy.preInit(event);
+        
+        //todo: delete later
+        Util.RUN_IP_PORT_TESTS();
     }
 
     @Mod.EventHandler

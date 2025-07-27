@@ -1,6 +1,7 @@
 package trollogyadherent.offlineauth.asm;
 
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraft.launchwrapper.Launch;
 import trollogyadherent.offlineauth.ConfigMixins;
@@ -25,10 +26,14 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 		String configFolder = "config" + File.separator;
 		ConfigMixins.loadMixinConfig(new File(Launch.minecraftHome, configFolder + "offlineauthMixins.cfg"));
 		
+		boolean isServer = FMLLaunchHandler.side().isServer();
+		
 		List<String> mixins = new ArrayList<>();
 		
 		mixins.add("minecraft.MixinMinecraftServer");
-		mixins.add("minecraft.MixinDedicatedServer");
+		
+		if(isServer)
+			mixins.add("minecraft.MixinDedicatedServer");
 		
 		if(ConfigMixins.profileCacheOfflineMode)
 			mixins.add("minecraft.MixinPlayerProfileCache");
@@ -37,6 +42,11 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 			if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
 				mixins.add("serverutilities.MixinPlayerHeadIcon");
 			}
+		}
+		
+		if(ConfigMixins.IPv6Patch) {
+			mixins.add("minecraft.MixinBanList");
+			mixins.add("minecraft.MixinEntityPlayerMP");
 		}
 		
 		return mixins;

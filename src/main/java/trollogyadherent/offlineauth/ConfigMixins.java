@@ -7,6 +7,7 @@ import java.io.File;
 public class ConfigMixins {
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
 	public static boolean profileCacheOfflineMode = true;
+	public static boolean IPv6Patch = true;
 	static final String categoryMixins = "Mixins";
 	
 	public static void loadMixinConfig(File configFile) {
@@ -23,6 +24,12 @@ public class ConfigMixins {
 				categoryMixins,
 				true,
 				"If server is in offline mode, switches PlayerProfileCache to permanent offline mode (whitelist, ban, etc. will use offline UUID).");
+		
+		IPv6Patch = config.getBoolean(
+				"IPv6Patch",
+				categoryMixins,
+				true,
+				"[Not tested] Fixes some vanilla methods to fully support IPv6.");
 		
 		if (config.hasChanged()) {
 			config.save();

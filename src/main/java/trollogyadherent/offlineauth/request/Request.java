@@ -34,6 +34,10 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class Request {
+    
+    //TODO: test for v6 | looks like it's not working
+    // 'Host name may not be blank'
+    
     public static ResponseObject vibeCheck(String ip, String port, String identifier, String displayname, String password, PublicKey clientPubKey, PrivateKey clientPrivKey) throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchProviderException {
         if (ClientUtil.getServerPublicKeyFromCache(ip, port) == null) {
             PublicKey pubKey = getServerPubKey(ip, port);
@@ -56,11 +60,17 @@ public class Request {
             }
             clientKeyToken = tempToken;
         }
-
+        
         ServerAddress addr = ServerAddress.func_78860_a(ip + ":" + 25565);
         String baseUrl = "http://" + addr.getIP() + ":" + port + "/";
         String requestPath = "vibecheck";
-
+        
+        //todo: delete
+        
+        OfflineAuth.info("IP::RAW : " + ip);
+        OfflineAuth.info("IP::ADR : " + addr.getIP());
+        OfflineAuth.info("URL : " + baseUrl);
+        
         HttpPost post = new HttpPost(baseUrl + requestPath);
 
         AesKeyUtil.AesKeyPlusIv aesKeyPlusIv = getServerTempKeyPlusIv(ip, port);
