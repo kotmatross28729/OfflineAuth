@@ -16,11 +16,11 @@ public class MixinBanList {
 	 */
 	@Overwrite
 	private String func_152707_c(SocketAddress address) {
-		String ip = ((InetSocketAddress)address).getAddress().getHostAddress();
-		
-		ip = ip.contains(":") ? "[" + ip + "]" : ip;
-		
-		return Util.getIPUniversal(ip);
+		if(address instanceof InetSocketAddress inetAddress) {
+			return inetAddress.getAddress().getHostAddress();
+		} else { //In singleplayer, whatever
+			return Util.getIPUniversal(address.toString());
+		}
 	}
 	
 }

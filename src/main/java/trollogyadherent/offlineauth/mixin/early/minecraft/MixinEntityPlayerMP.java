@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 @Mixin(value = EntityPlayerMP.class, priority = 999)
 public class MixinEntityPlayerMP {
@@ -21,11 +22,11 @@ public class MixinEntityPlayerMP {
 	 */
 	@Overwrite
 	public String getPlayerIP() {
-		String ip = ((InetSocketAddress)this.playerNetServerHandler.netManager.getSocketAddress()).getAddress().getHostAddress();
-		
-		ip = ip.contains(":") ? "[" + ip + "]" : ip;
-		
-		return Util.getIPUniversal(ip);
+		SocketAddress address = this.playerNetServerHandler.netManager.getSocketAddress();
+		if(address instanceof InetSocketAddress inetAddress) {
+			return inetAddress.getAddress().getHostAddress();
+		} else { //whatever
+			return Util.getIPUniversal(this.playerNetServerHandler.netManager.getSocketAddress().toString());
+		}
 	}
-	
 }

@@ -47,6 +47,8 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 		if(ConfigMixins.IPv6Patch) {
 			mixins.add("minecraft.MixinBanList");
 			mixins.add("minecraft.MixinEntityPlayerMP");
+			mixins.add("minecraft.MixinNetHandlerLoginServer");
+			mixins.add("minecraft.MixinServerConfigurationManager");
 		}
 		
 		return mixins;

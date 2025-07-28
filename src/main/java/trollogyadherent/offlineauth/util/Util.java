@@ -172,31 +172,6 @@ public class Util {
         Sessionutil.set(new Session(username, uuid, null, "legacy"));
         OfflineAuth.info("Offline Username set to " + username);
     }
-
-    
-    public static void RUN_IP_PORT_TESTS() {
-        assert getIPUniversal("192.168.0.1:8080").equals("192.168.0.1");
-        assert getPortUniversal("192.168.0.1:8080").equals("8080");
-        assert getIPUniversal("192.168.0.1").equals("192.168.0.1");
-        assert getPortUniversal("192.168.0.1").equals("");
-        
-        assert getIPUniversal("[2001:db8::1]:443").equals("2001:db8::1");
-        assert getPortUniversal("[2001:db8::1]:443").equals("443");
-        assert getIPUniversal("[2001:db8::1]").equals("2001:db8::1");
-        assert getPortUniversal("[2001:db8::1]").equals("");
-        
-        assert getIPUniversal("example.com:1234").equals("example.com");
-        assert getPortUniversal("example.com:1234").equals("1234");
-        assert getIPUniversal("example.com").equals("example.com");
-        assert getPortUniversal("example.com").equals("");
-        
-        assert getIPUniversal("/192.168.0.1:8080").equals("192.168.0.1");
-        assert getPortUniversal("/192.168.0.1:8080").equals("8080");
-        assert getIPUniversal("/[2001:db8::1]:443").equals("2001:db8::1");
-        assert getPortUniversal("/[2001:db8::1]:443").equals("443");
-        
-        OfflineAuth.info("[DEV] IP:PORT CHECK PASSED - TRUE");
-    }
     
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
     public static String getIP(ServerData serverData) {
