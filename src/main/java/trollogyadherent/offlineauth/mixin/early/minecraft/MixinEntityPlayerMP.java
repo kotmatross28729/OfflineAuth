@@ -26,7 +26,7 @@ public class MixinEntityPlayerMP {
 		if(address instanceof InetSocketAddress inetAddress) {
 			return inetAddress.getAddress().getHostAddress();
 		} else { //whatever
-			return Util.getIPUniversal(this.playerNetServerHandler.netManager.getSocketAddress().toString());
+			return Util.getIPUniversal(address.toString());
 		}
 	}
 }

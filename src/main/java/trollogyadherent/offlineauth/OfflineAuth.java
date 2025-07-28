@@ -44,7 +44,6 @@ import java.security.cert.CertificateException;
 
 //todo: rest of v6 compat:
 // - CommandBanIp: Either remove the use of Pattern (and check differently) or make Pattern for ipv6 (how many are there anyway?)
-// - ServerConfigurationManager.initializeConnectionToPlayer: change getSocketAddress().toString() to support v6
 
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")
 public class OfflineAuth {
