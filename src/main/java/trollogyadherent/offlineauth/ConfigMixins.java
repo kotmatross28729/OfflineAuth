@@ -29,7 +29,7 @@ public class ConfigMixins {
 				"IPv6Patch",
 				categoryMixins,
 				true,
-				"[Not tested] Fixes some vanilla methods to fully support IPv6.");
+				"Fixes some vanilla methods to fully support IPv6.");
 		
 		if (config.hasChanged()) {
 			config.save();

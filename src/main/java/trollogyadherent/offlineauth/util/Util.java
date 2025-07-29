@@ -173,6 +173,14 @@ public class Util {
         OfflineAuth.info("Offline Username set to " + username);
     }
     
+    public static boolean looksLikeIp(String ip) {
+        if (ip == null) {
+            return false;
+        }
+        
+        return ip.contains(".") || ip.contains(":");
+    }
+    
     /* The serverIP field actually contains both ip and port, this function gets only the ip */
     public static String getIP(ServerData serverData) {
         if (serverData == null) {

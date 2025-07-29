@@ -24,7 +24,7 @@ public class ClientUtil {
     }
 
     public static String getServerKeyPath(String ip, String port) {
-        String ipV6Compatible = ip.replace(':', '_');
+        String ipV6Compatible = ip.replace(':', '_').replace('/', '-');
         return OfflineAuth.varInstanceClient.keyCachePath + File.separator + ipV6Compatible + "_" + port + ".key";
     }
     public static PublicKey getServerPublicKeyFromCache(String ip, String port) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {

@@ -6,6 +6,23 @@
 
 ---
 
+# v0.3.06
+
+* **Added full IPv6 support**
+  - OfflineAuth now can work with servers that have IPv6 addresses 
+    - Old system of obtaining IP address/port has been changed
+      - Old: IP address is separated by ':', everything before is IP address, after is port.
+        - Because IPv6 contains ':', for `[2001:db8::1]:25565` IP address was `2001`, not `2001:db8::1`
+      - New: first it's checked if the address starts with '[', if so - then it's IPv6, if not - then IPv4. For IPv6 - everything in square brackets is IP address, everything after (':') is port
+        - So for `[2001:db8::1]:25565` IP address will be `2001:db8::1` (correct)
+    - Request system has also been updated
+      - Previously, to obtain the IPv6 (for example `[2001:db8::1]`) server's public key, OfflineAuth sent a request to `http://2001:4567/pubkey` (incorrect)
+      - Now OfflineAuth correctly sends a request to `http://[2001:db8::1]:4567/pubkey`
+  - Also added patches for vanilla
+    - Configurable - `IPv6Patch`(`minecraft\config\offlineauthMixins.cfg`)
+    - `/ban-ip` and `/pardon-ip` commands now work correctly with IPv6
+    - Log messages like `Disconnecting [IP]: ...`, `[IP] lost connection: ...`, `player[IP] logged in with entity id ...` now correctly display the IPv6 address
+
 # v0.3.05
 
 * [ServerUtilities] Disable use of "nick", as it may lead to an actual "ban" of the account (configurable - `blockServerUtilitiesDisplayNameChange`, IT'S NOT RECOMMENDED TO DISABLE!)
