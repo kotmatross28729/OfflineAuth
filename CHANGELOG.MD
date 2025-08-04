@@ -23,6 +23,13 @@
     - `/ban-ip` and `/pardon-ip` commands now work correctly with IPv6
     - Log messages like `Disconnecting [IP]: ...`, `[IP] lost connection: ...`, `player[IP] logged in with entity id ...` now correctly display the IPv6 address
 
+
+* **Patch from 04/08/2025:**
+  * Removed unused parameters from `serverdata.json`: "validServer/registrationOpen/registrationTokenOpen/skinUploadAllowed" (were always false)
+  * Now default skin (steve) doesn't break when `useLegacyConversion = false`
+  * Before:
+  * After:
+
 # v0.3.05
 
 * [ServerUtilities] Disable use of "nick", as it may lead to an actual "ban" of the account (configurable - `blockServerUtilitiesDisplayNameChange`, IT'S NOT RECOMMENDED TO DISABLE!)

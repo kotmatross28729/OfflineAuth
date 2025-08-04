@@ -53,6 +53,11 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 			mixins.add("minecraft.MixinCommandPardonIp");
 		}
 		
+		if(ConfigMixins.defaultSkin64Support) {
+			mixins.add("minecraft.MixinAbstractClientPlayer");
+			mixins.add("minecraft.MixinSkinManager");
+		}
+		
 		return mixins;
 	}
 	

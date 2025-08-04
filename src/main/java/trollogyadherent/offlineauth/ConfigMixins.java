@@ -8,6 +8,7 @@ public class ConfigMixins {
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
 	public static boolean profileCacheOfflineMode = true;
 	public static boolean IPv6Patch = true;
+	public static boolean defaultSkin64Support = true;
 	static final String categoryMixins = "Mixins";
 	
 	public static void loadMixinConfig(File configFile) {
@@ -30,6 +31,12 @@ public class ConfigMixins {
 				categoryMixins,
 				true,
 				"Fixes some vanilla methods to fully support IPv6.");
+		
+		defaultSkin64Support = config.getBoolean(
+				"defaultSkin64Support",
+				categoryMixins,
+				true,
+				"Modifies the default skin (steve) so that its resolution matches useLegacyConversion option.");
 		
 		if (config.hasChanged()) {
 			config.save();
