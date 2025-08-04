@@ -52,7 +52,7 @@ public class ConfigGUI extends GuiConfig {
 
             /* Adding CMM server data if it is new */
             if (Util.getOAServerDataByIP(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort)) == null) {
-                OfflineAuth.varInstanceClient.OAServerDataCache.add(new OAServerData(true, Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", "", false, false, false));
+                OfflineAuth.varInstanceClient.OAServerDataCache.add(new OAServerData(Config.cmmDefaultServerIp, String.valueOf(Config.cmmDefaultServerPort), String.valueOf(Config.cmmDefaultAuthPort), "", "", "", false, "", ""));
                 ClientData.saveData();
             }
         }

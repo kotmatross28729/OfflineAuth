@@ -410,7 +410,7 @@ public class GuiLogin extends GuiScreen {
         }
 
         /* Constructing a temporary OAServerData object, used to update the List of server datas held by the client */
-        OAServerData oaServerDataTemp = new OAServerData(false, Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), useKey.isChecked(), privateKeyPathSaved, publicServerKeyPathSaved, false, false, false);
+        OAServerData oaServerDataTemp = new OAServerData(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), useKey.isChecked(), privateKeyPathSaved, publicServerKeyPathSaved);
         boolean found = false;
 
         /* Looping through cache list, if found, updating the entry */
