@@ -58,6 +58,25 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 			mixins.add("minecraft.MixinSkinManager");
 		}
 		
+		// Like a backport of a new skin format, but without: 1) slim arms 2) transparency/translucency support 
+		// To support these things (via model), CPM is required
+		// Objective: Provide a basic way to render 2 layer (NOT a full backport like in SimpleSkinBackport, there is CPM for that)
+		// todo: HEAVIEST WIP
+		// 	- General config for mixin
+		// 	- Fate of useLegacyConversion - ???
+		// 	- Armor broken (ordinals?)
+		// 	- Menu button to switch 2nd layer (like in modern)? 
+		//  - Official CPM models?
+		//  - blarge
+		
+		if(false) {
+			if (loadedCoreMods.contains("com.tom.cpmcore.CPMLoadingPlugin")) {
+				mixins.add("CPM.MixinRenderPlayer_CPM");
+			} else {
+				mixins.add("minecraft.MixinRenderPlayer");
+			}
+		}
+		
 		return mixins;
 	}
 	

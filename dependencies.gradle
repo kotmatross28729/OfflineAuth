@@ -59,6 +59,7 @@ dependencies {
     compileOnly name: 'ServerUtilities-2.1.36-pre-dev'
     compileOnly name: 'tabfaces-1.0.8'
     compileOnly name: 'BetterQuesting-3.7.11-GTNH-api2'
+    compileOnly name: 'CustomPlayerModels-1.7.10-0.6.21a'
 
     compileOnly fileTree(dir: 'libs', include: '*.jar')
     compileOnly fileTree(dir: 'libs', include: '*.zip')
