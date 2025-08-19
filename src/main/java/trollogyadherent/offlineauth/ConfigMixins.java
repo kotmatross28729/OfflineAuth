@@ -35,7 +35,7 @@ public class ConfigMixins {
 		defaultSkin64Support = config.getBoolean(
 				"defaultSkin64Support",
 				categoryMixins,
-				true,
+				false,
 				"Modifies the default skin (steve) so that its resolution matches useLegacyConversion option.");
 		
 		if (config.hasChanged()) {

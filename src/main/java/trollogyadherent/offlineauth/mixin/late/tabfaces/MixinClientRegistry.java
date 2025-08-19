@@ -17,7 +17,7 @@ public class MixinClientRegistry {
 	 */
 	@Overwrite(remap = false)
 	public ResourceLocation getTabMenuResourceLocation(String displayName, boolean removeAfterTTL, int ttl) {
-		displayName = displayName.contains(" ") ? displayName.trim() : displayName; //In 1.0.8 displayName has a space at the end, probably a bug?
+		displayName = displayName.trim(); //In 1.0.8 displayName has a space at the end, probably a bug?
 		
 		if (VarInstanceClient.minecraftRef.thePlayer != null
 				&& VarInstanceClient.minecraftRef.thePlayer.getDisplayName()

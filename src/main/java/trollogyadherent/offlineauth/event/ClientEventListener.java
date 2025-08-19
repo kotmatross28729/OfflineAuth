@@ -313,7 +313,7 @@ public class ClientEventListener {
         }
 
         if (OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName) != null) {
-            OfflineAuth.varInstanceClient.skinLocationField.set(/*OfflineAuth.varInstanceClient.clientRegistry.getPlayerEntityByDisplayName(displayName)*/entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
+            OfflineAuth.varInstanceClient.skinLocationField.set(entityPlayerMP, OfflineAuth.varInstanceClient.clientRegistry.getResourceLocation(displayName));
         }
         
         if (Config.enableCapes && OfflineAuth.varInstanceClient.clientRegistry.getCapeObject(displayName) != null) {
@@ -360,10 +360,6 @@ public class ClientEventListener {
             OfflineAuth.varInstanceClient.singlePlayerSkinResourceLocation = rl;
             try {
                 OfflineAuth.varInstanceClient.skinLocationField.set(Minecraft.getMinecraft().thePlayer, rl);
-                /*if (OfflineAuth.isEFRLoaded) {
-                    ResourceLocation rlFuturum = new ResourceLocation("etfuturum", "offlineskin/" + skinName);
-                    ClientSkinUtil.loadTexture(bufferedImage, rlFuturum);
-                }*/
             } catch (IllegalAccessException e_) {
                 OfflineAuth.error("Fatal error while applying skin");
                 e_.printStackTrace();

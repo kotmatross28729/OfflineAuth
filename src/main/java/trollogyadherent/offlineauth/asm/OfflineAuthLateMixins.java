@@ -27,6 +27,11 @@ public class OfflineAuthLateMixins implements ILateMixinLoader {
 			mixins.add("tabfaces.MixinClientUtil"); 	//Server menu     : ✅ (cached)
 		}
 		
+		if (loadedMods.contains("betterquesting")) {
+			mixins.add("betterquesting.MixinEntityPlayerPreview");
+			mixins.add("betterquesting.MixinPanelPlayerPortrait");
+		}
+		
 		return mixins;
 	}
 }

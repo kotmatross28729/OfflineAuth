@@ -26,9 +26,11 @@
 
 * **Patch from 04/08/2025:**
   * Removed unused parameters from `serverdata.json`: "validServer/registrationOpen/registrationTokenOpen/skinUploadAllowed" (were always false)
-  * Now default skin (steve) doesn't break when `useLegacyConversion = false`
-  * Before:
-  * After:
+  * Added option `defaultSkin64Support` - replaces Steve's skin with 64x64 version if `useLegacyConversion = false`
+    - Disabled by default as it mostly breaks things
+
+* **Patch from 19/08/2025:**
+  * Added skins support for [BetterQuesting [GTNH]](https://github.com/GTNewHorizons/BetterQuesting)
 
 # v0.3.05
 
