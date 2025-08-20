@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.packet.PacketHandler;
 import trollogyadherent.offlineauth.packet.packets.QuerySkinNameFromServerPacket;
@@ -46,21 +47,21 @@ public class SkinUtil {
 	}
 	
 	public static ResourceLocation getDefaultIcon() {
-		if(Config.useLegacyConversion) {
-			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation : SkinManager.field_152793_a;
-		} else {
+		if(ConfigMixins.basicSkinBackport) {
 			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation64 : OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
+		} else {
+			return Config.showQuestionMarkIfUnknown ? OfflineAuth.varInstanceClient.questionMarkResourceLocation : SkinManager.field_152793_a;
 		}
 	}
 	
 	public static void drawPlayerFaceAuto(float xPos, float yPos, float width, float height) {
-		//Use 2:1 (64x32)
-		if(Config.useLegacyConversion) {
-			SkinUtil.drawPlayerFaceLegacy(xPos, yPos, width, height);
-		}
 		//Use 1:1 (64x64)
-		else {
+		if(ConfigMixins.basicSkinBackport) {
 			SkinUtil.drawPlayerFaceModern(xPos, yPos, width, height);
+		}
+		//Use 2:1 (64x32)
+		else {
+			SkinUtil.drawPlayerFaceLegacy(xPos, yPos, width, height);
 		}
 	}
 	public static void drawPlayerFaceLegacy(float xPos, float yPos, float width, float height) {

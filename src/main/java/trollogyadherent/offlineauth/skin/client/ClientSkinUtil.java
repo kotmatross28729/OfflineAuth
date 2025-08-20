@@ -1,13 +1,12 @@
 package trollogyadherent.offlineauth.skin.client;
 
 import com.google.common.io.Files;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
-import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.rest.StatusResponseObject;
@@ -16,7 +15,15 @@ import trollogyadherent.offlineauth.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unused", "UnstableApiUsage"})
 public class ClientSkinUtil {
@@ -54,15 +61,15 @@ public class ClientSkinUtil {
             if (result == null) {
                 return null;
             }
-            if(Config.useLegacyConversion) {
-                //1:1 -> 2:1
-                if (result.getWidth() == result.getHeight()) {
-                    result = new LegacyConversion().convertToOld(result);
-                }
-            } else {
+            if(ConfigMixins.basicSkinBackport) {
                 //2:1 -> 1:1
                 if (result.getWidth() / result.getHeight() == 2) {
                     result = new LegacyConversion().convertToNew(result);
+                }
+            } else {
+                //1:1 -> 2:1
+                if (result.getWidth() == result.getHeight()) {
+                    result = new LegacyConversion().convertToOld(result);
                 }
             }
             return result;
@@ -82,15 +89,15 @@ public class ClientSkinUtil {
             if (result == null) {
                 return null;
             }
-            if(Config.useLegacyConversion) {
-                //1:1 -> 2:1
-                if (result.getWidth() == result.getHeight()) {
-                    result = new LegacyConversion().convertToOld(result);
-                }
-            } else {
+            if(ConfigMixins.basicSkinBackport) {
                 //2:1 -> 1:1
                 if (result.getWidth() / result.getHeight() == 2) {
                     result = new LegacyConversion().convertToNew(result);
+                }
+            } else {
+                //1:1 -> 2:1
+                if (result.getWidth() == result.getHeight()) {
+                    result = new LegacyConversion().convertToOld(result);
                 }
             }
             return result;

@@ -1,0 +1,6 @@
+1) Install Customizable Player Models - https://modrinth.com/plugin/custom-player-models/versions
+2) Download "player_models" folder
+3) Move the "player_models" folder to the main folder (.minecraft\)
+4) Enter the world and press G (default, "Gestures Menu") to open the menu, click "Models"
+5) Choose one of the 2 models provided
+6) Enjoy

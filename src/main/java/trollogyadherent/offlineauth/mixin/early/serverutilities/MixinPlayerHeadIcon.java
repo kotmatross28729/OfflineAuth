@@ -18,6 +18,7 @@ import serverutils.lib.icon.ImageIcon;
 import serverutils.lib.icon.PlayerHeadIcon;
 import serverutils.lib.util.StringUtils;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.skin.SkinUtil;
@@ -58,15 +59,15 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 	public void draw(int x, int y, int w, int h) {
 		this.bindTexture();
 		
-		//Use 2:1 (64x32)
-		if(Config.useLegacyConversion) {
-			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.125, 0.25, 0.25, 0.5);
-			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.25, 0.75, 0.5);
-		}
 		//Use 1:1 (64x64)
-		else {
+		if(ConfigMixins.basicSkinBackport) {
 			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.125, 0.125, 0.25, 0.25);
 			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.125, 0.75, 0.25);
+		}
+		//Use 2:1 (64x32)
+		else {
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.125, 0.25, 0.25, 0.5);
+			GuiHelper.drawTexturedRect(x, y, w, h, this.color, 0.625, 0.25, 0.75, 0.5);
 		}
 	}
 	

@@ -75,7 +75,7 @@ public class SkinListEntry {
         this.bindIcon();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
-        //For some unknown reason, drawPlayerFaceLegacy (if useLegacyConversion - true) doesn't work,
+        //For some unknown reason, drawPlayerFaceLegacy doesn't work,
         // but drawPlayerFaceModern works with any skins...
         SkinUtil.drawPlayerFaceModern(p_148279_2_, p_148279_3_, 32, 32);
         

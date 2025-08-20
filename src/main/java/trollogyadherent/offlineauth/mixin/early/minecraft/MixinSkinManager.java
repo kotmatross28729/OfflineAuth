@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 @Mixin(value = SkinManager.class, priority = 999)
 public class MixinSkinManager {
@@ -21,7 +20,7 @@ public class MixinSkinManager {
 	
 	@Inject(method = "<clinit>", at = @At(value = "TAIL"))
 	private static void whatever(CallbackInfo ci) {
-		field_152793_a = Config.useLegacyConversion ? field_152793_a : OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
+		field_152793_a = OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
 	}
 	
 }

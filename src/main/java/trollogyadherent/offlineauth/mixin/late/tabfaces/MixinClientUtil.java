@@ -61,7 +61,7 @@ public class MixinClientUtil {
 	
 	/**
 	 * @author kotmatross
-	 * @reason useLegacyConversion compat
+	 * @reason basicSkinBackport compat
 	 */
 	@Overwrite(remap = false)
 	public static void drawPlayerFace(ResourceLocation rl, float xPos, float yPos, float alpha) {

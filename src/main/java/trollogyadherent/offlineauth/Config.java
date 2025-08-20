@@ -22,7 +22,6 @@ public class Config {
         public static final boolean showUseKey = true;
         public static final boolean showConfigInAuth = true;
         public static final boolean clearSkinCacheOnLogin = true;
-        public static final boolean useLegacyConversion = !OfflineAuth.isSSBLoaded && !OfflineAuth.isCPMLoaded;
         public static final boolean enableCapes = false;
         public static final boolean saveUserData = true;
         public static final int clientUserDataCheckInterval = 100;
@@ -81,7 +80,6 @@ public class Config {
     public static boolean showUseKey = Defaults.showUseKey;
     public static boolean showConfigInAuth = Defaults.showConfigInAuth;
     public static boolean clearSkinCacheOnLogin = Defaults.clearSkinCacheOnLogin;
-    public static boolean useLegacyConversion = Defaults.useLegacyConversion;
     public static boolean enableCapes = Defaults.enableCapes;
     public static boolean saveUserData = Defaults.saveUserData;
     public static int clientUserDataCheckInterval = Defaults.clientUserDataCheckInterval;
@@ -145,9 +143,6 @@ public class Config {
     
             Property clearSkinCacheOnLoginProperty = config.get(Categories.generalClient, "clearSkinCacheOnLogin", Defaults.clearSkinCacheOnLogin, "Should clear skin cache when logging into the server. When false, useful for integration with TabFaces's server selection menu");
             clearSkinCacheOnLogin = clearSkinCacheOnLoginProperty.getBoolean();
-            
-            Property useLegacyConversionProperty = config.get(Categories.generalClient, "useLegacyConversion", Defaults.useLegacyConversion, "Whether to convert the skin to the old format. If you don't have SSB or CPM installed, it's better to leave it true");
-            useLegacyConversion = useLegacyConversionProperty.getBoolean();
     
             Property enableCapesProperty = config.get(Categories.generalClient, "enableCapes", Defaults.enableCapes, "Client option to enable capes. If disabled, the button for selecting a cape in the skins menu is disabled, and capes aren't displayed on players. Needed to avoid the \"curse of the permanent cape\" in single player");
             enableCapes = enableCapesProperty.getBoolean();

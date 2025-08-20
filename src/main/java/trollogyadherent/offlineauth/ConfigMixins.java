@@ -8,7 +8,7 @@ public class ConfigMixins {
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
 	public static boolean profileCacheOfflineMode = true;
 	public static boolean IPv6Patch = true;
-	public static boolean defaultSkin64Support = true;
+	public static boolean basicSkinBackport = true;
 	static final String categoryMixins = "Mixins";
 	
 	public static void loadMixinConfig(File configFile) {
@@ -32,11 +32,13 @@ public class ConfigMixins {
 				true,
 				"Fixes some vanilla methods to fully support IPv6.");
 		
-		defaultSkin64Support = config.getBoolean(
-				"defaultSkin64Support",
+		basicSkinBackport = config.getBoolean(
+				"basicSkinBackport",
 				categoryMixins,
-				false,
-				"Modifies the default skin (steve) so that its resolution matches useLegacyConversion option.");
+				true,
+				"Provides a basic (no slim arms/translucency) backport of the new skin format (1.8/64x64)." +
+						" Not compatible with other skin backport mods." +
+						" For a full port, use Customizable Player Models with the models provided in the repository.");
 		
 		if (config.hasChanged()) {
 			config.save();

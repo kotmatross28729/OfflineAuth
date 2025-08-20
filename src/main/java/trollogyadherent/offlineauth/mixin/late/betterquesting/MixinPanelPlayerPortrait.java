@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import trollogyadherent.offlineauth.Config;
-import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.mixinHelper.betterquesting.ISetSkinLocation;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
@@ -41,7 +39,7 @@ public abstract class MixinPanelPlayerPortrait {
 				if (this.player.getLocationSkin() == null)
 					playerHelper.offlineAuth$setLocationSkin(ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName()));
 				if (this.player.getLocationSkin() == null)
-					playerHelper.offlineAuth$setLocationSkin(Config.useLegacyConversion ? SkinManager.field_152793_a : OfflineAuth.varInstanceClient.DEFAULT_SKIN_64);
+					playerHelper.offlineAuth$setLocationSkin(SkinManager.field_152793_a);
 			}
 		}
 	}

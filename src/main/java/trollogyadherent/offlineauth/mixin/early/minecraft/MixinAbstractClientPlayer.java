@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.OfflineAuth;
 @Mixin(value = AbstractClientPlayer.class, priority = 999)
 public class MixinAbstractClientPlayer {
@@ -21,7 +20,7 @@ public class MixinAbstractClientPlayer {
 	
 	@Inject(method = "<clinit>", at = @At(value = "TAIL"))
 	private static void whatever(CallbackInfo ci) {
-		locationStevePng = Config.useLegacyConversion ? locationStevePng : OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
+		locationStevePng = OfflineAuth.varInstanceClient.DEFAULT_SKIN_64;
 	}
 	
 }

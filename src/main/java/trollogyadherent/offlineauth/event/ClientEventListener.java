@@ -19,6 +19,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.gui.skin.SkinManagmentGUI;
@@ -344,15 +345,15 @@ public class ClientEventListener {
                 e_.printStackTrace();
                 return;
             }
-            if(Config.useLegacyConversion) {
-                //1:1 -> 2:1
-                if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
-                    bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
-                }
-            } else {
+            if(ConfigMixins.basicSkinBackport) {
                 //2:1 -> 1:1
                 if (bufferedImage.getWidth() / bufferedImage.getHeight() == 2) {
                     bufferedImage = new LegacyConversion().convertToNew(bufferedImage);
+                }
+            } else {
+                //1:1 -> 2:1
+                if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
+                    bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
                 }
             }
 

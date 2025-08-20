@@ -22,8 +22,7 @@ public abstract class MixinRenderPlayer_CPM extends RendererLivingEntity {
 		super(p_i1261_1_, p_i1261_2_);
 	}
 	
-	// todo: fix armor
-	@Redirect(method = "<init>", at = @At(value = "NEW", args = "class=net/minecraft/client/model/ModelBiped"))
+	@Redirect(method = "<init>", at = @At(value = "NEW", target = "net/minecraft/client/model/ModelBiped", ordinal = 0))
 	private static ModelBiped init(float p_i1148_1_) {
 		return new ModelBipedModern_CPM(p_i1148_1_);
 	}

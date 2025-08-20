@@ -6,6 +6,15 @@
 
 ---
 
+# v0.3.07
+
+* Added basic backport of the new skin format (1.8 / 64x64)
+  - Configurable - `basicSkinBackport`(`minecraft\config\offlineauthMixins.cfg`)
+  - Does NOT provide slim arms/translucency, only full 2nd layer and 64x64 resolution
+  - For a full port, use [Customizable Player Models]
+
+* Added skins support for [BetterQuesting [GTNH]](https://github.com/GTNewHorizons/BetterQuesting)
+
 # v0.3.06
 
 * **Added full IPv6 support**
@@ -28,9 +37,6 @@
   * Removed unused parameters from `serverdata.json`: "validServer/registrationOpen/registrationTokenOpen/skinUploadAllowed" (were always false)
   * Added option `defaultSkin64Support` - replaces Steve's skin with 64x64 version if `useLegacyConversion = false`
     - Disabled by default as it mostly breaks things
-
-* **Patch from 19/08/2025:**
-  * Added skins support for [BetterQuesting [GTNH]](https://github.com/GTNewHorizons/BetterQuesting)
 
 # v0.3.05
 

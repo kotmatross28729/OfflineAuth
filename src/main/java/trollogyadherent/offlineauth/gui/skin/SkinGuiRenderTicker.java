@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
 import trollogyadherent.offlineauth.Config;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
 import trollogyadherent.offlineauth.gui.skin.util.EntityUtil;
@@ -216,15 +217,15 @@ public class SkinGuiRenderTicker {
             OfflineAuth.error("Error loading skin image " + skinName);
             return;
         }
-        if(Config.useLegacyConversion) {
-            //1:1 -> 2:1
-            if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
-                bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
-            }
-        } else {
+        if(ConfigMixins.basicSkinBackport) {
             //2:1 -> 1:1
             if (bufferedImage.getWidth() / bufferedImage.getHeight() == 2) {
                 bufferedImage = new LegacyConversion().convertToNew(bufferedImage);
+            }
+        } else {
+            //1:1 -> 2:1
+            if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
+                bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
             }
         }
         skinResourceLocation = new ResourceLocation("offlineauth", "tickerskins/" + skinName);
