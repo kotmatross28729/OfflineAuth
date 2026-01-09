@@ -27,8 +27,7 @@ import java.util.UUID;
 
 @Unused
 @SideOnly(Side.CLIENT)
-public
-class Secure {
+public class Secure {
 
     /**
      * Username/email

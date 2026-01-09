@@ -346,12 +346,12 @@ public class ClientEventListener {
                 return;
             }
             if(ConfigMixins.basicSkinBackport) {
-                //2:1 -> 1:1
+                /// 2:1 -> 1:1
                 if (bufferedImage.getWidth() / bufferedImage.getHeight() == 2) {
                     bufferedImage = new LegacyConversion().convertToNew(bufferedImage);
                 }
             } else {
-                //1:1 -> 2:1
+                /// 1:1 -> 2:1
                 if (bufferedImage.getWidth() == bufferedImage.getHeight()) {
                     bufferedImage = new LegacyConversion().convertToOld(bufferedImage);
                 }

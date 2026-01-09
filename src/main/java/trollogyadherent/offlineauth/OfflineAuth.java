@@ -12,8 +12,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
-import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
-import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
+import trollogyadherent.offlineauth.varinstances.VarInstanceClient;
+import trollogyadherent.offlineauth.varinstances.VarInstanceServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,31 +21,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-///
-
-////Not now...
-
-/* TODO: password reset tokens */   //See how registration tokens work
-// | ===CONFIGS: 1)ALLOW_PASSWORD_RESET_TOKENS; 2)ALLOW_OPS_GEN_PASSWORD_RESET_TOKENS; === |
-
-/* TODO: REGISTRATION LOCKDOWN */
-// | ===CONFIGS: 1)ENABLE_LOCKDOWN; 
-//               2)LOCKDOWN_LEVEL_1_RPM;      3)LOCKDOWN_LEVEL_2_RPM;      4)LOCKDOWN_LEVEL_3_RPM;
-//               5)LOCKDOWN_LEVEL_1_DOWNTIME; 6)LOCKDOWN_LEVEL_2_DOWNTIME; 7)LOCKDOWN_LEVEL_3_DOWNTIME;
-// | ===
-// CODE: 429 Too Many Requests
-
-/* TODO: IND. IP SPAM BLOCK */
-// | ===CONFIGS: 1)ENABLE_IP_SPAM_BLOCK; 2)IP_SPAM_BLOCK_RPM; === |
-// CODE: 403 Forbidden
-
-///
-
 @Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.7.10]", guiFactory = "trollogyadherent.offlineauth.gui.GuiFactory")
 public class OfflineAuth {
 
-    private static Logger LOG;// = LogManager.getLogger(Tags.MODID);
-
+    private static Logger LOG;
     public static File confFile;
 
     @SidedProxy(clientSide= Tags.GROUPNAME + ".ClientProxy", serverSide=Tags.GROUPNAME + ".CommonProxy")
@@ -143,8 +122,8 @@ public class OfflineAuth {
     public static void error(String message) {
         LOG.error(message);
     }
-    
     public static void fatal(String message) {
         LOG.fatal(message);
     }
+    
 }

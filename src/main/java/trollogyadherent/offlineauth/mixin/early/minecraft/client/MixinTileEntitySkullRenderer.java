@@ -12,10 +12,10 @@ import org.lwjgl.opengl.GL12;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
+import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.mixinHelper.ModelHeadModern;
 import trollogyadherent.offlineauth.skin.SkinUtil;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
-import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
+import trollogyadherent.offlineauth.varinstances.VarInstanceClient;
 
 @Mixin(value = TileEntitySkullRenderer.class, priority = 999)
 public abstract class MixinTileEntitySkullRenderer extends TileEntitySpecialRenderer {
@@ -54,31 +54,14 @@ public abstract class MixinTileEntitySkullRenderer extends TileEntitySpecialRend
 				headModel = this.HEAD_MODEL_MODERN;
 				break;
 			case 3:
-				ResourceLocation resourcelocation = VarInstanceClient.DEFAULT_SKIN_64;
+				ResourceLocation resourcelocation = SkinUtil.getDefaultSkin();
 				
 				if (profile != null && profile.getName() != null) {
-					String profileName = profile.getName();
-					Minecraft minecraft = Minecraft.getMinecraft();
-					
-					if (minecraft.thePlayer != null && minecraft.thePlayer.getDisplayName().equals(profileName)) {
-						resourcelocation = minecraft.thePlayer.getLocationSkin();
-					} else {
-						ResourceLocation oaSkin;
-						if(minecraft.theWorld != null) {
-							oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(minecraft, profileName, true);
-							if(oaSkin == null)
-								oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
-						} else {
-							oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
-						}
-						if (oaSkin != null) {
-							resourcelocation = oaSkin;
-						}
-					}
+					resourcelocation = SkinUtil.getOASkin(Minecraft.getMinecraft(), profile.getName(), false);
 				}
 				
 				this.bindTexture(resourcelocation);
-				headModel = this.HEAD_MODEL_MODERN;
+				headModel = ConfigMixins.basicSkinBackport ? this.HEAD_MODEL_MODERN : this.HEAD_MODEL_LEGACY;
 				break;
 			case 4:
 				this.bindTexture(CREEPER_TEXTURE);

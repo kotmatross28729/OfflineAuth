@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import trollogyadherent.offlineauth.mixinHelper.betterquesting.ISetSkinLocation;
 import trollogyadherent.offlineauth.skin.SkinUtil;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 @Mixin(value = PanelPlayerPortrait.class, priority = 999)
 public abstract class MixinPanelPlayerPortrait {
@@ -35,11 +33,9 @@ public abstract class MixinPanelPlayerPortrait {
 		if(this.player instanceof ISetSkinLocation playerHelper) {
 			GameProfile profile = this.player.getGameProfile();
 			if(profile != null && profile.getName() != null) {
-				playerHelper.offlineAuth$setLocationSkin(SkinUtil.getSkinResourceLocationByDisplayName(Minecraft.getMinecraft(), profile.getName(), true));
-				if (this.player.getLocationSkin() == null)
-					playerHelper.offlineAuth$setLocationSkin(ClientSkinUtil.loadSkinFromCacheQuiet(profile.getName()));
-				if (this.player.getLocationSkin() == null)
-					playerHelper.offlineAuth$setLocationSkin(SkinManager.field_152793_a);
+				playerHelper.offlineAuth$setLocationSkin(
+					SkinUtil.getOASkin(Minecraft.getMinecraft(), profile.getName(), false)
+				);
 			}
 		}
 	}

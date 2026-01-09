@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ServerSkinUtil {
+    
     public static boolean skinCachedOnServer(String name) {
         return (Util.fileExists(new File(OfflineAuth.varInstanceServer.serverSkinCachePath, name + ".png")) || Util.fileExists(new File(OfflineAuth.varInstanceServer.defaultServerSkinsPath, name + ".png")));
     }

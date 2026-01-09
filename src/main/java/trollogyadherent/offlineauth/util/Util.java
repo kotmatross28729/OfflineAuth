@@ -47,6 +47,7 @@ import java.util.regex.Pattern;
 
 
 public class Util {
+    
     private final static Pattern UUID_REGEX_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
 
     public static boolean isServer() {
@@ -376,8 +377,7 @@ public class Util {
                 return null;
             }
         }
-
-//        digest = digestInputStream.getMessageDigest();
+        
         byte[] resultByteArray = digest.digest();
         return bytesToHexString(resultByteArray);
     }
@@ -413,14 +413,10 @@ public class Util {
     public static String randomAlphanum() {
         return UUID.randomUUID().toString().replace("-", "");
     }
-
     public static String genUUID() {
         return UUID.randomUUID().toString();
     }
 
-    public static UUID genRealUUID() {
-        return UUID.randomUUID();
-    }
 
     /* Source: https://www.code4copy.com/java/validate-uuid-string-java/ */
     public static boolean uuidValid(String uuid) {
@@ -589,7 +585,7 @@ public class Util {
         if(!Config.hideIPInLog)
             return ip;
         
-        if (/*ip.equals("localhost") || */ip.length() <= 3) {
+        if (ip.length() <= 3) {
             return ip;
         } else {
             return ip.substring(0, 2) + "X.XXX.XXX.XX" + ip.substring(ip.length() - 1);
@@ -621,4 +617,5 @@ public class Util {
             //e.printStackTrace();
         }
     }
+    
 }

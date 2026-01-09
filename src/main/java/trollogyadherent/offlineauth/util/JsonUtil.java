@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonUtil {
+    
     public static String objectToJson(Object o) {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
@@ -31,4 +32,5 @@ public class JsonUtil {
         Gson gson = builder.create();
         return (Object[]) gson.fromJson(json, class_);
     }
+    
 }

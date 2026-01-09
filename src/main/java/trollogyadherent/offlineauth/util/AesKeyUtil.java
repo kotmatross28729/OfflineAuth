@@ -13,7 +13,6 @@ public class AesKeyUtil {
     }
 
     public static SecretKey genSecretKey(int size) throws NoSuchAlgorithmException {
-        //KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DSA");
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(size);
         return keyGen.generateKey();
@@ -85,4 +84,5 @@ public class AesKeyUtil {
             this.iv = iv;
         }
     }
+    
 }

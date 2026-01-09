@@ -13,6 +13,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 public class ServerUtil {
+    
     public static void kickPlayerByName(String name, String reason) {
         if (MinecraftServer.getServer() == null) {
             return;
@@ -45,4 +46,5 @@ public class ServerUtil {
     public static PublicKey loadServerPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         return RsaKeyUtil.loadPublicKey(OfflineAuth.varInstanceServer.keyPairPath + File.separator + "public.key");
     }
+    
 }

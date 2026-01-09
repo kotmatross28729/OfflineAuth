@@ -27,6 +27,7 @@ import java.io.InputStream;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unused", "UnstableApiUsage"})
 public class ClientSkinUtil {
+    
     public static class OfflineTextureObject extends AbstractTexture {
 
         private final BufferedImage image;
@@ -62,12 +63,12 @@ public class ClientSkinUtil {
                 return null;
             }
             if(ConfigMixins.basicSkinBackport) {
-                //2:1 -> 1:1
+                /// 2:1 -> 1:1
                 if (result.getWidth() / result.getHeight() == 2) {
                     result = new LegacyConversion().convertToNew(result);
                 }
             } else {
-                //1:1 -> 2:1
+                /// 1:1 -> 2:1
                 if (result.getWidth() == result.getHeight()) {
                     result = new LegacyConversion().convertToOld(result);
                 }
@@ -90,12 +91,12 @@ public class ClientSkinUtil {
                 return null;
             }
             if(ConfigMixins.basicSkinBackport) {
-                //2:1 -> 1:1
+                /// 2:1 -> 1:1
                 if (result.getWidth() / result.getHeight() == 2) {
                     result = new LegacyConversion().convertToNew(result);
                 }
             } else {
-                //1:1 -> 2:1
+                /// 1:1 -> 2:1
                 if (result.getWidth() == result.getHeight()) {
                     result = new LegacyConversion().convertToOld(result);
                 }

@@ -34,7 +34,7 @@ import trollogyadherent.offlineauth.rest.Rest;
 import trollogyadherent.offlineauth.skin.server.ServerSkinUtil;
 import trollogyadherent.offlineauth.util.ServerUtil;
 import trollogyadherent.offlineauth.util.Util;
-import trollogyadherent.offlineauth.varinstances.server.VarInstanceServer;
+import trollogyadherent.offlineauth.varinstances.VarInstanceServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +43,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 public class CommonProxy {
-
-    // preInit "Run before anything else. Read your config, create blocks, items,
-    // etc., and register them with the GameRegistry."
+    
     public void preInit(FMLPreInitializationEvent event) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         if (Util.isServer()) {
             OfflineAuth.varInstanceServer = new VarInstanceServer();
@@ -102,8 +100,6 @@ public class CommonProxy {
         }
 
         /* Packets */
-        //OfflineAuth.simpleNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("offlineauth");
-        //OfflineAuth.simpleNetworkWrapper.registerMessage(PacketS2C.PacketS2CHandler.class, PacketS2C.class, 0, Side.CLIENT);
         PacketHandler.initPackets();
 
         /* Listener listening for player joins */
@@ -113,13 +109,11 @@ public class CommonProxy {
             FMLCommonHandler.instance().bus().register(playerJoinedHandler);
         }
     }
-
-    // load "Do your mod setup. Build whatever data structures you care about. Register recipes."
+    
     public void init(FMLInitializationEvent event) {
 
     }
-
-    // postInit "Handle interaction with other mods, complete your setup based on this."
+    
     public void postInit(FMLPostInitializationEvent event) {
 
     }
@@ -127,18 +121,11 @@ public class CommonProxy {
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
 
     }
-
-    // register server commands in this event handler
+    
     public void serverStarting(FMLServerStartingEvent event) {
         if (Util.isServer()) {
             if (OfflineAuth.DEBUG_MODE) {
-                //event.registerServerCommand(new CommandUUID());
-                //event.registerServerCommand(new CommandConnectDBServer());
                 event.registerServerCommand(new CommandTest());
-                //event.registerServerCommand(new CommandSetRestPassword());
-                //event.registerServerCommand(new CommandGetMyUUID());
-                //event.registerServerCommand(new CommandChangePlayerUUID());
-                //event.registerServerCommand(new CommandDeleteRestPassword());
             }
 
             event.registerServerCommand(new CommandRegisterPlayerServer());

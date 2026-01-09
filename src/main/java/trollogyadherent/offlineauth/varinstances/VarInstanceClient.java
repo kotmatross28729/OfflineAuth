@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.varinstances.client;
+package trollogyadherent.offlineauth.varinstances;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
@@ -23,10 +23,6 @@ public class VarInstanceClient {
     public File datafile;
     public ArrayList<OAServerData> OAServerDataCache;
     private TextureManager textureManager;
-
-    //public ClientPlayerRegistry skinRegistry = new ClientPlayerRegistry();
-    //public ClientPlayerRegistry playerRegistry = new ClientPlayerRegistry();
-    //public ClientEntityPlayerRegistry entityPlayerRegistry = new ClientEntityPlayerRegistry();
     public ClientRegistry clientRegistry = new ClientRegistry();
     public Thread serverStatusVibecheckThread = null;
     public boolean checkingForKey = false;
@@ -52,6 +48,7 @@ public class VarInstanceClient {
     public static ResourceLocation questionMarkResourceLocation = new ResourceLocation(Tags.MODID, "textures/gui/questionMark.png");
     public static ResourceLocation questionMarkResourceLocation64 = new ResourceLocation(Tags.MODID, "textures/gui/questionMark64.png");
     public static ResourceLocation DEFAULT_SKIN_64 = new ResourceLocation(Tags.MODID, "textures/defaultskins/vanilla_override/steve_64.png");
+    public static ResourceLocation DEFAULT_SKIN_32 = new ResourceLocation("textures/entity/steve.png");
     
     /* Reflection fields */
     public Field skinLocationField = ReflectionHelper.findField(net.minecraft.client.entity.AbstractClientPlayer.class, "locationSkin", "field_110312_d");
@@ -92,4 +89,5 @@ public class VarInstanceClient {
         }
         return this.textureManager;
     }
+    
 }

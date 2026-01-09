@@ -23,7 +23,6 @@ import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.clientdata.UsernameCacheClient;
 import trollogyadherent.offlineauth.skin.SkinUtil;
 import static trollogyadherent.offlineauth.skin.SkinUtil.uuidFastCache;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 import trollogyadherent.offlineauth.util.Util;
 
 import java.util.List;
@@ -97,19 +96,18 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 		NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
 		List<GuiPlayerInfo> players = handler.playerInfoList; //Current online players (on server)
 		
-		ResourceLocation oaSkin = null;
 		String username;
 		
-		//Cached UUID -> name in Heap?
+		/// Cached UUID -> name in Heap?
 		username = uuidFastCache.getIfPresent(dynamicUUID);
 		
 		if (username == null) {
-			//Cached UUID -> name in file?
+			/// Cached UUID -> name in file?
 			if (UsernameCacheClient.containsUUID(dynamicUUID)) {
 				username = UsernameCacheClient.getLastKnownUsername(dynamicUUID);
 				if (username != null) uuidFastCache.put(dynamicUUID, username);
 			}
-			//Lookup in online players
+			/// Lookup in online players
 			else {
 				for (GuiPlayerInfo player : players) {
 					UUID playerUUID = Util.offlineUUID2(player.name);
@@ -122,19 +120,8 @@ public class MixinPlayerHeadIcon extends ImageIcon {
 				}
 			}
 		}
-		
-		if(username != null) {
-			//Try requesting a skin from server
-			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(mc, username, true);
-			if (oaSkin == null)
-				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(username); //Server didn't provide the skin? Look in cache then
-		}
-		
-		if (oaSkin != null) {
-			return oaSkin;
-		} else {
-			return SkinUtil.getDefaultIcon();
-		}
+
+		return (username != null) ? SkinUtil.getOASkin(mc, username, true) : SkinUtil.getDefaultIcon();
 	}
 	
 }

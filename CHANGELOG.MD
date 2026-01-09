@@ -6,6 +6,11 @@
 
 ---
 
+# v0.3.09
+
+* Fixed incorrect rendering of the player's skull when `basicSkinBackport` was disabled
+* Fixed `showQuestionMarkIfUnknown` sometimes not working
+
 # v0.3.08
 
 * Added support for skull rendering with `basicSkinBackport` / offlineauth skins

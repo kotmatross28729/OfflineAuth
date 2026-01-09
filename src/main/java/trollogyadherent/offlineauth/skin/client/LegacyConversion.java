@@ -5,11 +5,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 public class LegacyConversion {
+    
     private int[] imageData;
     private int imageWidth;
     private int imageHeight;
     
-    //1:1 -> 2:1
+    /// 1:1 -> 2:1
     public BufferedImage convertToOld(BufferedImage buffImg) {
         if (buffImg == null)
             return null;
@@ -34,7 +35,7 @@ public class LegacyConversion {
         return localBufferedImage;
     }
     
-    //2:1 -> 1:1
+    /// 2:1 -> 1:1
     public BufferedImage convertToNew(BufferedImage buffImg) {
         if (buffImg == null)
             return null;

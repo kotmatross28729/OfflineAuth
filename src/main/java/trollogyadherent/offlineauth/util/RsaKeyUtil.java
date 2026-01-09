@@ -15,16 +15,15 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-
 /* Class that can manipulate private/public key files, sign, and verify signatures */
 /* Lots of code taken from here: https://snipplr.com/view/18368/saveload--private-and-public-key-tofrom-a-file */
 public class RsaKeyUtil {
+    
     public static KeyPair genKeyPair() throws NoSuchAlgorithmException {
         return genKeyPair(2048);
     }
 
     public static KeyPair genKeyPair(int size) throws NoSuchAlgorithmException {
-        //KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DSA");
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
         keyPairGen.initialize(size);
         return keyPairGen.generateKeyPair();
@@ -36,14 +35,12 @@ public class RsaKeyUtil {
 
 
         File f = new File(path + File.separator + "public.key");
-        //f.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(f);
         fos.write(publicKey.getEncoded());
         fos.flush();
         fos.close();
 
         f = new File(path + File.separator + "private.key");
-        //f.getParentFile().mkdirs();
         fos = new FileOutputStream(f);
         fos.write(privateKey.getEncoded());
         fos.flush();
@@ -72,7 +69,6 @@ public class RsaKeyUtil {
     public static PublicKey pubKeyFromString(String pubKeyStr) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] encodedPublicKey = Base64.getDecoder().decode(pubKeyStr);
         X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encodedPublicKey);
-        //KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
     
         return keyFactory.generatePublic(pubKeySpec);
@@ -81,7 +77,6 @@ public class RsaKeyUtil {
     public static PrivateKey privKeyFromString(String privKeyStr) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         byte[] encodedPrivateKey = Base64.getDecoder().decode(privKeyStr);
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
-        //KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
     
         return keyFactory.generatePrivate(privateKeySpec);
@@ -168,6 +163,5 @@ public class RsaKeyUtil {
     public static String getKeyFingerprint(PublicKey pubKey) {
         return DigestUtils.sha1Hex(pubKey.getEncoded());
     }
-
 
 }

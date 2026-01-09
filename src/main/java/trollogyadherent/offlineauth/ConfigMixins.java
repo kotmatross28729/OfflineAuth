@@ -5,6 +5,7 @@ import net.minecraftforge.common.config.Configuration;
 import java.io.File;
 
 public class ConfigMixins {
+	
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
 	public static boolean IPv6Patch = true;
 	public static boolean basicSkinBackport = true;

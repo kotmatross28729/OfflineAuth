@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.skin.SkinUtil;
-import trollogyadherent.offlineauth.skin.client.ClientSkinUtil;
 
 import java.util.List;
 
@@ -36,27 +35,9 @@ public class MixinClientUtil {
 		if(profile == null || profile.getName() == null) {
 			return;
 		}
+		String profileName = profile.getName().trim();
 		
-		String profileName = profile.getName().contains(" ") ? profile.getName().trim() : profile.getName();
-		
-		if (VarInstanceClient.minecraftRef.thePlayer != null
-				&& VarInstanceClient.minecraftRef.thePlayer.getDisplayName()
-				.equals(profileName)) {
-			cir.setReturnValue(VarInstanceClient.minecraftRef.thePlayer.getLocationSkin());
-		}
-		ResourceLocation oaSkin;
-		
-		if(VarInstanceClient.minecraftRef.theWorld != null) {
-			oaSkin = SkinUtil.getSkinResourceLocationByDisplayName(VarInstanceClient.minecraftRef, profileName, true);
-			if(oaSkin == null)
-				oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
-		} else {
-			oaSkin = ClientSkinUtil.loadSkinFromCacheQuiet(profileName);
-		}
-		
-		if (oaSkin != null) {
-			cir.setReturnValue(oaSkin);
-		}
+		cir.setReturnValue(SkinUtil.getOASkin(VarInstanceClient.minecraftRef, profileName, true));
 	}
 	
 	/**
@@ -75,7 +56,7 @@ public class MixinClientUtil {
 	@Shadow(remap = false)
 	public static FontRenderer fontRenderer = null;
 	
-	//Bypass data check
+	/// Bypass data check
 	@Inject(
 			method = "drawHoveringTextWithFaces",
 			at = @At(
@@ -89,13 +70,13 @@ public class MixinClientUtil {
 	private static void drawHoveringTextWithFaces(
 			GuiScreen screen, GameProfile[] profiles, List<String> textLines, int x, int y,
 			CallbackInfo ci,
-			//Me, when adding non LocalRef locals will lead to a fucking non-working injection:
+			/// Me, when adding non LocalRef locals will lead to a fucking non-working injection:
 			@Local LocalRef<ClientRegistry.Data> data,
 			@Local LocalRef<String> line,
 			@Local(ordinal = 0) LocalIntRef boxWidth
-			//Also, how the fuck do ordinals even work here?
-			//	ClientRegistry.Data data should be ordinal 1, but if I do that, the injection just fucking stops working.
-			//	And boxWidth is assumed to be the first local, so it doesn't actually need ordinal, but fucking guess what?
+			/// Also, how the fuck do ordinals even work here?
+			/// 	ClientRegistry.Data data should be ordinal 1, but if I do that, the injection just fucking stops working.
+			/// 	And boxWidth is assumed to be the first local, so it doesn't actually need ordinal, but fucking guess what?
 	) {
 		if(data.get() == null || !data.get().foundRealSkin) {
 			int tmpWidth = fontRenderer.getStringWidth(line.get()) + ClientUtil.faceWidth;
@@ -105,7 +86,7 @@ public class MixinClientUtil {
 		}
 	}
 	
-	//Bypass data check
+	/// Bypass data check
 	@Inject(
 			method = "drawHoveringTextWithFaces",
 			at = @At(
@@ -120,10 +101,10 @@ public class MixinClientUtil {
 			GuiScreen screen, GameProfile[] profiles, List<String> textLines, int x, int y,
 			CallbackInfo ci,
 			@Local LocalRef<ClientRegistry.Data> data
-			//So, it's been about 1.5 hours since I did @Inject above.
-			// I tried WrapWithCondition, WrapOperation, Redirect, and nothing worked.
-			// So I decided to do 2 injects again, and just force foundRealSkin = true, but that didn't work either.
-			// And it's all because of that Local, I STILL DON'T UNDERSTAND WHY IT'S NOT ordinal = 1???
+			/// So, it's been about 1.5 hours since I did @Inject above.
+			///  I tried WrapWithCondition, WrapOperation, Redirect, and nothing worked.
+			///  So I decided to do 2 injects again, and just force foundRealSkin = true, but that didn't work either.
+			///  And it's all because of that Local, I STILL DON'T UNDERSTAND WHY IT'S NOT ordinal = 1???
 	) {
 		if(data.get() != null)
 			data.get().foundRealSkin = true;

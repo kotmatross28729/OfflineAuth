@@ -44,8 +44,8 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 				
 				mixins.add("minecraft.client.MixinAbstractClientPlayer");
 				mixins.add("minecraft.client.MixinSkinManager");
-				mixins.add("minecraft.client.MixinTileEntitySkullRenderer");
 			}
+			mixins.add("minecraft.client.MixinTileEntitySkullRenderer");
 		}
 		
 		/// BOTH-SIDE MIXINS

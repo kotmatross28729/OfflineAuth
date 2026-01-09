@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import trollogyadherent.offlineauth.varinstances.client.VarInstanceClient;
+import trollogyadherent.offlineauth.varinstances.VarInstanceClient;
 
 @Mixin(value = AbstractClientPlayer.class, priority = 999)
 public class MixinAbstractClientPlayer {
