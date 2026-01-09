@@ -34,7 +34,7 @@ import java.util.Base64;
 
 @SideOnly(Side.CLIENT)
 public class GuiLogin extends GuiScreen {
-
+    
     public GuiTextField identifier;
     private GuiPasswordField pw;
     private TogglePWButton togglePWButton;
@@ -42,7 +42,7 @@ public class GuiLogin extends GuiScreen {
     private GuiButton cancel;
     private GuiButton offline;
     private GuiButton config;
-
+    
     private GuiTextField token;
     private GuiPasswordField newPW;
     private GuiTextField port;
@@ -58,21 +58,21 @@ public class GuiLogin extends GuiScreen {
     private GuiCheckBox useKey;
     private GuiButton manageKey;
     private GuiTextFieldEnabledSectionSign displayname;
-
+    
     private GuiScreen prev;
-
+    
     private int basey;
-
+    
     public String message = "";
-
+    
     private Object[] textFieldTabArray = new Object[6];
-
+    
     public GuiLogin(GuiScreen prev) {
         this.mc = Minecraft.getMinecraft();
         this.fontRendererObj = mc.fontRenderer;
         this.prev = prev;
     }
-
+    
     @Override
     protected void actionPerformed(GuiButton b) {
         switch (b.id) {
@@ -91,20 +91,20 @@ public class GuiLogin extends GuiScreen {
             case 12 -> actionClearServerPubKey();
         }
     }
-
+    
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (!Config.showUseKey) {
             this.useKey.visible = false;
             this.manageKey.visible = false;
         }
-
+        
         if (!Config.showConfigInAuth) {
             this.config.visible = false;
         }
-
+        
         this.drawDefaultBackground();
-
+        
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.identifier"), this.width / 2 - 155, this.basey, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.displayname"), this.width / 2 - 155, this.basey + 45, Color.WHITE.getRGB());
         this.drawString(this.fontRendererObj, I18n.format("offlineauth.guilogin.port"), this.width / 2 - 55, this.basey + 45, Color.WHITE.getRGB());
@@ -120,14 +120,14 @@ public class GuiLogin extends GuiScreen {
         this.identifier.drawTextBox();
         this.displayname.drawTextBox();
         this.pw.drawTextBox();
-
+        
         this.token.drawTextBox();
         this.newPW.drawTextBox();
         this.port.drawTextBox();
-
+        
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
-
+    
     @Override
     public void updateScreen() {
         super.updateScreen();
@@ -137,14 +137,14 @@ public class GuiLogin extends GuiScreen {
         this.token.drawTextBox();
         this.newPW.drawTextBox();
         this.port.drawTextBox();
-
+        
         if (this.useKey.isChecked()) {
             this.pw.setEnabled(false);
             this.pw.setFocused(false);
             this.newPW.setEnabled(false);
             this.newPW.setFocused(false);
             this.togglePWButton.enabled = false;
-
+            
             this.manageKey.enabled = true;
         } else {
             this.identifier.setEnabled(true);
@@ -152,42 +152,42 @@ public class GuiLogin extends GuiScreen {
             this.pw.setEnabled(true);
             this.newPW.setEnabled(true);
             this.togglePWButton.enabled = true;
-
+            
             this.manageKey.enabled = false;
         }
-    
+        
         this.clearServerPubKey.enabled = this.clearServerPubKeyCheckBox.isChecked();
         this.clearSkinCache.enabled = this.clearSkinCacheCheckBox.isChecked();
     }
-
+    
     @Override
     public void initGui() {
         super.initGui();
-
+        
         //Last button id: 14
         
         Keyboard.enableRepeatEvents(true);
-
+        
         this.basey = this.height / 2 - 200 / 2;//this.height / 2 - 110 / 2;
-
+        
         this.identifier = new GuiTextField(this.fontRendererObj, this.width / 2 - 155, this.basey + 15, 90, 20);
         this.identifier.setMaxStringLength(512);
         //this.username.setFocused(true);
-
+        
         this.displayname = new GuiTextFieldEnabledSectionSign(this.fontRendererObj, this.width / 2 - 155, this.basey + 60, 90, 20);
         this.displayname.setMaxStringLength(512);
-
+        
         this.pw = new GuiPasswordField(this.fontRendererObj, this.width / 2 - 55, this.basey + 15, 100, 20);
         this.pw.setMaxStringLength(512);
-
+        
         this.newPW = new GuiPasswordField(this.fontRendererObj, this.width / 2 + 55, this.basey + 15, 100, 20);
         this.newPW.setMaxStringLength(512);
         this.newPW.setText("");
-
+        
         this.port = new GuiTextField(this.fontRendererObj,this.width / 2 - 55, this.basey + 60, 50, 20);
         this.port.setText(String.valueOf(Config.port));
         this.port.setMaxStringLength(512);
-
+        
         this.token = new GuiTextField(this.fontRendererObj,this.width / 2 + 5, this.basey + 60, 150, 20);
         this.token.setText("");
         this.token.setMaxStringLength(512);
@@ -209,14 +209,14 @@ public class GuiLogin extends GuiScreen {
         
         this.clearSkinCacheCheckBox = new GuiCheckBox(13, this.width - 360, this.height - 18, "", false);
         this.clearSkinCache = new GuiButton(11, this.width - 345, this.height - 23, 100, 20, I18n.format("offlineauth.guilogin.btn.clear_cache"));
-    
+        
         this.clearServerPubKeyCheckBox = new GuiCheckBox(14, this.width / 2 + 5, this.basey + 110, "", false);
         this.clearServerPubKey = new GuiButton(12, this.width / 2 + 20, this.basey + 105, 135, 20, I18n.format("offlineauth.guilogin.btn.clear_pub_key"));
-       
+        
         this.save = new GuiButton(5, this.width - 240, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.save"));
         this.cancel = new GuiButton(6, this.width - 160, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.cancel"));
         this.config = new GuiButton(7, this.width - 80, this.height - 23, 75, 20, I18n.format("offlineauth.guilogin.btn.config"));
-       
+        
         if(!Config.clearSkinCacheOnLogin) {
             this.buttonList.add(this.clearSkinCacheCheckBox);
             this.buttonList.add(this.clearSkinCache);
@@ -228,7 +228,7 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.config);
         this.buttonList.add(this.cancel);
         this.buttonList.add(this.save);
-
+        
         this.useKey = new GuiCheckBox(8, this.width / 2 - 145, this.basey + 105, "", false);
         
         this.manageKey = new GuiButton(9, this.width / 2 - 110, this.basey + 105, 50, 20, I18n.format("offlineauth.guilogin.btn.manage"));
@@ -236,7 +236,7 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.add(this.useKey);
         this.buttonList.add(this.manageKey);
         //this.buttonList.add(this.browsePrivateKey);
-
+        
         OAServerData oasd = Util.getOAServerDataByIP(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData));
         if (oasd != null) {
             if (oasd.getIdentifier() != null) {
@@ -253,15 +253,15 @@ public class GuiLogin extends GuiScreen {
             }
             this.useKey.setIsChecked(oasd.isUsingKey());
         }
-
+        
         textFieldTabArray = new Object[]{identifier, pw, newPW, displayname, port, token};
-
+        
         if (!OfflineAuth.varInstanceClient.prevWasKeyDialog) {
             checkForKey();
         }
         OfflineAuth.varInstanceClient.prevWasKeyDialog = false;
     }
-
+    
     boolean isAnyTextFieldFocused() {
         for (Object o : textFieldTabArray) {
             if (o instanceof GuiTextField textField) {
@@ -277,31 +277,31 @@ public class GuiLogin extends GuiScreen {
         }
         return false;
     }
-
+    
     @Override
     protected void keyTyped(char c, int k) {
         super.keyTyped(c, k);
-
+        
         if (k == Keyboard.KEY_ESCAPE) {
             actionCancel();
             return;
         }
-
+        
         this.identifier.textboxKeyTyped(c, k);
         this.displayname.textboxKeyTyped(c, k);
         this.pw.textboxKeyTyped(c, k);
         this.token.textboxKeyTyped(c, k);
         this.newPW.textboxKeyTyped(c, k);
         this.port.textboxKeyTyped(c, k);
-
+        
         /* Cycling focus through all text fields with the tab key. */
         if (k == Keyboard.KEY_TAB) {
             if (!isAnyTextFieldFocused()) {
                 identifier.setFocused(true);
             } else {
-
+                
                 boolean previousWasFocused = false;
-
+                
                 for (int i = 0; i < textFieldTabArray.length; i++) {
                     if (textFieldTabArray[i] instanceof GuiTextField textField) {
                         if (textField.isFocused()) {
@@ -331,7 +331,7 @@ public class GuiLogin extends GuiScreen {
                     }
                 }
             }
-
+            
         } /*else if (k == Keyboard.KEY_RETURN) {
             if (this.identifier.isFocused()) {
                 this.identifier.setFocused(false);
@@ -344,7 +344,7 @@ public class GuiLogin extends GuiScreen {
             checkForKey();
         }
     }
-
+    
     void checkForKey() {
         if (OfflineAuth.varInstanceClient.checkingForKey) {
             return;
@@ -368,7 +368,7 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     @Override
     protected void mouseClicked(int x, int y, int b) {
         super.mouseClicked(x, y, b);
@@ -379,17 +379,17 @@ public class GuiLogin extends GuiScreen {
         this.newPW.mouseClicked(x, y, b);
         this.port.mouseClicked(x, y, b);
     }
-
-
+    
+    
     /* Goes to previous GUI (prev variable) */
     private void actionCancel() {
         this.mc.displayGuiScreen(prev);
     }
-
-
+    
+    
     /* Saves data about the server, identified by ip and port, to a json file */
     private void actionSave(boolean saveDisplayName, boolean quitGui) {
-
+        
         /* Trying to get privateKeyPath and publicServerKeyPath from previously saved data, since they can't be taken from this gui screen */
         OAServerData oaServerDataSaved = null;
         String privateKeyPathSaved = ""; //setting default blank value
@@ -408,11 +408,11 @@ public class GuiLogin extends GuiScreen {
                 publicServerKeyPathSaved = oaServerDataSaved.getPublicKeyPath();
             }
         }
-
+        
         /* Constructing a temporary OAServerData object, used to update the List of server datas held by the client */
         OAServerData oaServerDataTemp = new OAServerData(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), Util.getPort(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), displayname.getText(), pw.getPW(), useKey.isChecked(), privateKeyPathSaved, publicServerKeyPathSaved);
         boolean found = false;
-
+        
         /* Looping through cache list, if found, updating the entry */
         for (OAServerData oasd : OfflineAuth.varInstanceClient.OAServerDataCache) {
             if (oasd == null) {
@@ -432,29 +432,29 @@ public class GuiLogin extends GuiScreen {
                 //}
             }
         }
-
+        
         /* In case this server does not exist in the cache list, we add a new entry to it */
         if (!found) {
             OfflineAuth.varInstanceClient.OAServerDataCache.add(oaServerDataTemp);
         }
-
+        
         /* Actual part where the OfflineAuth.varInstanceClient.OAserverDataCache variable gets dumped into a json file */
         ClientData.saveData();
-
+        
         /* debug prints */
         //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache);
         //System.out.println(OfflineAuth.varInstanceClient.OAserverDataCache.size());
-
+        
         /* According to config, either we go to parent GUI, or we stay in this GUI */
         if (quitGui && Config.savebuttonExit) {
             actionCancel();
         }
     }
-
+    
     private void actionConfig() {
         this.mc.displayGuiScreen(new ConfigGUI(this));
     }
-
+    
     private void actionRegister() {
         actionSave(true, false);
         if (!Util.validUsername(displayname.getText())) {
@@ -486,15 +486,15 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     public void actionDelete() {
         actionSave(true, false);
         Minecraft.getMinecraft().displayGuiScreen(new AccountDeletionGUI((GuiLogin) Minecraft.getMinecraft().currentScreen));
     }
-
+    
     public void proceedWithAccountDeletion() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.deleting");
-
+        
         Thread registerThread = new Thread(() -> {
             try {
                 OAServerData oasd = Util.getCurrentOAServerData();
@@ -504,7 +504,7 @@ public class GuiLogin extends GuiScreen {
                     clientPubKey = RsaKeyUtil.loadPublicKey(oasd.getPublicKeyPath());
                     clientPrivKey = RsaKeyUtil.loadPrivateKey(oasd.getPrivateKeyPath());
                 }
-
+                
                 StatusResponseObject stat = Request.delete(Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), port.getText(), identifier.getText(), pw.getPW(), clientPubKey, clientPrivKey);
                 if (stat.getStatusCode() == 200) {
                     message = Util.colorCode(Util.Color.GREEN) + I18n.format(stat.getStatus());
@@ -520,7 +520,7 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     private void actionChangePW() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_password");
         Thread registerThread = new Thread(() -> {
@@ -543,7 +543,7 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     private void actionCheckRegistration() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_registration");
         actionSave(true, false);
@@ -552,7 +552,7 @@ public class GuiLogin extends GuiScreen {
             try {
                 
                 OAServerData oasd = Util.getCurrentOAServerData();
-
+                
                 PublicKey clientPubKey = null;
                 PrivateKey clientPrivKey = null;
                 if (oasd != null && oasd.isUsingKey()) {
@@ -581,12 +581,12 @@ public class GuiLogin extends GuiScreen {
         });
         vibeCheckThread.start();
     }
-
+    
     private void actionManageKey() {
         actionSave(true, false);
         Minecraft.getMinecraft().displayGuiScreen(new KeyManagementGUI(Minecraft.getMinecraft().currentScreen));
     }
-
+    
     private void actionChangeDisplayName() {
         actionSave(true, false);
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.checking_name_change_allowed");
@@ -617,7 +617,7 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     public void proceedWithDisplayNameChange() {
         message = Util.colorCode(Util.Color.GREY) + I18n.format("offlineauth.guilogin.status.changing_displayname");
         Thread registerThread = new Thread(() -> {
@@ -643,13 +643,13 @@ public class GuiLogin extends GuiScreen {
         });
         registerThread.start();
     }
-
+    
     public void actionTogglePWvisibility() {
         this.togglePWButton.setVisible(!this.togglePWButton.isVisible());
         this.pw.setPwVisible(!this.pw.isPwVisible());
         this.pw.setFocused(false);
     }
-
+    
     public void actionUploadSkin() {
         actionSave(true, false);
         Minecraft.getMinecraft().displayGuiScreen(new SkinManagmentGUI(Minecraft.getMinecraft().currentScreen));

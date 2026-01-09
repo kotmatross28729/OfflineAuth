@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.mixin.early.minecraft;
+package trollogyadherent.offlineauth.mixin.early.minecraft.client;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;

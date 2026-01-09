@@ -6,6 +6,21 @@
 
 ---
 
+# v0.3.08
+
+* Added support for skull rendering with `basicSkinBackport` / offlineauth skins
+  - [SR.mp4](ASSets/SR.mp4)
+
+* Added command `/myhead`. Gives the player his head. Only for server operators
+  - [MHCS.mp4](ASSets/MHCS.mp4)
+
+* Rotating the showcase model in the skin selection menu is now only possible on the right side of the screen (after "available skins" slider)
+  - Also, the model no longer rotates endlessly: now it stops smoothly:
+    - [RM_OLD.mp4](ASSets/RM_OLD.mp4)
+    - [RM_NEW.mp4](ASSets/RM_NEW.mp4)
+
+* Fixed warnings in the server log due to client mixins being applied
+
 # v0.3.07
 
 * Added basic backport of the new skin format (1.8 / 64x64)

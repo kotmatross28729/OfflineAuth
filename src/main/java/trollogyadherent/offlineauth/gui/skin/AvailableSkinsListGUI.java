@@ -28,7 +28,7 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         this.field_148163_i = false;
         this.setHasListHeader(true, (int)((float)mc.fontRenderer.FONT_HEIGHT * 1.5F));
         selectedIndex = -1;
-        if (skinEntries.size() > 0 && ClientUtil.isSinglePlayer()) {
+        if (!skinEntries.isEmpty() && ClientUtil.isSinglePlayer()) {
             String skinName = ClientSkinUtil.getLastUsedOfflineSkinName();
             if (skinName != null) {
                 for (int i = 0; i < skinEntries.size(); i++) {
@@ -39,13 +39,10 @@ public class AvailableSkinsListGUI extends GuiListExtended {
                 }
             }
         }
-        if (!ClientUtil.isSinglePlayer() /*&& SkinGuiRenderTicker.skinResourceLocation == null*/) {
+        if (!ClientUtil.isSinglePlayer()) {
             if (Minecraft.getMinecraft().thePlayer != null && SkinGuiRenderTicker.clientPlayerMP != null) {
                 try {
-                    /*ResourceLocation rl*/ SkinGuiRenderTicker.skinResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.skinLocationField.get(Minecraft.getMinecraft().thePlayer);
-                    /*OfflineAuth.debug("1, " + OfflineAuth.varInstanceClient.skinLocationfield.get(SkinGuiRenderTicker.clientPlayerMP));
-                    OfflineAuth.varInstanceClient.skinLocationfield.set(SkinGuiRenderTicker.clientPlayerMP, rl);
-                    OfflineAuth.debug("2, " + OfflineAuth.varInstanceClient.skinLocationfield.get(SkinGuiRenderTicker.clientPlayerMP));*/
+                    SkinGuiRenderTicker.skinResourceLocation = (ResourceLocation) OfflineAuth.varInstanceClient.skinLocationField.get(Minecraft.getMinecraft().thePlayer);
                 } catch (IllegalAccessException e) {
                     OfflineAuth.error("Failed to get ingame skin");
                 }
@@ -65,8 +62,7 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         return this.skinEntries;
     }
 
-    protected int getSize()
-    {
+    protected int getSize() {
         return this.func_148201_l().size();
     }
 
@@ -74,13 +70,11 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         return this.func_148201_l().get(index);
     }
 
-    public int getListWidth()
-    {
+    public int getListWidth() {
         return this.width;
     }
 
-    protected int getScrollBarX()
-    {
+    protected int getScrollBarX() {
         return this.right - 6;
     }
 
@@ -94,30 +88,23 @@ public class AvailableSkinsListGUI extends GuiListExtended {
     }
 
     @Override
-    protected void drawSlot(int index, int p_148126_2_, int p_148126_3_, int p_148126_4_, Tessellator p_148126_5_, int p_148126_6_, int p_148126_7_)
-    {
+    protected void drawSlot(int index, int p_148126_2_, int p_148126_3_, int p_148126_4_, Tessellator p_148126_5_, int p_148126_6_, int p_148126_7_) {
         this.getListEntry_(index).drawEntry(index, p_148126_2_, p_148126_3_, this.getListWidth(), p_148126_4_, p_148126_5_, p_148126_6_, p_148126_7_, this.func_148124_c(p_148126_6_, p_148126_7_) == index);
     }
 
     @Override
-    public boolean func_148179_a(int p_148179_1_, int p_148179_2_, int p_148179_3_)
-    {
-        if (this.func_148141_e(p_148179_2_))
-        {
+    public boolean func_148179_a(int p_148179_1_, int p_148179_2_, int p_148179_3_) {
+        if (this.func_148141_e(p_148179_2_)) {
             int l = this.func_148124_c(p_148179_1_, p_148179_2_);
 
-            if (l >= 0)
-            {
+            if (l >= 0) {
                 int i1 = this.left + this.width / 2 - this.getListWidth() / 2 + 2;
                 int j1 = this.top + 4 - this.getAmountScrolled() + l * this.slotHeight + this.headerPadding;
                 int k1 = p_148179_1_ - i1;
                 int l1 = p_148179_2_ - j1;
 
-                if (this.getListEntry_(l).mousePressed(l, p_148179_1_, p_148179_2_, p_148179_3_, k1, l1))
-                {
-                    //System.out.println("hmm: " + this.getListEntry_(l).skinName);
+                if (this.getListEntry_(l).mousePressed(l, p_148179_1_, p_148179_2_, p_148179_3_, k1, l1)) {
                     this.selectedIndex = l;
-                    //this.func_148143_b(false);  //this thing blocks the ability to drag the scrollbar with the mouse
                     OfflineAuth.varInstanceClient.skinGuiRenderTicker.setSkin(this.getListEntry_(l).skinName);
                     return true;
                 }
@@ -128,10 +115,8 @@ public class AvailableSkinsListGUI extends GuiListExtended {
     }
 
     @Override
-    public boolean func_148181_b(int x, int y, int mouseEvent)
-    {
-        for (int l = 0; l < this.getSize(); ++l)
-        {
+    public boolean func_148181_b(int x, int y, int mouseEvent) {
+        for (int l = 0; l < this.getSize(); ++l) {
             int i1 = this.left + this.width / 2 - this.getListWidth() / 2 + 2;
             int j1 = this.top + 4 - this.getAmountScrolled() + l * this.slotHeight + this.headerPadding;
             int k1 = x - i1;
@@ -142,4 +127,5 @@ public class AvailableSkinsListGUI extends GuiListExtended {
         this.func_148143_b(true);
         return false;
     }
+    
 }

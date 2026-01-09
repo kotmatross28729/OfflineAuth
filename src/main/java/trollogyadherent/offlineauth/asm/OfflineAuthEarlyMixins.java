@@ -26,23 +26,32 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 		String configFolder = "config" + File.separator;
 		ConfigMixins.loadMixinConfig(new File(Launch.minecraftHome, configFolder + "offlineauthMixins.cfg"));
 		
-		boolean isServer = FMLLaunchHandler.side().isServer();
-		
 		List<String> mixins = new ArrayList<>();
 		
-		mixins.add("minecraft.MixinMinecraftServer");
+		boolean isServer = FMLLaunchHandler.side().isServer();
 		
-		if(isServer)
-			mixins.add("minecraft.MixinDedicatedServer");
-		
-		if(ConfigMixins.profileCacheOfflineMode)
-			mixins.add("minecraft.MixinPlayerProfileCache");
-		
-		if(ConfigMixins.blockServerUtilitiesDisplayNameChange) {
-			if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
-				mixins.add("serverutilities.MixinPlayerHeadIcon");
+		/// SERVERSIDE ONLY MIXINS
+		if(isServer) {
+			mixins.add("minecraft.server.MixinDedicatedServer");
+		} else {
+			/// CLIENTSIDE ONLY MIXINS
+			if(ConfigMixins.basicSkinBackport) {
+				if (loadedCoreMods.contains("com.tom.cpmcore.CPMLoadingPlugin")) {
+					mixins.add("CPM.client.MixinRenderPlayer_CPM");
+				} else {
+					mixins.add("minecraft.client.MixinRenderPlayer");
+				}
+				
+				mixins.add("minecraft.client.MixinAbstractClientPlayer");
+				mixins.add("minecraft.client.MixinSkinManager");
+				mixins.add("minecraft.client.MixinTileEntitySkullRenderer");
 			}
 		}
+		
+		/// BOTH-SIDE MIXINS
+		
+		mixins.add("minecraft.MixinMinecraftServer");
+		mixins.add("minecraft.MixinPlayerProfileCache");
 		
 		if(ConfigMixins.IPv6Patch) {
 			mixins.add("minecraft.MixinBanList");
@@ -53,19 +62,13 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 			mixins.add("minecraft.MixinCommandPardonIp");
 		}
 		
-		// Like a backport of a new skin format, but without slim arms / translucency support 
-		// To support these things (via model), CPM is required
-		// Objective: Provide a basic way to render full 2nd layer (NOT a full backport like in SimpleSkinBackport, there is CPM for that)
-		if(ConfigMixins.basicSkinBackport) {
-			mixins.add("minecraft.MixinAbstractClientPlayer");
-			mixins.add("minecraft.MixinSkinManager");
-			if (loadedCoreMods.contains("com.tom.cpmcore.CPMLoadingPlugin")) {
-				mixins.add("CPM.MixinRenderPlayer_CPM");
-			} else {
-				mixins.add("minecraft.MixinRenderPlayer");
-			}
+		/// EARLY MIXINS COMPAT
+		
+		if (loadedCoreMods.contains("serverutils.core.ServerUtilitiesCore")) {
+			mixins.add("serverutilities.MixinPlayerHeadIcon");
 		}
 		
+
 		return mixins;
 	}
 	

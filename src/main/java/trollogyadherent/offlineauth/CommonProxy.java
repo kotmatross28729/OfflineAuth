@@ -21,6 +21,7 @@ import trollogyadherent.offlineauth.command.CommandGenToken;
 import trollogyadherent.offlineauth.command.CommandGetMyName;
 import trollogyadherent.offlineauth.command.CommandGetMyUUID;
 import trollogyadherent.offlineauth.command.CommandGetServerFingerprint;
+import trollogyadherent.offlineauth.command.CommandGiveMyHead;
 import trollogyadherent.offlineauth.command.CommandListUsers;
 import trollogyadherent.offlineauth.command.CommandPlayerExistsServer;
 import trollogyadherent.offlineauth.command.CommandRegCooldown;
@@ -154,6 +155,7 @@ public class CommonProxy {
         }
         event.registerServerCommand(new CommandGetMyName());
         event.registerServerCommand(new CommandGetMyUUID());
+        event.registerServerCommand(new CommandGiveMyHead());
     }
 
     public void serverStarted(FMLServerStartedEvent event) {

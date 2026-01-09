@@ -33,34 +33,20 @@
  *
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
+
+//file:noinspection DependencyNotationArgument
 dependencies {
-    
     shadowImplementation("com.sparkjava:spark-core:2.9.3")
-    //shadowImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
     shadowImplementation("org.iq80.leveldb:leveldb:0.12")
-    //shadowImplementation("jmagick:jmagick:6.6.9")
     shadowImplementation("org.l33tlabs.twl:pngdecoder:1.0")
-    //shadowImplementation("com.google.code.gson:gson:2.9.0")
+    
+    compileOnly(rfg.deobf("curse.maven:custom-main-menu-226406:2264779"))
+    compileOnly(rfg.deobf("curse.maven:et-futurum-requiem-441392:5873837"))
 
-    //shadowImplementation("com.fasterxml.jackson.core:jackson-databind:2.13.2")
-
-    //shadowImplementation("org.projectlombok:lombok:1.18.22")
-    //shadowImplementation("com.sparkjava:spark-template-velocity:2.7.1")
-    //shadowImplementation("org.mindrot:jbcrypt:0.4")
-
-    /* switch between compile and compileonly to test cmm (starts only on client) */
-    //compile(deobfCurse("custom-main-menu-226406:2264779"))
-    compileOnly(deobfCurse("custom-main-menu-226406:2264779"))
-    compileOnly(deobfCurse("et-futurum-requiem-441392:3863343"))
-
-
-    //compile(deobfCurse("ftb-library-legacy-forge-237167:2291433"))
-    //compile(deobfCurse("ftb-utilities-forge-237102:2291494"))
-    compileOnly name: 'ServerUtilities-2.1.36-pre-dev'
-    compileOnly name: 'tabfaces-1.0.8'
-    compileOnly name: 'BetterQuesting-3.7.11-GTNH-api2'
-    compileOnly name: 'CustomPlayerModels-1.7.10-0.6.21a'
-
-    compileOnly fileTree(dir: 'libs', include: '*.jar')
-    compileOnly fileTree(dir: 'libs', include: '*.zip')
+    implementation(project.files("libs/ServerUtilities-2.2.12-pre-dev.jar"))
+    implementation(project.files("libs/tabfaces-1.0.11-rc1-dev.jar"))
+    
+    compileOnly(project.files("libs/BetterQuesting-3.7.11-GTNH-api2.jar"))
+    compileOnly(project.files("libs/CustomPlayerModels-1.7.10-0.6.25b.jar"))
+    
 }

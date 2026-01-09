@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.mixin.early.minecraft;
+package trollogyadherent.offlineauth.mixin.early.minecraft.server;
 
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.asm.mixin.Mixin;

@@ -2,6 +2,7 @@ package trollogyadherent.offlineauth.asm;
 
 import com.gtnewhorizon.gtnhmixins.ILateMixinLoader;
 import com.gtnewhorizon.gtnhmixins.LateMixin;
+import trollogyadherent.offlineauth.ConfigMixins;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class OfflineAuthLateMixins implements ILateMixinLoader {
 	public List<String> getMixins(Set<String> loadedMods) {
 		List<String> mixins = new ArrayList<>();
 		
-		if (loadedMods.contains("serverutilities")) {
+		if (loadedMods.contains("serverutilities") && ConfigMixins.blockServerUtilitiesDisplayNameChange) {
 			mixins.add("serverutilities.MixinServerUtilitiesPlayerEventHandler");
 		}
 		

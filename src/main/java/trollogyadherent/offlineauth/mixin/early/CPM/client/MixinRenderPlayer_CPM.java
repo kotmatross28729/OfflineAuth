@@ -1,4 +1,4 @@
-package trollogyadherent.offlineauth.mixin.early.CPM;
+package trollogyadherent.offlineauth.mixin.early.CPM.client;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;

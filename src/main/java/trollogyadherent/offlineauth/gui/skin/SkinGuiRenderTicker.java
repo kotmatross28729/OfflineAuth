@@ -18,7 +18,6 @@ import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
-import trollogyadherent.offlineauth.Config;
 import trollogyadherent.offlineauth.ConfigMixins;
 import trollogyadherent.offlineauth.OfflineAuth;
 import trollogyadherent.offlineauth.gui.skin.cape.CapeObject;
@@ -37,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+@SuppressWarnings("CallToPrintStackTrace")
 @SideOnly(Side.CLIENT)
 public class SkinGuiRenderTicker {
     private static Minecraft mcClient;
@@ -54,7 +54,7 @@ public class SkinGuiRenderTicker {
     public static float x = 0;
     public static float y = 1;
     public static float z = 0.03F;
-    public static int xVelocity = 0;
+    public static float xVelocity = 0;
     private static int previousMouseX = -1;
     private static boolean wasMousePressed = false;
 
@@ -87,16 +87,16 @@ public class SkinGuiRenderTicker {
                         
                         ScaledResolution sr = new ScaledResolution(mcClient, mcClient.displayWidth, mcClient.displayHeight);
                         final int mouseX = (Mouse.getX() * sr.getScaledWidth()) / mcClient.displayWidth;
-                        
-                        final int mouseY = sr.getScaledHeight() - ((Mouse.getY() * sr.getScaledHeight()) / mcClient.displayHeight) - 1;
-                        int distanceToSide = ((mcClient.currentScreen.width / 2) /*98*/) / 2 + 35;
+                        int distanceToSide = ((mcClient.currentScreen.width / 2)) / 2 + 35;
                         float targetHeight = (float) (sr.getScaledHeight_double() / 3.0F) / 1.8F;
                         
                         if (skinResourceLocation != null) {
                             OfflineAuth.varInstanceClient.skinLocationField.set(clientPlayerMP, skinResourceLocation);
                         }
                         
-                        if (Mouse.isButtonDown(0)) {
+                        boolean inDraggableArea = mouseX > ((SkinManagmentGUI) mcClient.currentScreen).availableSkinsListGUI.right;
+                        
+                        if (inDraggableArea && Mouse.isButtonDown(0)) {
                             if (!wasMousePressed) {
                                 wasMousePressed = true;
                                 xVelocity = 0;
@@ -106,9 +106,9 @@ public class SkinGuiRenderTicker {
                             } else if (mouseX != previousMouseX) {
                                 int movementDelta = Math.abs(previousMouseX - mouseX);
                                 if (previousMouseX >= mouseX) {
-                                    xVelocity += Math.min(10, movementDelta);
+                                    xVelocity += Math.min(5, movementDelta);
                                 } else {
-                                    xVelocity -= Math.min(10, movementDelta);
+                                    xVelocity -= Math.min(5, movementDelta);
                                 }
                                 previousMouseX = mouseX;
                             }
@@ -117,20 +117,15 @@ public class SkinGuiRenderTicker {
                             wasMousePressed = false;
                         }
                         
-                        if (xVelocity > 10) {
-                            xVelocity = 10;
+                        if (xVelocity > 5) {
+                            xVelocity = 5;
                         }
-                        if (xVelocity < -10) {
-                            xVelocity = -10;
+                        if (xVelocity < -5) {
+                            xVelocity = -5;
                         }
                         
                         yaw += xVelocity;
-                        
-                        if (xVelocity > 0) {
-                            xVelocity -= (int) event.renderTickTime;
-                        } else {
-                            xVelocity += (int) event.renderTickTime;
-                        }
+                        xVelocity *= 0.9f;
                         
                         EntityUtil.drawEntityOnScreen(
                                 sr.getScaledWidth() - distanceToSide,

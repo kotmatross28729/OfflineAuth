@@ -6,7 +6,6 @@ import java.io.File;
 
 public class ConfigMixins {
 	public static boolean blockServerUtilitiesDisplayNameChange = true;
-	public static boolean profileCacheOfflineMode = true;
 	public static boolean IPv6Patch = true;
 	public static boolean basicSkinBackport = true;
 	static final String categoryMixins = "Mixins";
@@ -19,13 +18,7 @@ public class ConfigMixins {
 				categoryMixins,
 				true,
 				"Disables the use of nicknames in the Server Utilities, as changing the display name will result in an actual account \"ban\".");
-		
-		profileCacheOfflineMode = config.getBoolean(
-				"profileCacheOfflineMode",
-				categoryMixins,
-				true,
-				"If server is in offline mode, switches PlayerProfileCache to permanent offline mode (whitelist, ban, etc. will use offline UUID).");
-		
+
 		IPv6Patch = config.getBoolean(
 				"IPv6Patch",
 				categoryMixins,

@@ -28,29 +28,16 @@ public class SkinGuiHandler {
         btnlst = ReflectionHelper.findField(net.minecraft.client.gui.GuiScreen.class, "buttonList", "field_146292_n");
         btnlst.setAccessible(true);
     }
-
-//    @SubscribeEvent
-//    public void attach(DrawScreenEvent.Pre e) {
-//        if (e.gui instanceof GuiOptions) {
-//        }
-//    }
-
+    
     @SubscribeEvent
     public void open(InitGuiEvent.Post e) throws IllegalAccessException {
         if (e.gui instanceof GuiOptions) {
             reflectedBtnLst = btnlst.get(e.gui);
         }
     }
-
-    /*@SubscribeEvent
-    public void open2(InitGuiEvent.Post e) throws IllegalAccessException {
-        if (e.gui instanceof GuiMainMenu) {
-            //e.buttonList.add(new GuiButton(17325, 270, 5, 100, 20, "Server Re-Login"));
-            Minecraft.getMinecraft().thePlayer = null;
-        }
-    }*/
-
-    @SubscribeEvent
+    
+    @SuppressWarnings("unchecked")
+	@SubscribeEvent
     public void draw(DrawScreenEvent.Post e) {
         if (e.gui instanceof GuiOptions) {
 
@@ -62,9 +49,9 @@ public class SkinGuiHandler {
                 }
                 if (Minecraft.getMinecraft().getNetHandler() != null) {
                     if (ClientUtil.isSinglePlayer()) {
-                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.set_skin")));
+                        ((List<GuiButton>) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.set_skin")));
                     } else {
-                        ((List) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.upload_skin")));
+                        ((List<GuiButton>) reflectedBtnLst).add(new GuiButton(69, e.gui.width - 85, 5, 80, 20, I18n.format("offlineauth.upload_skin")));
                     }
                 }
             }

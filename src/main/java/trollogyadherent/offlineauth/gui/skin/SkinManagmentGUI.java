@@ -35,34 +35,31 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class SkinManagmentGUI extends GuiScreen {
-    private GuiScreen previous;
+    private final GuiScreen previous;
 
     private List<SkinListEntry> availableSkins;
     private List<CapeListEntry> availableCapes;
 
     private String status;
 
-    private AvailableSkinsListGUI availableSkinsListGUI;
+    public AvailableSkinsListGUI availableSkinsListGUI;
     private AvailableCapesListGUI availableCapesListGUI;
     private boolean isShowingSkins;
     public GuiCheckBox capeCheckbox = null;
     public GuiCheckBox elytraCheckbox = null;
     private GuiButton capeSkinToggle;
-    private GuiButton renderReset;
-    ItemStack elytraItemStack;
-    private boolean switchingToCapesFirst = true;
-
-    public SkinManagmentGUI(GuiScreen previous) {
+	ItemStack elytraItemStack;
+	
+	public SkinManagmentGUI(GuiScreen previous) {
         this.previous = previous;
     }
 
     @Override
-    public void initGui()
-    {
+    public void initGui() {
         SkinGuiRenderTicker.skinResourceLocation = null;
         SkinGuiRenderTicker.capeResourceLocation = null;
         SkinGuiRenderTicker.capeObject = null;
@@ -92,8 +89,8 @@ public class SkinManagmentGUI extends GuiScreen {
         if(Config.enableCapes) {
             this.buttonList.add(capeSkinToggle);
         }
-        
-        renderReset = new GuiButton(6, this.width - 160, 5, 100, 20, I18n.format("offlineauth.skingui.btn.render_reset"));
+		
+		GuiButton renderReset = new GuiButton(6, this.width - 160, 5, 100, 20, I18n.format("offlineauth.skingui.btn.render_reset"));
         this.buttonList.add(renderReset);
 
         String capeString = I18n.format("Cape");
@@ -122,8 +119,6 @@ public class SkinManagmentGUI extends GuiScreen {
             for (String s : skinNames) {
                 SkinListEntry entry = new SkinListEntry(this, s);
                 this.availableSkins.add(entry);
-                //Runnable r = new SkinListEntryRunnable(this, s, availableSkins);
-                //new Thread(r).start();
             }
         }
     
@@ -131,7 +126,6 @@ public class SkinManagmentGUI extends GuiScreen {
             String[] capeNames = ClientSkinUtil.getAvailableCapeNames();
             if (capeNames != null) {
                 for (String s : capeNames) {
-                    //System.out.println("Adding cape " + s);
                     CapeListEntry entry = new CapeListEntry(this, s);
                     this.availableCapes.add(entry);
                 }
@@ -183,89 +177,57 @@ public class SkinManagmentGUI extends GuiScreen {
         }
     }
 
-    public boolean hasSkinEntry(SkinListEntry skinListEntry)
-    {
-        return this.availableSkins.contains(skinListEntry);
-    }
-    public boolean hasCapeEntry(CapeListEntry capeListEntry) {
-        return this.availableCapes.contains(capeListEntry);
-    }
-
-    public List<SkinListEntry> probablyToRemove(SkinListEntry skinListEntry)
-    {
-        return this.hasSkinEntry(skinListEntry) ? this.availableSkins : null;
-    }
-
-    public List<SkinListEntry> getAvailableSkins()
-    {
+    public List<SkinListEntry> getAvailableSkins() {
         return this.availableSkins;
     }
-    public List<CapeListEntry> getAvailableCapes()
-    {
+    public List<CapeListEntry> getAvailableCapes() {
         return this.availableCapes;
     }
 
-    protected void actionPerformed(GuiButton button)
-    {
-        if (button.enabled)
-        {
+    protected void actionPerformed(GuiButton button) {
+        if (button.enabled) {
 
             /* Open skin folder in OS file explorer button */
-            if (button.id == 2)
-            {
+            if (button.id == 2) {
                 File file1 = new File(isShowingSkins ? OfflineAuth.varInstanceClient.clientSkinsPath : OfflineAuth.varInstanceClient.clientCapesPath);
                 String s = file1.getAbsolutePath();
 
-                if (Util.getOSType() == Util.EnumOS.OSX)
-                {
-                    try
-                    {
+                if (Util.getOSType() == Util.EnumOS.OSX) {
+                    try {
                         Runtime.getRuntime().exec(new String[] {"/usr/bin/open", s});
                         return;
-                    }
-                    catch (IOException ioexception1)
-                    {
+                    } catch (IOException ioexception1) {
                         OfflineAuth.error("Couldn't open file, " + ioexception1);
                     }
-                }
-                else if (Util.getOSType() == Util.EnumOS.WINDOWS)
-                {
+                } else if (Util.getOSType() == Util.EnumOS.WINDOWS) {
                     String s1 = String.format("cmd.exe /C start \"Open file\" \"%s\"", s);
 
-                    try
-                    {
+                    try {
                         Runtime.getRuntime().exec(s1);
                         return;
-                    }
-                    catch (IOException ioexception)
-                    {
+                    } catch (IOException ioexception) {
                         OfflineAuth.error("Couldn't open file, " + ioexception);
                     }
                 }
 
                 boolean flag = false;
 
-                try
-                {
-                    Class oclass = Class.forName("java.awt.Desktop");
+                try {
+                    Class<?> oclass = Class.forName("java.awt.Desktop");
                     Object object = oclass.getMethod("getDesktop", new Class[0]).invoke(null);
                     oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, file1.toURI());
-                }
-                catch (Throwable throwable)
-                {
+                } catch (Throwable throwable) {
                     OfflineAuth.error("Couldn't open link, " + throwable);
                     flag = true;
                 }
 
-                if (flag)
-                {
+                if (flag) {
                     OfflineAuth.info("Opening via system class!");
                     Sys.openURL("file://" + s);
                 }
             }
             /* Upload button */
-            else if (button.id == 1)
-            {
+            else if (button.id == 1) {
                 if (ClientUtil.isSinglePlayer()) {
                     if (isShowingSkins) {
                         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getSkinResourceLocation() != null) {
@@ -284,7 +246,7 @@ public class SkinManagmentGUI extends GuiScreen {
                             OfflineAuth.error("Could not get skin name to save as last used!");
                             return;
                         }
-                        ClientSkinUtil.setLastUsedOfflineSkinName(((SkinListEntry) this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName);
+                        ClientSkinUtil.setLastUsedOfflineSkinName(this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex).skinName);
                         //this.mc.displayGuiScreen(this.previous);
                     } else if (Config.enableCapes) {
                         if (OfflineAuth.varInstanceClient.skinGuiRenderTicker.getCapeResourceLocation() != null) {
@@ -302,13 +264,13 @@ public class SkinManagmentGUI extends GuiScreen {
                             OfflineAuth.error("Could not get cape name to save as last used!");
                             return;
                         }
-                        ClientSkinUtil.setLastUsedOfflineCapeName(((CapeListEntry) this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex)).capeName);
+                        ClientSkinUtil.setLastUsedOfflineCapeName(this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex).capeName);
                     }
                 } else {
                     if (isShowingSkins) {
                         String skinName = null;
-                        if (getAvailableSkins().size() > 0 && this.availableSkinsListGUI.selectedIndex >= 0) {
-                            skinName = ((SkinListEntry) this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex)).skinName;
+                        if (!getAvailableSkins().isEmpty() && this.availableSkinsListGUI.selectedIndex >= 0) {
+                            skinName = this.availableSkinsListGUI.skinEntries.get(this.availableSkinsListGUI.selectedIndex).skinName;
                         }
                         if (skinName == null) {
                             return;
@@ -321,8 +283,6 @@ public class SkinManagmentGUI extends GuiScreen {
                         }
                         OAServerData oasd = trollogyadherent.offlineauth.util.Util.getCurrentOAServerData();
                         if (oasd == null) {
-                            //validText = "\u2718";
-                            //validColor = Color.RED.getRGB();
                             return;
                         }
                         PublicKey clientPubKey = null;
@@ -336,13 +296,10 @@ public class SkinManagmentGUI extends GuiScreen {
                                 e.printStackTrace();
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.RED) + "Error";
                                 return;
-                                //throw new RuntimeException(e);
                             }
                         }
                         try {
                             status = I18n.format("offlineauth.skingui.uploading");
-                    /*byte [] fakeBytes = new byte[skinBytes.length];
-                    new Random().nextBytes(fakeBytes);*/
                             StatusResponseObject stat = Request.uploadSkin(trollogyadherent.offlineauth.util.Util.getIP(OfflineAuth.varInstanceClient.selectedServerData), oasd.getRestPort(), oasd.getIdentifier(), oasd.getPassword(), skinBytes /*fakeBytes*/, clientPubKey, clientPriv);
                             if (stat.getStatusCode() == 200) {
                                 status = trollogyadherent.offlineauth.util.Util.colorCode(trollogyadherent.offlineauth.util.Util.Color.GREEN) + I18n.format(stat.getStatus());
@@ -365,8 +322,8 @@ public class SkinManagmentGUI extends GuiScreen {
                         }
 
                         String capeName = null;
-                        if (getAvailableCapes().size() > 0 && this.availableCapesListGUI.selectedIndex >= 0) {
-                            capeName = ((CapeListEntry) this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex)).capeName;
+                        if (!getAvailableCapes().isEmpty() && this.availableCapesListGUI.selectedIndex >= 0) {
+                            capeName = this.availableCapesListGUI.capeEntries.get(this.availableCapesListGUI.selectedIndex).capeName;
                         }
                         if (capeName == null) {
                             return;
@@ -414,52 +371,26 @@ public class SkinManagmentGUI extends GuiScreen {
                         }
                     }
                 }
-                //this.mc.displayGuiScreen(this.previous);
+
                 /* Done button */
             } else if (button.id == 3) {
-                ////this.mc.thePlayer = null;
                 this.mc.displayGuiScreen(this.previous);
                 /* Button switching between cape and skin view */
             } else if (button.id == 4) {
-
                 if (isShowingSkins) {
-                    if (switchingToCapesFirst) {
-                        //switchingToCapesFirst = false;
-                        //return;
-                    }
                     isShowingSkins = false;
                     SkinGuiRenderTicker.yaw = 180;
                     this.status = I18n.format("offlineauth.skingui.select_cape");
-                    Iterator<GuiButton> i = this.buttonList.iterator();
-                    while (i.hasNext()) {
-                        GuiButton gb = i.next();
-                        if (gb.id == 2) {
-                            i.remove();
-                        }
-                        if (gb.id == 4) {
-                            //i.remove();
-                        }
-                    }
+					this.buttonList.removeIf(gb -> gb.id == 2);
                     this.buttonList.add(new GuiButton(2, this.width - 4 * ((this.width - 25) / 4 + 5), this.height - 48, (this.width - 25) / 4, 20, I18n.format("offlineauth.skingui.open_cape_folder")));
-                    //this.buttonList.add(new GuiButton(6, this.width - 4 * ((this.width - 25) / 4 + 5), 5, 80, 20, I18n.format("offlineauth.skingui.btn.skins")));
                     capeSkinToggle.displayString = I18n.format("offlineauth.skingui.btn.skins");
                 } else {
                     isShowingSkins = true;
                     SkinGuiRenderTicker.yaw = 0;
                     this.status = I18n.format("offlineauth.skingui.select_skin");
-
-                    Iterator<GuiButton> i = this.buttonList.iterator();
-                    while (i.hasNext()) {
-                        GuiButton gb = i.next();
-                        if (gb.id == 2) {
-                            i.remove();
-                        }
-                        if (gb.id == 6) {
-                            //i.remove();
-                        }
-                    }
+					
+					this.buttonList.removeIf(gb -> gb.id == 2);
                     this.buttonList.add(new GuiButton(2, this.width - 4 * ((this.width - 25) / 4 + 5), this.height - 48, (this.width - 25) / 4, 20, I18n.format("offlineauth.skingui.open_skin_folder")));
-                    //this.buttonList.add(new GuiButton(4, this.width - 4 * ((this.width - 25) / 4 + 5), 5, 80, 20, I18n.format("offlineauth.skingui.btn.capes")));
                     capeSkinToggle.displayString = I18n.format("offlineauth.skingui.btn.capes");
                 }
             } else if(button.id == 6) {
@@ -554,31 +485,27 @@ public class SkinManagmentGUI extends GuiScreen {
     /**
      * Called when the mouse is clicked.
      */
-    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_)
-    {
+    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
         super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
         if (isShowingSkins) {
             this.availableSkinsListGUI.func_148179_a(p_73864_1_, p_73864_2_, p_73864_3_);
         } else if (Config.enableCapes) {
             this.availableCapesListGUI.func_148179_a(p_73864_1_, p_73864_2_, p_73864_3_);
         }
-        //this.field_146967_r.func_148179_a(p_73864_1_, p_73864_2_, p_73864_3_);
     }
 
     /**
      * Called when the mouse is moved or a mouse button is released.  Signature: (mouseX, mouseY, which) which==-1 is
      * mouseMove, which==0 or which==1 is mouseUp
      */
-    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
-    {
+    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_) {
         super.mouseMovedOrUp(p_146286_1_, p_146286_2_, p_146286_3_);
     }
 
     /**
      * Draws the screen and all the components in it.
      */
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawBackground(0);
         if (isShowingSkins) {
             this.availableSkinsListGUI.drawScreen(mouseX, mouseY, partialTicks);
@@ -586,7 +513,6 @@ public class SkinManagmentGUI extends GuiScreen {
             this.availableCapesListGUI.drawScreen(mouseX, mouseY, partialTicks);
         }
         this.drawCenteredString(this.fontRendererObj, I18n.format(status), this.width / 2, 16, 16777215);
-
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -649,8 +575,6 @@ public class SkinManagmentGUI extends GuiScreen {
             System.out.println("z: " + SkinGuiRenderTicker.z);
         }
 
-
-
         if (k == Keyboard.KEY_2 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             SkinGuiRenderTicker.textureWidth -= 1;
             System.out.println("textureWidth: " + SkinGuiRenderTicker.textureWidth);
@@ -669,20 +593,4 @@ public class SkinManagmentGUI extends GuiScreen {
          */
     }
 
-    class SkinListEntryRunnable implements Runnable {
-        private SkinManagmentGUI skinManagmentGUI;
-        private String s;
-        private List availableSkins;
-
-        public SkinListEntryRunnable(SkinManagmentGUI skinManagmentGUI, String s, List<SkinListEntry> availableskins) {
-            this.skinManagmentGUI = skinManagmentGUI;
-            this.s = s;
-            this.availableSkins = availableskins;
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
  }

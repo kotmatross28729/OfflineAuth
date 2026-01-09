@@ -72,24 +72,22 @@ public class GameOverlayGuiHandler extends GuiIngame {
         if (mc.gameSettings.keyBindPlayerList.getIsKeyPressed() && (!mc.isIntegratedServerRunning() || handler.playerInfoList.size() > 1 || scoreobjective != null))
         {
             this.mc.mcProfiler.startSection("playerList");
-            List<GuiPlayerInfo> players = (List<GuiPlayerInfo>)handler.playerInfoList;
+            List<GuiPlayerInfo> players = handler.playerInfoList;
 
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();
 
             int maxPlayers = handler.currentServerMaxPlayers;
             int rows = maxPlayers;
-            int columns = 1;
+            int columns;
 
-            for (columns = 1; rows > 20; rows = (maxPlayers + columns - 1) / columns)
-            {
+            for (columns = 1; rows > 20; rows = (maxPlayers + columns - 1) / columns) {
                 columns++;
             }
 
             int columnWidth = 300 / columns;
 
-            if (columnWidth > 150)
-            {
+            if (columnWidth > 150) {
                 columnWidth = 150;
             }
 
@@ -97,17 +95,15 @@ public class GameOverlayGuiHandler extends GuiIngame {
             byte border = 10;
             drawRect(left - 1, border - 1, left + columnWidth * columns, border + 9 * rows, Integer.MIN_VALUE);
 
-            for (int i = 0; i < maxPlayers; i++)
-            {
+            for (int i = 0; i < maxPlayers; i++) {
                 int xPos = left + i % columns * columnWidth;
                 int yPos = border + i / columns * 9;
                 drawRect(xPos, yPos, xPos + columnWidth - 1, yPos + 8, 553648127);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
 
-                if (i < players.size())
-                {
-                    GuiPlayerInfo player = (GuiPlayerInfo)players.get(i);
+                if (i < players.size()) {
+                    GuiPlayerInfo player = players.get(i);
                     ScorePlayerTeam team = mc.theWorld.getScoreboard().getPlayersTeam(player.name);
                     String displayName = ScorePlayerTeam.formatPlayerName(team, player.name);
                     fontRenderer.drawStringWithShadow(displayName, xPos + 10, yPos, 16777215);
@@ -223,10 +219,10 @@ public class GameOverlayGuiHandler extends GuiIngame {
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(p_73729_1_ + 0), (double)(p_73729_2_ + p_73729_6_), (double)this.zLevel, (double)((float)(p_73729_3_ + 0) * f), (double)((float)(p_73729_4_ + p_73729_6_) * f1));
-        tessellator.addVertexWithUV((double)(p_73729_1_ + p_73729_5_), (double)(p_73729_2_ + p_73729_6_), (double)this.zLevel, (double)((float)(p_73729_3_ + p_73729_5_) * f), (double)((float)(p_73729_4_ + p_73729_6_) * f1));
-        tessellator.addVertexWithUV((double)(p_73729_1_ + p_73729_5_), (double)(p_73729_2_ + 0), (double)this.zLevel, (double)((float)(p_73729_3_ + p_73729_5_) * f), (double)((float)(p_73729_4_ + 0) * f1));
-        tessellator.addVertexWithUV((double)(p_73729_1_ + 0), (double)(p_73729_2_ + 0), (double)this.zLevel, (double)((float)(p_73729_3_ + 0) * f), (double)((float)(p_73729_4_ + 0) * f1));
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_ + p_73729_6_, this.zLevel, (float)(p_73729_3_) * f, (float)(p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float)(p_73729_3_ + p_73729_5_) * f, (float)(p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_, this.zLevel, (float)(p_73729_3_ + p_73729_5_) * f, (float)(p_73729_4_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_, this.zLevel, (float)(p_73729_3_) * f, (float)(p_73729_4_) * f1);
         tessellator.draw();
     }
 }
