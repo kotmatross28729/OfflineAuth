@@ -16,9 +16,7 @@ public class MixinClientRegistry {
 	 */
 	@Overwrite(remap = false)
 	public ResourceLocation getTabMenuResourceLocation(String displayName, boolean removeAfterTTL, int ttl) {
-		displayName = displayName.trim(); //In 1.0.8 displayName has a space at the end, probably a bug?
-		
-		return SkinUtil.getOASkin(VarInstanceClient.minecraftRef, displayName, true);
+		return SkinUtil.getOASkin(VarInstanceClient.minecraftRef, displayName.trim(), true);
 	}
 	
 }

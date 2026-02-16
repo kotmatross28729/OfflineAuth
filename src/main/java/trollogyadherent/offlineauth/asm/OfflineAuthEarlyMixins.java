@@ -68,7 +68,6 @@ public class OfflineAuthEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoa
 			mixins.add("serverutilities.MixinPlayerHeadIcon");
 		}
 		
-
 		return mixins;
 	}
 	

@@ -3,4 +3,4 @@ plugins {
     id("com.gtnewhorizons.gtnhconvention")
 }
 
-version = "mc1.7.10-0.3.09"
+version = "mc1.7.10-0.3.10"

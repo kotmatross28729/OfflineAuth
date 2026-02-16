@@ -6,6 +6,10 @@
 
 ---
 
+# v0.3.10
+
+* Fixed compatibility with [TabFaces 1.0.12+](https://github.com/JackOfNoneTrades/TabFaces/releases)
+
 # v0.3.09
 
 * Fixed incorrect rendering of the player's skull when `basicSkinBackport` was disabled
