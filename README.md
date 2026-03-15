@@ -1,3 +1,7 @@
+# ARCHIVED
+
+**OfflineAuth has been completely deprecated in favor of a more modern alternative - [WawelAuth](https://github.com/JackOfNoneTrades/WawelAuth)**
+
 # OfflineAuth 1.7.10 Fork (Forge)
 Beta Minecraft authentication system contained in a Forge mod. (Please note the beta) Please report any bugs, especially security holes.
 
